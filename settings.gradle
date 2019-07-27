@@ -1,1 +1,1 @@
-include ':app', ':remocontrollersdk'
+include ':app', ':sdk'
