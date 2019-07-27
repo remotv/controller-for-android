@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">settingsutil</string>
+    <!-- Switch On/Off  -->
+    <string name="switch_on_text">On</string>
+    <string name="switch_off_text">Off</string>
+</resources>
