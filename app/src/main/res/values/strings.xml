@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Remo Robot</string>
+    <string name="app_name">Remo Robot Controller</string>
+    <string name="app_display_name">Remo Robot</string>
 </resources>
