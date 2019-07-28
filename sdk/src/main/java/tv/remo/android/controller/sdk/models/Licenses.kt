@@ -4,7 +4,7 @@ import org.btelman.licensehelper.License
 import org.btelman.licensehelper.LicenseType
 
 /**
- * LR api licenses
+ * api licenses
  */
 object Licenses {
     val licenses = arrayListOf(
@@ -17,6 +17,7 @@ object Licenses {
             License("Android Lifecycle ViewModel", LicenseType.APACHE2_0),
             License("Android Lifecycle Extensions", LicenseType.APACHE2_0),
             License("Guava: Google Core Libraries For Java", LicenseType.APACHE2_0),
+            License("ControlSDK, github.com/btelman96/ControlSDK", LicenseType.APACHE2_0),
             License("github.com/felHR85/UsbSerial", LicenseType.MIT),
             License("OkHttp", LicenseType.APACHE2_0),
             License("FFmpeg, github.com/btelman96/ffmpeg-android-java", LicenseType.GPL3),
