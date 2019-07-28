@@ -22,7 +22,6 @@
     <string name="audioSettingsEnableKey">audioSettingsEnable</string>
     <string name="audioSettingsTTSGroupKey">ttsCategoryKey</string>
     <string name="audioSettingsTTSLREnabledKey">ttsLREnabled</string>
-    <string name="audioSettingsTTSAnonEnabledKey">anonTTSEnabled</string>
     <string name="audioGenericTTSCategoryKey">genericTTSCategoryKey</string>
     <string name="audioBanVoiceEnabledKey">banVoiceEnabledKey</string>
     <string name="audioTTSInternalEnabledKey">ttsInternalEnabled</string>

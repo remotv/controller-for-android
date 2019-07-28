@@ -8,14 +8,8 @@
         <SwitchPreferenceCompat
             app:key="@string/audioSettingsTTSLREnabledKey"
             app:defaultValue="true"
-            app:title="@string/audioSettingsTTSLREnabledTitle"
-            app:summary="@string/audioSettingsTTSLREnabledSummary"/>
-
-        <SwitchPreferenceCompat
-            app:key="@string/audioSettingsTTSAnonEnabledKey"
-            app:dependency="@string/audioSettingsTTSLREnabledKey"
-            app:title="@string/audioSettingsTTSAnonEnabledTitle"
-            app:summary="@string/audioSettingsTTSAnonEnabledSummary"/>
+            app:title="@string/audioSettingsTTSRemoEnabledTitle"
+            app:summary="@string/audioSettingsTTSRemoEnabledSummary"/>
     </PreferenceCategory>
 
     <PreferenceCategory

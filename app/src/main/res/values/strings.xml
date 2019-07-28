@@ -65,11 +65,8 @@
     <string name="audioSettingsTitle">Audio and Commands</string>
     <string name="audioSettingsSummary">Text to Speech, Device Volume, Commands</string>
     <string name="textToSpeech">Text To Speech</string>
-    <string name="audioSettingsTTSLREnabledTitle">Allow Text To Speech</string>
-    <string name="audioSettingsTTSLREnabledSummary">Receive chat from Let\'s Robot. Still will allow commands if disabled</string>
-    <string name="audioSettingsTTSAnonEnabledTitle">Allow Anonymous TTS</string>
-    <string name="audioSettingsTTSAnonEnabledSummary">Anonymous users from Let\`s Robot are able to
-        use TTS</string>
+    <string name="audioSettingsTTSRemoEnabledTitle">Allow Text To Speech</string>
+    <string name="audioSettingsTTSRemoEnabledSummary">Receive chat from remo.tv. Still will allow commands if disabled</string>
     <string name="audioBanVoiceTitle">Timeout/Ban Notify</string>
     <string name="audioBanVoiceSummary">Robot will say \'User timed out\' or \'User banned\' and
         will stop current TTS sound</string>
