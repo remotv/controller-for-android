@@ -36,9 +36,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     def nav_version = "2.0.0"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    api "androidx.navigation:navigation-fragment-ktx:$nav_version"
     // For Kotlin use navigation-fragment-ktx
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    api "androidx.navigation:navigation-ui-ktx:$nav_version"
     // For Kotlin use navigation-ui-ktx
-    implementation "androidx.preference:preference-ktx:1.1.0-rc01"
+    api "androidx.preference:preference-ktx:1.1.0-rc01"
 }

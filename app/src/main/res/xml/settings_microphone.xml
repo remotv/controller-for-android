@@ -1,0 +1,21 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/microphoneSettingsTitle">
+
+    <androidx.preference.ListPreference
+        app:key="@string/micVolumeBoostKey"
+        app:title="@string/micVolumeBoostTitle"
+        app:defaultValue="1"
+        app:useSimpleSummaryProvider="true"
+        app:entries="@array/volume_mic_list"
+        app:entryValues="@array/volume_mic_list_values"/>
+
+    <androidx.preference.ListPreference
+        app:key="@string/micAudioBitrateKey"
+        app:title="@string/bitrate"
+        app:defaultValue="32"
+        app:useSimpleSummaryProvider="true"
+        app:entries="@array/bitrate_audio_list"
+        app:entryValues="@array/bitrate_audio_list_values"/>
+
+</androidx.preference.PreferenceScreen>

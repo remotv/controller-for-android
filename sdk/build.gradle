@@ -38,6 +38,7 @@ dependencies {
     api "org.btelman.controlsdk:streaming:$controlsdk_version"
     api "org.btelman.controlsdk:hardware:$controlsdk_version"
     api "org.btelman.controlsdk:texttospeech:$controlsdk_version"
+    compile project(path: ':licensehelper')
 }
 repositories {
     mavenCentral()

@@ -1,4 +1,4 @@
-package tv.letsrobot.controller.android.utils
+package tv.remo.android.settingsutil
 
 import android.content.Context
 import android.widget.ArrayAdapter

@@ -1,1 +1,1 @@
-include ':app', ':sdk', ':settingsutil'
+include ':app', ':sdk', ':settingsutil', ':licensehelper'

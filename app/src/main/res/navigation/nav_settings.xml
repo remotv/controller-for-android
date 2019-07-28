@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_settings"
+    app:startDestination="@id/settingsEntryFragment">
+    <fragment
+        android:id="@+id/settingsLanding"
+        android:name="tv.remo.android.controller.fragments.SettingsLanding"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings_landing" >
+        <action
+            android:id="@+id/action_settingsLanding_to_settingsConnection"
+            app:destination="@id/settingsConnection" />
+        <action
+            android:id="@+id/action_settingsLanding_to_settingsRobot"
+            app:destination="@id/settingsRobot" />
+        <action
+            android:id="@+id/action_settingsLanding_to_settingsCamera"
+            app:destination="@id/settingsCamera" />
+        <action
+            android:id="@+id/action_settingsLanding_to_settingsMicrophone"
+            app:destination="@id/settingsMicrophone" />
+        <action
+            android:id="@+id/action_settingsLanding_to_settingsAudio"
+            app:destination="@id/settingsAudio" />
+        <action
+            android:id="@+id/action_settingsLanding_to_settingsDisplay"
+            app:destination="@id/settingsDisplay" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="lr://controller.settings"
+            android:autoVerify="true" />
+        <action
+            android:id="@+id/action_settingsLanding_to_licenseViewer"
+            app:destination="@id/licenseViewer" />
+    </fragment>
+    <action
+        android:id="@+id/action_nav_settings_pop"
+        app:popUpTo="@id/nav_settings"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/settingsConnection"
+        android:name="tv.remo.android.controller.fragments.SettingsConnection"
+        android:label="@string/connectionSettingsTitle" />
+    <fragment
+        android:id="@+id/settingsRobot"
+        android:name="tv.remo.android.controller.fragments.SettingsRobot"
+        android:label="@string/robotSettingsTitle"
+        tools:layout="@layout/fragment_settings_robot" />
+    <fragment
+        android:id="@+id/settingsCamera"
+        android:name="tv.remo.android.controller.fragments.SettingsCamera"
+        android:label="@string/cameraSettingsTitle" />
+    <fragment
+        android:id="@+id/settingsMicrophone"
+        android:name="tv.remo.android.controller.fragments.SettingsMicrophone"
+        android:label="@string/microphoneSettingsTitle" />
+    <fragment
+        android:id="@+id/settingsAudio"
+        android:name="tv.remo.android.controller.fragments.SettingsAudio"
+        android:label="@string/audioSettingsTitle" />
+    <fragment
+        android:id="@+id/settingsDisplay"
+        android:name="tv.remo.android.controller.fragments.SettingsDisplay"
+        android:label="@string/displaySettingsTitle" />
+    <activity
+        android:id="@+id/splashScreen"
+        android:name="tv.remo.android.controller.activities.SplashScreen"
+        android:label="fragment_splash_screen"
+        tools:layout="@layout/activity_splash_screen" />
+    <fragment
+        android:id="@+id/settingsEntryFragment"
+        android:name="tv.remo.android.controller.fragments.SettingsEntryFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings_entry">
+        <action
+            android:id="@+id/action_settingsEntryFragment_to_settingsLanding"
+            app:destination="@id/settingsLanding" />
+        <action
+            android:id="@+id/action_settingsEntryFragment_to_splashScreen"
+            app:destination="@id/splashScreen"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/licenseViewer"
+        android:name="tv.remo.android.controller.fragments.SettingsLicenseViewer"
+        android:label="@string/openSourceSettingsTitle"
+        tools:layout="@layout/fragment_license_viewer" />
+</navigation>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connectionSettingsKey">connectionSettings</string>
+    <string name="connectionApiTokenKey">ApiKey</string>
+    <string name="connectionChannelIdKey">ChannelId</string>
+
+    <string name="robotSettingsEnableKey">robotSettingsEnable</string>
+    <string name="robotConnectionTypeKey">robotConnectionType</string>
+    <string name="robotProtocolTypeKey">robotProtocolType</string>
+
+    <string name="cameraSettingsGeneralGroupKey">genericCameraSettingsGroupKey</string>
+    <string name="cameraSettingsEnableKey">cameraSettingsEnable</string>
+    <string name="cameraResolutionKey">cameraResolution</string>
+    <string name="cameraOrientationKey">cameraOrientation</string>
+    <string name="cameraBitrateKey">cameraBitrate</string>
+    <string name="useCamera2">UseCamera2</string>
+
+    <string name="microphoneSettingsEnableKey">microphoneSettingsEnable</string>
+    <string name="micVolumeBoostKey">micVolumeBoostKey</string>
+    <string name="micAudioBitrateKey">micAudioBitrateKey</string>
+
+    <string name="audioSettingsEnableKey">audioSettingsEnable</string>
+    <string name="audioSettingsTTSGroupKey">ttsCategoryKey</string>
+    <string name="audioSettingsTTSLREnabledKey">ttsLREnabled</string>
+    <string name="audioSettingsTTSAnonEnabledKey">anonTTSEnabled</string>
+    <string name="audioGenericTTSCategoryKey">genericTTSCategoryKey</string>
+    <string name="audioBanVoiceEnabledKey">banVoiceEnabledKey</string>
+    <string name="audioTTSInternalEnabledKey">ttsInternalEnabled</string>
+    <string name="audioBatteryCommandEnabledKey">batteryCommandEnabled</string>
+    <string name="audioSystemSettingsGroupKey">systemSoundSettings</string>
+    <string name="audioVolumeSystemSettingsKey">volumeSettingsPage</string>
+    <string name="audioTTSSystemSettingsKey">ttsSettingsPage</string>
+
+    <string name="displayGroupKey">genericDisplay</string>
+    <string name="displaySettingsKey">displaySettings</string>
+    <string name="displayPersistKey">screenPersistenceKey</string>
+    <string name="displayChatEnabledKey">displayChatEnabled</string>
+    <string name="autoHideControlsEnabledKey">autoHideControlsEnabledKey</string>
+    <string name="systemDisplaySettingsGroupKey">systemDisplaySettingsGroupKey</string>
+    <string name="displaySystemSettingsKey">displaySystemSettingsKey</string>
+    <string name="dozeSystemSettingsKey">dozeSystemSettingsKey</string>
+
+    <string name="openSourceSettingsKey">openSource</string>
+    <string name="feedbackSettingsKey">feedback</string>
+</resources>

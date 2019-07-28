@@ -1,0 +1,45 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/displaySettingsTitle">
+
+    <PreferenceCategory
+        app:key="@string/displayGroupKey"
+        app:title="@string/generalSettings">
+
+    <SwitchPreferenceCompat
+        app:key="@string/displayPersistKey"
+        app:defaultValue="true"
+        app:title="@string/displayPersistTitle"
+        app:summary="@string/displayPersistSummary"/>
+
+    <SwitchPreferenceCompat
+        app:key="@string/displayChatEnabledKey"
+        app:defaultValue="true"
+        app:title="@string/displayChatEnabledTitle"
+        app:summary="@string/displayChatEnabledSummary"/>
+
+    <SwitchPreferenceCompat
+        app:key="@string/autoHideControlsEnabledKey"
+        app:defaultValue="true"
+        app:title="@string/autoHideControlsEnabledTitle"
+        app:summary="@string/autoHideControlsEnabledSummary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/systemDisplaySettingsGroupKey"
+        app:title="@string/systemSettingsTitle">
+        <Preference
+            app:key="@string/displaySystemSettingsKey"
+            app:title="@string/displaySystemSettingsTitle"
+            app:summary="@string/displaySystemSettingsSummary">
+            <intent android:action="android.settings.DISPLAY_SETTINGS"/>
+        </Preference>
+
+        <Preference
+            app:key="@string/dozeSystemSettingsKey"
+            app:title="@string/dozeSettingsPageTitle"
+            app:summary="@string/dozeSettingsPageSummary">
+            <intent android:action="android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"/>
+        </Preference>
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>
