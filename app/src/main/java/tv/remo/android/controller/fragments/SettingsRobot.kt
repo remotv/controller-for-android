@@ -4,7 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.preference.ListPreference
 import androidx.preference.Preference
+import org.btelman.controlsdk.hardware.interfaces.DriverComponent
+import org.btelman.controlsdk.hardware.interfaces.TranslatorComponent
+import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
 import tv.remo.android.settingsutil.fragments.BasePreferenceFragmentCompat
 import tv.remo.android.settingsutil.preferences.ListSettingsPreference
@@ -19,17 +23,17 @@ class SettingsRobot : BasePreferenceFragmentCompat(
         super.onViewCreated(view, savedInstanceState)
         val connPref = findPreference<ListSettingsPreference>(getString(R.string.robotConnectionTypeKey))
         val protoPref = findPreference<ListSettingsPreference>(getString(R.string.robotProtocolTypeKey))
-        //createFromDefaultAndListen(connPref, LRPreferences.INSTANCE.communication) //TODO
-        //createFromDefaultAndListen(protoPref, LRPreferences.INSTANCE.protocol) //TODO
-//        connPref?.setOnClickListener {
-//            val enum = LRPreferences.INSTANCE.communication.value //TODO
-//            val clazz = enum.getInstantiatedClass
-//            pendingResultCode = clazz?.setupComponent(activity!!)
-//        }
+        createFromDefaultAndListen(connPref, DriverComponent::class.java)
+        createFromDefaultAndListen(protoPref, TranslatorComponent::class.java)
+        connPref?.setOnClickListener {
+            //val enum = LRPreferences.INSTANCE.communication.value //TODO
+            //val clazz = enum.getInstantiatedClass
+            //pendingResultCode = clazz?.setupComponent(activity!!)
+        }
 
-//        protoPref?.setOnClickListener {
-//              TODO()
-//        }
+        protoPref?.setOnClickListener {
+              TODO()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -38,21 +42,32 @@ class SettingsRobot : BasePreferenceFragmentCompat(
             Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
     }
 
-    /*TODO
-        private fun <T : Enum<*>> createFromDefaultAndListen(pref : ListPreference?, lrPreference: EnumPreference<T>){
+    private fun <T : Annotation> createFromDefaultAndListen(pref : ListPreference?, annotation: Class<T>){
         pref ?: return //skip if null
-        val enumValue = lrPreference.value
-        pref.entries = enumValue.getEntries()
-        pref.entryValues = enumValue.getEntries()
-        pref.value = enumValue.name
-        maybeDisplayExpandedSetup(pref, enumValue)
-        pref.setOnPreferenceChangeListener { preference, newValue ->
+        val classes = ClassScanner.getClassesWithAnnotation(context!!, annotation)
+        val classNames = ArrayList<String>()
+        classes.forEach {
+            classNames.add(it.name)
+        }
+        val simpleClassNames = ArrayList<String>()
+        classes.forEach {
+            simpleClassNames.add(it.simpleName)
+        }
+        val nameArray = simpleClassNames.toArray(Array(0){""})
+        val valueArray = classNames.toArray(Array(0){""})
+
+        //val enumValue = lrPreference.value
+        pref.entries = nameArray
+        pref.entryValues = valueArray
+        //pref.value = valueArray[0]
+        //maybeDisplayExpandedSetup(pref, enumValue)
+        /*pref.setOnPreferenceChangeListener { preference, newValue ->
             val any = searchForEnum(newValue, enumValue)
             any?.let { lrPreference.saveValue(it) }
             maybeDisplayExpandedSetup(preference, enumValue)
             true
-        }
-    }*/
+        }*/
+    }
 
     private fun maybeDisplayExpandedSetup(preference: Preference?, enumValue : Enum<*>) {
         val settingsPref = preference as? ListSettingsPreference
