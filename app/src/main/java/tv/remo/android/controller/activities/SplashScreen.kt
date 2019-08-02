@@ -10,37 +10,50 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
+import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
 
 class SplashScreen : FragmentActivity() {
+
+    var classScanComplete = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-//        ServiceComponentGenerator.initDependencies(this){ //TODO
-//            runOnUiThread{
-//                if(LRPreferences.INSTANCE.robotId.value == "" ||
-//                    LRPreferences.INSTANCE.cameraId.value == "") {
-//                    startSetup()
-//                    Toast.makeText(this, "RobotID or CameraId need to be setup!", Toast.LENGTH_SHORT).show()
-//                    return@runOnUiThread
-//                }
-//                next()
-//            }
-//        }
+        runOnUiThread{
+            /*if(LRPreferences.INSTANCE.robotId.value == "" ||
+                LRPreferences.INSTANCE.cameraId.value == "") {
+                startSetup()
+                Toast.makeText(this, "RobotID or CameraId need to be setup!", Toast.LENGTH_SHORT).show()
+                return@runOnUiThread
+            }*/
+            next()
+        }
     }
 
     private fun startSetup() {
         startActivity(SettingsActivity.getIntent(this))
+        finish()
     }
 
     private fun next() {
+        if(!classScanComplete){
+            Thread{
+                ClassScanner.getClasses(this)
+                runOnUiThread {
+                    classScanComplete = true
+                    next()
+                }
+            }.start()
+            return
+        }
+
         //Check permissions. break out if that returns false
         if(!checkPermissions()){
             return
         }
-        //Setup device. break out if not setup, or if error occurred
+        /*//Setup device. break out if not setup, or if error occurred
         setupDevice()?.let {
             if(!it){
                 //setup not complete
@@ -50,7 +63,7 @@ class SplashScreen : FragmentActivity() {
             //Something really bad happened here. Not sure how we continue
             setupError()
             return
-        }
+        }*/
         //All checks are done. Lets startup the activity!
         ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, ControlSDKService::class.java))
         startActivity(MainActivity.getIntent(this))

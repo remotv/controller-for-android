@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         settingsButton.setOnClickListener {
             startActivity(SettingsActivity.getIntent(this))
+            finish()
         }
     }
 

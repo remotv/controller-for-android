@@ -7,6 +7,6 @@
         app:useSimpleSummaryProvider="true"/>
     <tv.remo.android.settingsutil.preferences.ListSettingsPreference
         app:key="@string/robotProtocolTypeKey"
-        app:title="@string/robotConnectionTypeTitle"
+        app:title="@string/robotProtocolTypeTitle"
         app:useSimpleSummaryProvider="true"/>
 </androidx.preference.PreferenceScreen>
