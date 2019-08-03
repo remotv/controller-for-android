@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun launchSettings() {
+        controlSDKViewModel?.api?.disable()
         startActivity(SettingsActivity.getIntent(this))
         finish()
     }
