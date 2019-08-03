@@ -1,4 +1,109 @@
 <resources>
     <string name="app_name">Remo Robot Controller</string>
     <string name="app_display_name">Remo Robot</string>
+
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_skip">Skip Step</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="power">Power</string>
+    <string name="settings">Settings</string>
+
+    <!-- Switch On/Off  -->
+    <string name="switch_on_text">On</string>
+    <string name="switch_off_text">Off</string>
+
+    <string name="bitrate">Bitrate</string>
+
+    <!--Settings Landing Page-->
+    <string name="generalSettings">General</string>
+    <string name="advancedSettings">Experimental</string>
+    <string name="systemSettingsTitle">System Settings</string>
+
+    <!--Connection-->
+
+    <string name="connectionSettingsTitle">Connection</string>
+    <string name="connectionSettingsSummary">APIKey, Channel</string>
+    <string name="connectionApiToken">API Key</string>
+    <string name="connectionChannelId">Channel ID</string>
+    <string name="connectionChannelIdScan">List channels</string>
+
+    <!--Robot-->
+
+    <string name="robotSettingsTitle">Robot</string>
+    <string name="robotSettingsSummary">Motors, Sensors, Telemetry</string>
+    <string name="robotConnectionTypeTitle">Connection Type</string>
+    <string name="robotProtocolTypeTitle">Protocol Type</string>
+
+    <!--Camera-->
+    <string name="cameraSettingsTitle">Camera</string>
+    <string name="cameraSettingsSummary">Resolution, Orientation, Bitrate</string>
+    <string name="cameraResolutionTitle">Resolution</string>
+    <string name="cameraOrientationTitle">Orientation</string>
+    <string name="camera2EnabledTitle">Use New Camera API</string>
+    <string name="camera2EnabledSummary">Use the Camera API introduced in Lollipop (21). Try disabling if device is not rendering fast enough. Locks the resolution to 640x480 when disabled</string>
+
+    <!--Microphone-->
+    <string name="microphoneSettingsTitle">Microphone</string>
+    <string name="microphoneSettingsSummary">Volume, Bitrate</string>
+    <string name="micVolumeBoostTitle">Volume Boost</string>
+
+
+    <!--Audio/Speaker-->
+    <string name="audioSettingsTitle">Audio and Commands</string>
+    <string name="audioSettingsSummary">Text to Speech, Device Volume, Commands</string>
+    <string name="textToSpeech">Text To Speech</string>
+    <string name="audioSettingsTTSRemoEnabledTitle">Allow Text To Speech</string>
+    <string name="audioSettingsTTSRemoEnabledSummary">Receive chat from remo.tv. Still will allow commands if disabled</string>
+    <string name="audioBanVoiceTitle">Timeout/Ban Notify</string>
+    <string name="audioBanVoiceSummary">Robot will say \'User timed out\' or \'User banned\' and
+        will stop current TTS sound</string>
+    <string name="audioInternalTTSTitle">Internal App Messages</string>
+    <string name="audioInternalTTSSummary">Internal app events via TTS, such as
+        connectivity</string>
+    <string name="audioBatteryCommandTitle">Allow battery command</string>
+    <string name="audioBatteryCommandSummary">Enable ability for typing \`.battery level\` in chat
+        to have the phone speak its battery life</string>
+    <string name="audioSystemSoundSettingsTitle">Sound Settings</string>
+    <string name="audioSystemSoundSettingsSummary">System Sound Settings</string>
+    <string name="audioSystemTTSSettingsTitle">TTS Settings</string>
+    <string name="audioSystemTTSSettingsSummary">System Text To Speech Settings</string>
+
+    <!--Display-->
+
+    <string name="displaySettingsTitle">Display</string>
+    <string name="displaySettingsSummary">Timeout, Chat, Doze</string>
+
+    <string name="displayPersistTitle">Keep Screen On</string>
+    <string name="displayPersistSummary">Screen will stay on until device is
+        manually locked</string>
+    <string name="displayChatEnabledTitle">Chat Display</string>
+    <string name="displayChatEnabledSummary">Allow chat to display on screen</string>
+    <string name="autoHideControlsEnabledTitle">Auto Hide Controls</string>
+    <string name="autoHideControlsEnabledSummary">Controls will disappear after 10 seconds</string>
+    <string name="displaySystemSettingsTitle">System Display Settings</string>
+    <string name="displaySystemSettingsSummary">Brightness, Sleep Time, Color Mode</string>
+    <string name="dozeSettingsPageTitle">App Power Settings</string>
+    <string name="dozeSettingsPageSummary">Control power saving mode for this app. Only needed
+        if the screen is turned off</string>
+
+    <!--Open Source-->
+
+    <string name="openSourceSettingsTitle">Open Source Licenses</string>
+
+    <!--Feedback-->
+    <string name="feedbackSettingsTitle">Send feedback</string>
+    <string name="feedbackSettingsSummary">Report technical issues or suggest
+        new features</string>
+    <!--EndRegion-->
 </resources>

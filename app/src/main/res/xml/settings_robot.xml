@@ -1,0 +1,12 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/robotSettingsTitle">
+    <tv.remo.android.settingsutil.preferences.ListSettingsPreference
+        app:key="@string/robotConnectionTypeKey"
+        app:title="@string/robotConnectionTypeTitle"
+        app:useSimpleSummaryProvider="true"/>
+    <tv.remo.android.settingsutil.preferences.ListSettingsPreference
+        app:key="@string/robotProtocolTypeKey"
+        app:title="@string/robotProtocolTypeTitle"
+        app:useSimpleSummaryProvider="true"/>
+</androidx.preference.PreferenceScreen>

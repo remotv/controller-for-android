@@ -1,0 +1,20 @@
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/connectionSettingsTitle">
+
+    <EditTextPreference
+        app:key="@string/connectionApiTokenKey"
+        app:title="@string/connectionApiToken"
+        app:useSimpleSummaryProvider="true"
+        app:isPreferenceVisible="true"/>
+
+    <EditTextPreference
+        app:key="@string/connectionChannelIdKey"
+        app:title="@string/connectionChannelId"
+        app:useSimpleSummaryProvider="true"
+        app:isPreferenceVisible="true"/>
+
+    <!--TODO add option to find channel-->
+    <!--TODO add option to test success-->
+</androidx.preference.PreferenceScreen>

@@ -1,0 +1,55 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/cameraSettingsTitle">
+    <PreferenceCategory
+        app:key="@string/cameraSettingsGeneralGroupKey"
+        app:title="@string/generalSettings">
+    <SwitchPreferenceCompat
+        app:key="@string/useCamera2"
+        app:defaultValue="@string/camera2supported"
+        app:enabled="@string/camera2supported"
+        app:title="@string/camera2EnabledTitle"
+        app:summary="@string/camera2EnabledSummary"/>
+    <androidx.preference.ListPreference
+        app:key="@string/cameraResolutionKey"
+        app:dependency="@string/useCamera2"
+        app:title="@string/cameraResolutionTitle"
+        app:defaultValue="640x480"
+        app:useSimpleSummaryProvider="true"
+        app:entries="@array/resolution_pref_list"
+        app:entryValues="@array/resolution_pref_list"/>
+
+    <androidx.preference.ListPreference
+        app:key="@string/cameraOrientationKey"
+        app:title="@string/cameraOrientationTitle"
+        app:useSimpleSummaryProvider="true"
+        app:defaultValue="DIR_90"
+        app:entries="@array/orientation_pref_list"
+        app:entryValues="@array/orientation_pref_list_values"/>
+
+    <androidx.preference.ListPreference
+        app:key="@string/cameraBitrateKey"
+        app:title="@string/bitrate"
+        app:useSimpleSummaryProvider="true"
+        app:defaultValue="1024"
+        app:entries="@array/bitrate_video_list"
+        app:entryValues="@array/bitrate_video_list_values"/>
+    </PreferenceCategory>
+    <!--TODO Settings V2-->
+    <!--<PreferenceCategory-->
+        <!--app:key="advanced"-->
+        <!--app:title="@string/advancedSettings"-->
+        <!--app:initialExpandedChildrenCount="0">-->
+        <!--<EditTextPreference-->
+            <!--app:key="ffmpegFilters"-->
+            <!--app:title="FFmpeg filters"-->
+            <!--app:useSimpleSummaryProvider="true"-->
+            <!--app:isPreferenceVisible="true"/>-->
+        <!--<EditTextPreference-->
+            <!--app:key="ffmpegInput"-->
+            <!--app:title="FFmpeg stream external url"-->
+            <!--app:useSimpleSummaryProvider="true"-->
+            <!--app:isPreferenceVisible="true"/>-->
+    <!--</PreferenceCategory>-->
+
+</androidx.preference.PreferenceScreen>
