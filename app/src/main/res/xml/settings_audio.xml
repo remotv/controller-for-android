@@ -6,7 +6,7 @@
         app:key="@string/audioSettingsTTSGroupKey"
         app:title="@string/textToSpeech">
         <SwitchPreferenceCompat
-            app:key="@string/audioSettingsTTSLREnabledKey"
+            app:key="@string/audioSettingsTTSRemoEnabledKey"
             app:defaultValue="true"
             app:title="@string/audioSettingsTTSRemoEnabledTitle"
             app:summary="@string/audioSettingsTTSRemoEnabledSummary"/>

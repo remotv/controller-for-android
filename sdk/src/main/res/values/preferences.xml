@@ -21,11 +21,10 @@
 
     <string name="audioSettingsEnableKey">audioSettingsEnable</string>
     <string name="audioSettingsTTSGroupKey">ttsCategoryKey</string>
-    <string name="audioSettingsTTSLREnabledKey">ttsLREnabled</string>
+    <string name="audioSettingsTTSRemoEnabledKey">ttsRemoEnabled</string>
     <string name="audioGenericTTSCategoryKey">genericTTSCategoryKey</string>
     <string name="audioBanVoiceEnabledKey">banVoiceEnabledKey</string>
     <string name="audioTTSInternalEnabledKey">ttsInternalEnabled</string>
-    <string name="audioBatteryCommandEnabledKey">batteryCommandEnabled</string>
     <string name="audioSystemSettingsGroupKey">systemSoundSettings</string>
     <string name="audioVolumeSystemSettingsKey">volumeSettingsPage</string>
     <string name="audioTTSSystemSettingsKey">ttsSettingsPage</string>
