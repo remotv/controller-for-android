@@ -17,9 +17,6 @@
     </string>
     <string name="power">Power</string>
     <string name="settings">Settings</string>
-    <string name="title_activity_qr">QRActivity</string>
-    <string name="qr_code">QR Code</string>
-
 
     <!-- Switch On/Off  -->
     <string name="switch_on_text">On</string>
