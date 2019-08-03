@@ -14,7 +14,7 @@
 
         </activity>
         <activity android:name=".activities.SettingsActivity"/>
-        <activity android:name=".activities.SplashScreen">
+        <activity android:name=".activities.SplashScreen" android:label="@string/app_display_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
