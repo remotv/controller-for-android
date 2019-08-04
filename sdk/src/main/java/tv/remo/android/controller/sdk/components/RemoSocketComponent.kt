@@ -4,13 +4,19 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
-import okhttp3.*
-import okio.ByteString
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
+import org.btelman.controlsdk.models.ComponentEventObject
+import org.btelman.controlsdk.tts.TTSBaseComponent
 import org.json.JSONObject
 import tv.remo.android.controller.sdk.models.api.Channel
+import tv.remo.android.controller.sdk.models.api.Message
+import tv.remo.android.controller.sdk.models.api.RobotCommand
 import tv.remo.android.controller.sdk.models.api.RobotServerInfo
+import tv.remo.android.controller.sdk.utils.SocketListener
 
 /**
  * Remo Socket component
@@ -23,6 +29,8 @@ class RemoSocketComponent : Component() {
     var activeChannelId : String? = null
     val request = Request.Builder().url("ws://dev.remo.tv:3231/").build()
     val client = OkHttpClient()
+    private var serverInfo: RobotServerInfo? = null
+    private var activeChannel : Channel? = null
 
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
@@ -32,60 +40,9 @@ class RemoSocketComponent : Component() {
     }
 
     override fun enableInternal() {
-        socket = client.newWebSocket(request, object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                super.onOpen(webSocket, response)
-                Log.d("TAG","onOpen")
-                val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
-                webSocket.send(json)
-            }
-
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                super.onFailure(webSocket, t, response)
-                Log.d("TAG","onFailure")
-            }
-
-            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                super.onClosing(webSocket, code, reason)
-                Log.d("TAG","onClosing $reason $code")
-            }
-
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                Log.d("TAG",text)
-                super.onMessage(webSocket, text)
-                val jsonObject = JSONObject(text)
-                Log.d("TAG","Validated JSON")
-
-                if(jsonObject["e"] == "ROBOT_VALIDATED"){
-                    val host = jsonObject.getJSONObject("d")["host"] as String
-                    val str = "{\"e\":\"GET_CHANNELS\",\"d\":{\"server_id\":\"$host\"}}"
-                    webSocket.send(str)
-                }
-                if(jsonObject["e"] == "SEND_ROBOT_SERVER_INFO"){
-                    val serverInfo = Gson().fromJson(jsonObject.getJSONObject("d").toString(),
-                        RobotServerInfo::class.java)
-                    var activeChannel : Channel? = null
-                    for (channel in serverInfo.channels) {
-                        if(channel.id != activeChannelId) continue
-                        activeChannel = channel
-                    }
-                    activeChannel?.apply {
-                        sendMessage(webSocket, "JOIN_CHANNEL", id)
-                        sendMessage(webSocket, "GET_CHAT", chat)
-                    }
-                    //sendMessage(webSocket, "GET_CHAT", chat)
-                }
-            }
-
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                super.onMessage(webSocket, bytes)
-            }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                super.onClosed(webSocket, code, reason)
-                Log.d("TAG","onClosed $reason $code")
-            }
-        })
+        val listener = SocketListener()
+        subToSocketEvents(listener)
+        socket = client.newWebSocket(request, listener)
         client.dispatcher().executorService().shutdown()
     }
 
@@ -95,6 +52,90 @@ class RemoSocketComponent : Component() {
 
     override fun getType(): ComponentType {
         return ComponentType.CUSTOM
+    }
+
+    private fun subToSocketEvents(listener: SocketListener) {
+        listener.on(SocketListener.ON_OPEN){
+            sendHandshakeAuth()
+        }.on(SocketListener.ON_CLOSE){
+            Log.d("TAG","onClosing $it")
+        }.on(SocketListener.ON_ERROR){
+            Log.d("TAG","onFailure $it")
+        }.on("ROBOT_VALIDATED"){
+            sendChannelsRequest(it)
+        }.on("SEND_ROBOT_SERVER_INFO"){
+            verifyAndSubToChannel(it)
+        }.on(SocketListener.ON_MESSAGE){
+            Log.d("SOCKET", it)
+        }.on("MESSAGE_RECEIVED"){
+            sendChatUpwards(it)
+        }.on("BUTTON_COMMAND"){
+            sendCommandUpwards(it)
+        }
+        //.on("SEND_CHAT") //TODO? of type Messages
+    }
+
+    private fun sendCommandUpwards(it: String) {
+        Gson().fromJson(it, RobotCommand::class.java).also {
+            eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, it.button.label, this)
+        }
+    }
+
+    /**
+     * Send chat upwards using the event manager so other classes can intercept
+     */
+    private fun sendChatUpwards(json: String) {
+        Gson().fromJson(json, Message::class.java).also {
+            if(activeChannel?.chat != it.chatId) return
+            if(searchAndSendCommand(it)) return
+            val data = TTSBaseComponent.TTSObject(
+                it.message,
+                1.0f,
+                it.sender,
+                false,
+                false,
+                true,
+                it.badges.contains("owner"),
+                message_id = it.id
+            )
+            eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.TTS, EVENT_MAIN, data, this))
+        }.also {
+            //TODO store in local database?
+        }
+    }
+
+    private fun searchAndSendCommand(message: Message) : Boolean{
+        if(message.badges.contains("owner") && message.message.startsWith(".")){
+            //TODO
+        }
+        return false
+    }
+
+    private fun verifyAndSubToChannel(json: String) {
+        serverInfo = Gson().fromJson(json, RobotServerInfo::class.java).also { serverInfo ->
+            for (channel in serverInfo.channels) {
+                if(channel.id != activeChannelId) continue
+                activeChannel = channel
+            }
+            activeChannel?.apply {
+                socket?.let { _socket ->
+                    sendMessage(_socket, "JOIN_CHANNEL", id)
+                    sendMessage(_socket, "GET_CHAT", chat)
+                }
+            }
+        }
+    }
+
+    private fun sendChannelsRequest(json : String) {
+        val jsonObject = JSONObject(json)
+        val host = jsonObject.getString("host")
+        val str = "{\"e\":\"GET_CHANNELS\",\"d\":{\"server_id\":\"$host\"}}"
+        socket?.send(str)
+    }
+
+    private fun sendHandshakeAuth() {
+        val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
+        socket?.send(json)
     }
 
     companion object{
