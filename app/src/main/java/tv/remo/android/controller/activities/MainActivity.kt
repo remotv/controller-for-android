@@ -13,6 +13,7 @@ import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.components.AudioComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
+import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
@@ -103,6 +104,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     "http://dev.remo.tv:1567/transmit?name=$channel-video",
                     "http://dev.remo.tv:1567/transmit?name=$channel-audio"
                     ,deviceInfo = CameraDeviceInfo.fromCamera(0)
+                    ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
                 )
                 streamInfo.addToExistingBundle(this)
             }
