@@ -42,7 +42,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val microphoneBitrate = StringPref(context, sharedPreferences, R.string.micAudioBitrateKey, "64")
 
     //tts related settings
-    val textToSpeedEnabled = BooleanPref(context, sharedPreferences, R.string.audioSettingsEnableKey, false)
+    val textToSpeechEnabled = BooleanPref(context, sharedPreferences, R.string.audioSettingsEnableKey, false)
     val siteTextToSpeechEnabled = BooleanPref(context, sharedPreferences, R.string.audioSettingsTTSRemoEnabledKey, false)
     val ttsWhenUserBannedEnabled = BooleanPref(context, sharedPreferences, R.string.audioBanVoiceEnabledKey, false)
     val ttsInternalEnabled = BooleanPref(context, sharedPreferences, R.string.audioTTSInternalEnabledKey, false)
