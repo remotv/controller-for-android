@@ -3,11 +3,14 @@ package tv.remo.android.controller.sdk.components
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.Gson
 import okhttp3.*
 import okio.ByteString
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.json.JSONObject
+import tv.remo.android.controller.sdk.models.api.Channel
+import tv.remo.android.controller.sdk.models.api.RobotServerInfo
 
 /**
  * Remo Socket component
@@ -17,14 +20,14 @@ import org.json.JSONObject
 class RemoSocketComponent : Component() {
     private var socket: WebSocket? = null
     var apiKey : String? = null
-    var channelId : String? = null
+    var activeChannelId : String? = null
     val request = Request.Builder().url("ws://dev.remo.tv:3231/").build()
     val client = OkHttpClient()
 
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
         apiKey = bundle?.getString(API_TOKEN_BUNDLE_KEY)
-        channelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
+        activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
         apiKey?: throw Exception("api key not found")
     }
 
@@ -52,13 +55,24 @@ class RemoSocketComponent : Component() {
                 super.onMessage(webSocket, text)
                 val jsonObject = JSONObject(text)
                 Log.d("TAG","Validated JSON")
+
                 if(jsonObject["e"] == "ROBOT_VALIDATED"){
                     val host = jsonObject.getJSONObject("d")["host"] as String
                     val str = "{\"e\":\"GET_CHANNELS\",\"d\":{\"server_id\":\"$host\"}}"
                     webSocket.send(str)
                 }
                 if(jsonObject["e"] == "SEND_ROBOT_SERVER_INFO"){
-                    //sendMessage(webSocket, "JOIN_CHANNEL", channelId?:"") //TODO grab first one if channel ID not found
+                    val serverInfo = Gson().fromJson(jsonObject.getJSONObject("d").toString(),
+                        RobotServerInfo::class.java)
+                    var activeChannel : Channel? = null
+                    for (channel in serverInfo.channels) {
+                        if(channel.id != activeChannelId) continue
+                        activeChannel = channel
+                    }
+                    activeChannel?.apply {
+                        sendMessage(webSocket, "JOIN_CHANNEL", id)
+                        sendMessage(webSocket, "GET_CHAT", chat)
+                    }
                     //sendMessage(webSocket, "GET_CHAT", chat)
                 }
             }
