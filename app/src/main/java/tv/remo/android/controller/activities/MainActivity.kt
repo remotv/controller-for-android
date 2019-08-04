@@ -19,6 +19,7 @@ import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import org.btelman.controlsdk.viewModels.ControlSDKViewModel
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -32,10 +33,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         settingsButton.setOnClickListener(this)
 
         controlSDKViewModel = ControlSDKViewModel.getObject(this)
+        controlSDKViewModel?.setStatusObserver(this, operationObserver)
         controlSDKViewModel?.setServiceBoundListener(this){ connected ->
             powerButton.isEnabled = connected == Operation.OK
         }
-        controlSDKViewModel?.setStatusObserver(this, operationObserver)
         createComponentHolders()
         powerButton?.setOnClickListener(this)
     }
@@ -124,6 +125,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val hardwareComponent = ComponentHolder(HardwareComponent::class.java, hardwareBundle)
                 arrayList.add(hardwareComponent)
             }
+            arrayList.add(ComponentHolder(HardwareWatchdogComponent::class.java, null))
         }
     }
 
