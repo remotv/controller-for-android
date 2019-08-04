@@ -8,20 +8,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
-import org.btelman.controlsdk.hardware.components.HardwareComponent
-import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
-import org.btelman.controlsdk.streaming.components.AudioComponent
-import org.btelman.controlsdk.streaming.components.VideoComponent
-import org.btelman.controlsdk.streaming.enums.Orientation
-import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
-import org.btelman.controlsdk.streaming.models.StreamInfo
-import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import org.btelman.controlsdk.viewModels.ControlSDKViewModel
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
-import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var recording = false
@@ -88,46 +79,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun createComponentHolders() {
         RemoSettingsUtil.with(this){ settings ->
-
-            val remoSocket = ComponentHolder(RemoSocketComponent::class.java,
-                RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
-            arrayList.add(remoSocket)
-
-            if(settings.textToSpeechEnabled.getPref()){
-                val tts = ComponentHolder(SystemDefaultTTSComponent::class.java, null)
-                arrayList.add(tts)
-            }
-
-            val steamingBundle = Bundle().apply {
-                val channel = settings.channelId.getPref()
-                val streamInfo = StreamInfo(
-                    "http://dev.remo.tv:1567/transmit?name=$channel-video",
-                    "http://dev.remo.tv:1567/transmit?name=$channel-audio"
-                    ,deviceInfo = CameraDeviceInfo.fromCamera(0)
-                    ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
-                )
-                streamInfo.addToExistingBundle(this)
-            }
-
-            if(settings.cameraEnabled.getPref()){
-                val videoComponent = ComponentHolder(VideoComponent::class.java, steamingBundle)
-                arrayList.add(videoComponent)
-            }
-
-            if(settings.microphoneEnabled.getPref()){
-                val audioComponent = ComponentHolder(AudioComponent::class.java, steamingBundle)
-                arrayList.add(audioComponent)
-            }
-
-            if(settings.robotSettingsEnable.getPref()){
-                val hardwareBundle = Bundle().apply {
-                    putSerializable(HardwareDriver.BUNDLE_ID, settings.robotCommunicationDriver.getPref())
-                    putSerializable(HardwareComponent.HARDWARE_TRANSLATOR_BUNDLE_ID, settings.robotProtocolTranslator.getPref())
-                }
-                val hardwareComponent = ComponentHolder(HardwareComponent::class.java, hardwareBundle)
-                arrayList.add(hardwareComponent)
-            }
-            arrayList.add(ComponentHolder(HardwareWatchdogComponent::class.java, null))
+            arrayList.add(ComponentBuilderUtil.createSocketComponent(settings))
+            arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
+            arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
+            arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
         }
     }
 
