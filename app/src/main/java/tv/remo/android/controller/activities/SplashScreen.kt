@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import org.btelman.controlsdk.hardware.interfaces.DriverComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
+import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
 
@@ -53,7 +55,7 @@ class SplashScreen : FragmentActivity() {
         if(!checkPermissions()){
             return
         }
-        /*//Setup device. break out if not setup, or if error occurred
+        //Setup device. break out if not setup, or if error occurred
         setupDevice()?.let {
             if(!it){
                 //setup not complete
@@ -63,7 +65,7 @@ class SplashScreen : FragmentActivity() {
             //Something really bad happened here. Not sure how we continue
             setupError()
             return
-        }*/
+        }
         //All checks are done. Lets startup the activity!
         ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, ControlSDKService::class.java))
         startActivity(MainActivity.getIntent(this))
@@ -85,27 +87,27 @@ class SplashScreen : FragmentActivity() {
     private var pendingRequestCode: Int = -1
 
     private fun setupDevice(): Boolean? {
-//        val commType = LRPreferences.INSTANCE.communication.value as? CommunicationType //TODO
-//        commType?.let {
-//            val clazz = it.getInstantiatedClass
-//            clazz?.let {
-//                return if(it.needsSetup(this)){
-//                    val tmpCode = it.setupComponent(this)
-//                    //Sometimes we still need setup without a UI. Will return -1 if that is the case
-//                    if(tmpCode == -1){
-//                        true
-//                    }
-//                    else{
-//                        pendingRequestCode = tmpCode
-//                        pendingDeviceSetup = it
-//                        false
-//                    }
-//                } else{
-//                    true
-//                }
-//            }
-//        }
-        return null
+        var setupDone = true
+        RemoSettingsUtil.with(this){
+            it.robotCommunicationDriver.getPref().also {driver ->
+                if(driver.getAnnotation(DriverComponent::class.java)?.requiresSetup == false)
+                    return@with
+                val clazz = driver.newInstance() as HardwareDriver
+                clazz.let { driverClass ->
+                    if(driverClass.needsSetup(this)){
+                        val tmpCode = driverClass.setupComponent(this)
+                        //Sometimes we still need setup without a UI. Will return -1 if that is the case
+                        if(tmpCode != -1){
+                            pendingRequestCode = tmpCode
+                            pendingDeviceSetup = driverClass
+                            setupDone = false
+                        }
+                    }
+                }
+            }
+        }
+        //TODO translator setup
+        return setupDone
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
