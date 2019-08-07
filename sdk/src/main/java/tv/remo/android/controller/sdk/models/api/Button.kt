@@ -9,5 +9,7 @@ data class Button(
     @SerializedName("id")
     val id: String,
     @SerializedName("label")
-    val label: String
+    val label: String,
+    @SerializedName("command")
+    val command: String
 )
