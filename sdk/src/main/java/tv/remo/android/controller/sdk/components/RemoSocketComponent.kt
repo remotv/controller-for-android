@@ -77,7 +77,7 @@ class RemoSocketComponent : Component() {
 
     private fun sendCommandUpwards(it: String) {
         Gson().fromJson(it, RobotCommand::class.java).also {
-            eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, it.button.label, this)
+            eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, it.button.command, this)
         }
     }
 
