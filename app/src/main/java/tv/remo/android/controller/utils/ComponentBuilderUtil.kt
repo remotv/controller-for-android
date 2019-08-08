@@ -48,7 +48,7 @@ object ComponentBuilderUtil {
             val streamInfo = StreamInfo(
                 "http://dev.remo.tv:1567/transmit?name=$channel-video",
                 "http://dev.remo.tv:1567/transmit?name=$channel-audio"
-                ,deviceInfo = CameraDeviceInfo.fromCamera(0)
+                ,deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref())
                 ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
             )
             streamInfo.addToExistingBundle(this)

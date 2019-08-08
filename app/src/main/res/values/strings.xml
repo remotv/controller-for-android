@@ -47,6 +47,7 @@
 
     <!--Camera-->
     <string name="cameraSettingsTitle">Camera</string>
+    <string name="cameraDeviceIdTitle">Camera Device ID (0 is back)</string>
     <string name="cameraSettingsSummary">Resolution, Orientation, Bitrate</string>
     <string name="cameraResolutionTitle">Resolution</string>
     <string name="cameraOrientationTitle">Orientation</string>

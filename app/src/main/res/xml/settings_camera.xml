@@ -4,36 +4,44 @@
     <PreferenceCategory
         app:key="@string/cameraSettingsGeneralGroupKey"
         app:title="@string/generalSettings">
-    <SwitchPreferenceCompat
-        app:key="@string/useCamera2"
-        app:defaultValue="@string/camera2supported"
-        app:enabled="@string/camera2supported"
-        app:title="@string/camera2EnabledTitle"
-        app:summary="@string/camera2EnabledSummary"/>
-    <androidx.preference.ListPreference
-        app:key="@string/cameraResolutionKey"
-        app:dependency="@string/useCamera2"
-        app:title="@string/cameraResolutionTitle"
-        app:defaultValue="640x480"
-        app:useSimpleSummaryProvider="true"
-        app:entries="@array/resolution_pref_list"
-        app:entryValues="@array/resolution_pref_list"/>
+        <SwitchPreferenceCompat
+            app:key="@string/useCamera2"
+            app:defaultValue="@string/camera2supported"
+            app:enabled="@string/camera2supported"
+            app:title="@string/camera2EnabledTitle"
+            app:summary="@string/camera2EnabledSummary"/>
+        <androidx.preference.ListPreference
+            app:key="@string/cameraResolutionKey"
+            app:dependency="@string/useCamera2"
+            app:title="@string/cameraResolutionTitle"
+            app:defaultValue="640x480"
+            app:useSimpleSummaryProvider="true"
+            app:entries="@array/resolution_pref_list"
+            app:entryValues="@array/resolution_pref_list"/>
 
-    <androidx.preference.ListPreference
-        app:key="@string/cameraOrientationKey"
-        app:title="@string/cameraOrientationTitle"
-        app:useSimpleSummaryProvider="true"
-        app:defaultValue="DIR_90"
-        app:entries="@array/orientation_pref_list"
-        app:entryValues="@array/orientation_pref_list_values"/>
+        <androidx.preference.ListPreference
+            app:key="@string/cameraOrientationKey"
+            app:title="@string/cameraOrientationTitle"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="DIR_90"
+            app:entries="@array/orientation_pref_list"
+            app:entryValues="@array/orientation_pref_list_values"/>
 
-    <androidx.preference.ListPreference
-        app:key="@string/cameraBitrateKey"
-        app:title="@string/bitrate"
-        app:useSimpleSummaryProvider="true"
-        app:defaultValue="1024"
-        app:entries="@array/bitrate_video_list"
-        app:entryValues="@array/bitrate_video_list_values"/>
+        <androidx.preference.ListPreference
+            app:key="@string/cameraBitrateKey"
+            app:title="@string/bitrate"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="1024"
+            app:entries="@array/bitrate_video_list"
+            app:entryValues="@array/bitrate_video_list_values"/>
+
+        <androidx.preference.ListPreference
+                app:key="@string/cameraDeviceIdKey"
+                app:title="@string/cameraDeviceIdTitle"
+                app:defaultValue="0"
+                app:useSimpleSummaryProvider="true"
+                app:entries="@array/camera_devices_pref_list"
+                app:entryValues="@array/camera_devices_pref_list"/>
     </PreferenceCategory>
     <!--TODO Settings V2-->
     <!--<PreferenceCategory-->
@@ -51,5 +59,4 @@
             <!--app:useSimpleSummaryProvider="true"-->
             <!--app:isPreferenceVisible="true"/>-->
     <!--</PreferenceCategory>-->
-
 </androidx.preference.PreferenceScreen>
