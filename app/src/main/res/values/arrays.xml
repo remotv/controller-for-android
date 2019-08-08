@@ -28,10 +28,10 @@
     </string-array>
 
     <string-array name="orientation_pref_list_values">
-        <item>DIR_180</item>
+        <item>DIR_0</item>
         <item>DIR_90</item>
         <item>DIR_270</item>
-        <item>DIR_0</item>
+        <item>DIR_180</item>
     </string-array>
 
     <string-array name="bitrate_video_list_values">
