@@ -8,6 +8,7 @@ import org.btelman.controlsdk.hardware.drivers.FelhrUsbSerialDriver
 import org.btelman.controlsdk.hardware.translators.ArduinoTranslator
 import tv.remo.android.controller.sdk.models.BooleanPref
 import tv.remo.android.controller.sdk.models.ClassPref
+import tv.remo.android.controller.sdk.models.IntPref
 import tv.remo.android.controller.sdk.models.StringPref
 
 /**
@@ -33,6 +34,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val cameraEnabled = BooleanPref(context, sharedPreferences, R.string.cameraSettingsEnableKey, false)
     val cameraResolution = StringPref(context, sharedPreferences, R.string.cameraResolutionKey, "640x480")
     val cameraOrientation = StringPref(context, sharedPreferences, R.string.cameraOrientationKey, "DIR_90")
+    val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0)
     val cameraBitrate = StringPref(context, sharedPreferences, R.string.cameraBitrateKey, "1024")
     val useCamera2 = BooleanPref(context, sharedPreferences, R.string.useCamera2, Build.VERSION.SDK_INT >= 21)
 
