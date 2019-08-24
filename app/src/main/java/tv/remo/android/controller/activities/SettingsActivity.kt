@@ -27,7 +27,6 @@ class SettingsActivity : AppCompatActivity(), NavController.OnDestinationChanged
         if(destination.id == R.id.settingsEntryFragment){
             if(!first){
                 startActivity(Intent(this, SplashScreen::class.java))
-                finish()
             }
             first = false
         }

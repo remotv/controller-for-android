@@ -8,8 +8,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
+import org.btelman.controlsdk.interfaces.ControlSdkApi
 import org.btelman.controlsdk.models.ComponentHolder
-import org.btelman.controlsdk.viewModels.ControlSDKViewModel
+import org.btelman.controlsdk.services.ControlSDKServiceConnection
+import org.btelman.controlsdk.services.observeAutoCreate
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.utils.ComponentBuilderUtil
@@ -17,18 +19,19 @@ import tv.remo.android.controller.utils.ComponentBuilderUtil
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var recording = false
     private val arrayList = ArrayList<ComponentHolder<*>>()
-    private var controlSDKViewModel: ControlSDKViewModel? = null
+    private var controlSDKServiceApi: ControlSdkApi? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         settingsButton.setOnClickListener(this)
 
-        controlSDKViewModel = ControlSDKViewModel.getObject(this)
-        controlSDKViewModel?.setStatusObserver(this, operationObserver)
-        controlSDKViewModel?.setServiceBoundListener(this){ connected ->
+        controlSDKServiceApi = ControlSDKServiceConnection.getNewInstance(this)
+        controlSDKServiceApi?.getServiceStateObserver()?.observeAutoCreate(this, operationObserver)
+        controlSDKServiceApi?.getServiceBoundObserver()?.observeAutoCreate(this){ connected ->
             powerButton.isEnabled = connected == Operation.OK
         }
+        controlSDKServiceApi?.connectToService()
         createComponentHolders()
         powerButton?.setOnClickListener(this)
     }
@@ -53,25 +56,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun launchSettings() {
-        controlSDKViewModel?.api?.disable()
+        controlSDKServiceApi?.disable()
         startActivity(SettingsActivity.getIntent(this))
         finish()
     }
 
     private fun powerCycle() {
-        when(controlSDKViewModel?.api?.getServiceStateObserver()?.value){
+        when(controlSDKServiceApi?.getServiceStateObserver()?.value){
             Operation.NOT_OK -> {
                 arrayList.forEach {
-                    controlSDKViewModel?.api?.attachToLifecycle(it)
+                    controlSDKServiceApi?.attachToLifecycle(it)
                 }
-                controlSDKViewModel?.api?.enable()
+                controlSDKServiceApi?.enable()
             }
             Operation.LOADING -> {} //do nothing
             Operation.OK -> {
                 arrayList.forEach {
-                    controlSDKViewModel?.api?.detachFromLifecycle(it)
+                    controlSDKServiceApi?.detachFromLifecycle(it)
                 }
-                controlSDKViewModel?.api?.disable()
+                controlSDKServiceApi?.disable()
             }
             null -> powerButton.setTextColor(parseColorForOperation(null))
         }
@@ -84,6 +87,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controlSDKServiceApi?.disconnectFromService()
     }
 
     companion object{
