@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         controlSDKServiceApi?.getServiceBoundObserver()?.observeAutoCreate(this){ connected ->
             powerButton.isEnabled = connected == Operation.OK
         }
+        controlSDKServiceApi?.connectToService()
         createComponentHolders()
         powerButton?.setOnClickListener(this)
     }
@@ -86,6 +87,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controlSDKServiceApi?.disconnectFromService()
     }
 
     companion object{
