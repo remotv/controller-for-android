@@ -1,5 +1,6 @@
 package tv.remo.android.controller.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -8,6 +9,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import org.btelman.controlsdk.hardware.drivers.BluetoothClassicDriver
 import org.btelman.controlsdk.hardware.interfaces.DriverComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
@@ -24,13 +26,21 @@ class SplashScreen : FragmentActivity() {
         setContentView(R.layout.activity_splash_screen)
 
         runOnUiThread{
-            /*if(LRPreferences.INSTANCE.robotId.value == "" ||
-                LRPreferences.INSTANCE.cameraId.value == "") {
+            var needsSetup = false
+            RemoSettingsUtil.with(this){ settings ->
+                needsSetup = settings.apiKey.let {
+                    it.defaultValue == it.getPref()
+                }
+                needsSetup = needsSetup && settings.channelId.let {
+                    it.defaultValue == it.getPref()
+                }
+            }
+            if(needsSetup){
+                Toast.makeText(this, "APIKey and Channel ID required to run", Toast.LENGTH_SHORT).show()
                 startSetup()
-                Toast.makeText(this, "RobotID or CameraId need to be setup!", Toast.LENGTH_SHORT).show()
-                return@runOnUiThread
-            }*/
-            next()
+            }
+            else
+                next()
         }
     }
 
@@ -160,19 +170,20 @@ class SplashScreen : FragmentActivity() {
 
     private fun getCurrentRequiredPermissions() : ArrayList<String> {
         val list = ArrayList<String>()
-//        val settings = LRPreferences.INSTANCE //TODO
-//        if(settings.micEnabled.value){
-//            list.add(Manifest.permission.RECORD_AUDIO)
-//        }
-//        if(settings.cameraEnabled.value){
-//            list.add(Manifest.permission.CAMERA)
-//        }
+        RemoSettingsUtil.with(this){
+            if(it.microphoneEnabled.getPref()){
+                list.add(Manifest.permission.RECORD_AUDIO)
+            }
+            if(it.cameraEnabled.getPref()){
+                list.add(Manifest.permission.CAMERA)
+            }
 
-//        //location permission required to scan for bluetooth device
-//        if(settings.communication.value == HardwareDriver.BluetoothClassic){
-//            list.add(Manifest.permission.ACCESS_COARSE_LOCATION)
-//            list.add(Manifest.permission.ACCESS_FINE_LOCATION)
-//        } //TODO
+            //location permission required to scan for bluetooth device
+            if(it.robotCommunicationDriver.getPref() == BluetoothClassicDriver::class.java){
+                list.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                list.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
         return list
     }
 }
