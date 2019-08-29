@@ -104,9 +104,18 @@ class RemoSocketComponent : Component() {
         }
     }
 
+    private fun String.startsWith(vararg prefix : String) : Boolean{
+        prefix.forEach {
+            if(it.startsWith(it, false)) return true
+        }
+        return false
+    }
+
     private fun searchAndSendCommand(message: Message) : Boolean{
-        if(message.badges.contains("owner") && message.message.startsWith(".")){
-            //TODO
+        if(message.badges.contains("owner") && message.message.startsWith(".", "/")){
+            eventDispatcher?.handleMessage(
+                ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN, message, this)
+            )
         }
         return false
     }
