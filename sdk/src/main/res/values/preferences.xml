@@ -40,4 +40,6 @@
 
     <string name="openSourceSettingsKey">openSource</string>
     <string name="feedbackSettingsKey">feedback</string>
+    <string name="internalCommandBlocking">internalCommandBlocking</string>
+    <string name="internalCommandsToBlock">internalCommandsBlockingArray</string>
 </resources>

@@ -29,6 +29,8 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
         FelhrUsbSerialDriver::class.java)
     val robotProtocolTranslator = ClassPref(context, sharedPreferences, R.string.robotProtocolTypeKey,
         ArduinoTranslator::class.java)
+    val useInternalCommandBlocking = BooleanPref(context, sharedPreferences, R.string.internalCommandBlocking, false)
+    val internalCommandsToBlock = StringPref(context, sharedPreferences, R.string.internalCommandsToBlock, "f,b,l,r")
 
     //Camera related settings
     val cameraEnabled = BooleanPref(context, sharedPreferences, R.string.cameraSettingsEnableKey, false)

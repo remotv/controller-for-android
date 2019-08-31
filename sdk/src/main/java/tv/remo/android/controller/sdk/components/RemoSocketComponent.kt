@@ -54,6 +54,13 @@ class RemoSocketComponent : Component() {
         return ComponentType.CUSTOM
     }
 
+    override fun handleExternalMessage(message: ComponentEventObject): Boolean {
+        if(message.type == ComponentType.CUSTOM && message.data is RemoSocketChatPacket){
+            sendChatMessage((message.data as RemoSocketChatPacket).data)
+        }
+        return super.handleExternalMessage(message)
+    }
+
     private fun subToSocketEvents(listener: SocketListener) {
         listener.on(SocketListener.ON_OPEN){
             sendHandshakeAuth()
@@ -77,7 +84,8 @@ class RemoSocketComponent : Component() {
 
     private fun sendCommandUpwards(it: String) {
         Gson().fromJson(it, RobotCommand::class.java).also {
-            eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, it.button.command, this)
+            eventDispatcher?.handleMessage(ComponentType.CUSTOM, EVENT_MAIN,
+                RemoCommandHandler.Packet(it.button.command, it.user), this)
         }
     }
 
@@ -114,10 +122,24 @@ class RemoSocketComponent : Component() {
     private fun searchAndSendCommand(message: Message) : Boolean{
         if(message.badges.contains("owner") && message.message.startsWith(".", "/")){
             eventDispatcher?.handleMessage(
-                ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN, message, this)
+                ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
+                    RemoCommandHandler.Packet(
+                        message.message, null, isModerator = true, isOwner = true
+                    ), this)
             )
+            return true
         }
         return false
+    }
+
+    private fun sendChatMessage(message : String){
+        val json = "{\"e\": \"ROBOT_MESSAGE_SENT\"," +
+                "         \"d\": {\"username\": \"bot\",\"message\": \"$message\"," +
+                "               \"chatId\": \"${activeChannel?.chat}\"," +
+                "               \"server_id\": \"${activeChannel?.hostId}\"" +
+                "        }" +
+                "    }"
+        socket?.send(json)
     }
 
     private fun verifyAndSubToChannel(json: String) {
@@ -125,6 +147,7 @@ class RemoSocketComponent : Component() {
             for (channel in serverInfo.channels) {
                 if(channel.id != activeChannelId) continue
                 activeChannel = channel
+                sendChatMessage("Robot connected. Commands cleared")
             }
             activeChannel?.apply {
                 socket?.let { _socket ->
@@ -146,6 +169,8 @@ class RemoSocketComponent : Component() {
         val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
         socket?.send(json)
     }
+
+    data class RemoSocketChatPacket(val data : String)
 
     companion object{
         const val API_TOKEN_BUNDLE_KEY = "API_TOKEN"
