@@ -22,6 +22,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     //Connection settings
     val apiKey = StringPref(context, sharedPreferences, R.string.connectionApiTokenKey, "")
     val channelId = StringPref(context, sharedPreferences, R.string.connectionChannelIdKey, "")
+    val serverOwner = StringPref(context, sharedPreferences, R.string.serverOwnerKey, "")
 
     //hardware related settings
     val robotSettingsEnable = BooleanPref(context, sharedPreferences, R.string.robotSettingsEnableKey, false)

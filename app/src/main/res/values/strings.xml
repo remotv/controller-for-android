@@ -109,5 +109,6 @@
     <string name="internalCommandBlockingSummary">App software handles stationary mode instead of the hardware.             If disabled we will send the command to the bot if possible</string>
     <string name="internalCommandBlockingTitle">Internal stationary mode</string>
     <string name="internalCommandsToBlockTitle">Commands to block (comma delimited list)</string>
+    <string name="serverOwnerTitle">Server owner username</string>
     <!--EndRegion-->
 </resources>
