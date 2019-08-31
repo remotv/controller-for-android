@@ -114,7 +114,7 @@ class RemoSocketComponent : Component() {
 
     private fun String.startsWith(vararg prefix : String) : Boolean{
         prefix.forEach {
-            if(it.startsWith(it, false)) return true
+            if(this.startsWith(it, false)) return true
         }
         return false
     }
