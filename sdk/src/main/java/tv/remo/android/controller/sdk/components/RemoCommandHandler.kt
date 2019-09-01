@@ -58,7 +58,13 @@ class RemoCommandHandler : Component(){
     private fun handleCommand(packet: Packet) {
         val command = packet.message
         when {
-            command == "/estop" -> exitProcess(0)
+            command == "/estop" -> {
+                sendHardwareCommand("stop")
+                exclusiveUser = ""
+                handler.postDelayed({
+                    exitProcess(0)
+                }, 500)
+            }
             command == "/stationary" -> handleStationary(packet)
             command == "/table on" -> handleStationary(packet, true)
             command == "/table off" -> handleStationary(packet, false)
@@ -103,6 +109,10 @@ class RemoCommandHandler : Component(){
             if(stationary && commandsToBlockWhenStationary.contains(command))
                 return
         }
+        sendHardwareCommand(command)
+    }
+
+    private fun sendHardwareCommand(command : String) {
         eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, command, this)
     }
 
