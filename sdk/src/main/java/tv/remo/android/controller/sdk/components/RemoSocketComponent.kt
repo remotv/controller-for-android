@@ -122,7 +122,8 @@ class RemoSocketComponent : Component() {
 
     private fun searchAndSendCommand(message: Message) : Boolean{
         //TODO get list of mods or users that have access to commands
-        if(message.badges.contains("owner") && message.message.startsWith(".", "/")){
+        if(message.message.startsWith(".", "/")){
+            if(!message.badges.contains("owner")) return true
             eventDispatcher?.handleMessage(
                 ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
                     RemoCommandHandler.Packet(
