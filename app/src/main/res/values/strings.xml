@@ -51,8 +51,10 @@
     <string name="cameraSettingsSummary">Resolution, Orientation, Bitrate</string>
     <string name="cameraResolutionTitle">Resolution</string>
     <string name="cameraOrientationTitle">Orientation</string>
-    <string name="camera2EnabledTitle">Use New Camera API</string>
-    <string name="camera2EnabledSummary">Use the Camera API introduced in Lollipop (21). Try disabling if device is not rendering fast enough. Locks the resolution to 640x480 when disabled</string>
+    <string name="camera2EnabledTitle">Use Camera2 API</string>
+    <string name="camera2EnabledSummary">Use the Camera API introduced in Android 5.0.0 (API21).
+        Try disabling if device is not rendering fast enough. Locks the resolution to 640x480 when disabled.
+        Disabled if device does not support it</string>
 
     <!--Microphone-->
     <string name="microphoneSettingsTitle">Microphone</string>

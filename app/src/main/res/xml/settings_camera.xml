@@ -7,7 +7,7 @@
         <SwitchPreferenceCompat
             app:key="@string/useCamera2"
             app:defaultValue="@string/camera2supported"
-            app:enabled="@string/camera2supported"
+            app:enabled="false"
             app:title="@string/camera2EnabledTitle"
             app:summary="@string/camera2EnabledSummary"/>
         <androidx.preference.ListPreference
@@ -18,7 +18,6 @@
             app:useSimpleSummaryProvider="true"
             app:entries="@array/resolution_pref_list"
             app:entryValues="@array/resolution_pref_list"/>
-
         <androidx.preference.ListPreference
             app:key="@string/cameraOrientationKey"
             app:title="@string/cameraOrientationTitle"
