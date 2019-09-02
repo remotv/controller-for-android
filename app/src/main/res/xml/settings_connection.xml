@@ -15,6 +15,12 @@
         app:useSimpleSummaryProvider="true"
         app:isPreferenceVisible="true"/>
 
+    <EditTextPreference
+            app:key="@string/serverOwnerKey"
+            app:title="@string/serverOwnerTitle"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="true"/>
+
     <!--TODO add option to find channel-->
     <!--TODO add option to test success-->
 </androidx.preference.PreferenceScreen>

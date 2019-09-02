@@ -12,6 +12,7 @@ import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
+import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 
 /**
@@ -29,6 +30,7 @@ object ComponentBuilderUtil {
             hardwareList.add(hardwareComponent)
             hardwareList.add(ComponentHolder(HardwareWatchdogComponent::class.java, null))
         }
+        hardwareList.add(ComponentHolder(RemoCommandHandler::class.java, null))
         return hardwareList
     }
 

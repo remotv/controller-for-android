@@ -9,4 +9,15 @@
         app:key="@string/robotProtocolTypeKey"
         app:title="@string/robotProtocolTypeTitle"
         app:useSimpleSummaryProvider="true"/>
+    <SwitchPreferenceCompat
+            app:key="@string/internalCommandBlocking"
+            app:defaultValue="false"
+            app:title="@string/internalCommandBlockingTitle"
+            app:summary="@string/internalCommandBlockingSummary"/>
+    <EditTextPreference
+            app:dependency="@string/internalCommandBlocking"
+            app:key="@string/internalCommandsToBlock"
+            app:defaultValue="f,b"
+            app:title="@string/internalCommandsToBlockTitle"
+            app:useSimpleSummaryProvider="true"/>
 </androidx.preference.PreferenceScreen>
