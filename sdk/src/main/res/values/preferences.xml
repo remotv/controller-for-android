@@ -43,4 +43,5 @@
     <string name="internalCommandBlocking">internalCommandBlockingKey</string>
     <string name="internalCommandsToBlock">internalCommandsBlockingArrayKey</string>
     <string name="serverOwnerKey">serverOwnerKey</string>
+    <string name="camera2features">camera2featuresKey</string>
 </resources>
