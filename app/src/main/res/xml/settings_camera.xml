@@ -4,12 +4,16 @@
     <PreferenceCategory
         app:key="@string/cameraSettingsGeneralGroupKey"
         app:title="@string/generalSettings">
+        <Preference
+                app:key="@string/camera2features"
+                app:isPreferenceVisible="false"
+                app:title="@string/camera2DisabledTitle"
+                app:summary="@string/camera2DisabledSummary"/>
         <SwitchPreferenceCompat
             app:key="@string/useCamera2"
             app:defaultValue="@string/camera2supported"
             app:enabled="false"
-            app:title="@string/camera2EnabledTitle"
-            app:summary="@string/camera2EnabledSummary"/>
+            app:isPreferenceVisible="false"/>
         <androidx.preference.ListPreference
             app:key="@string/cameraResolutionKey"
             app:dependency="@string/useCamera2"

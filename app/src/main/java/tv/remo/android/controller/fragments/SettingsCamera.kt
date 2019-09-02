@@ -4,6 +4,7 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
+import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
@@ -18,14 +19,11 @@ class SettingsCamera : BasePreferenceFragmentCompat(
                 RemoSettingsUtil.with(context!!){
                         val supportsCamera2 = validateCamera2Support(context!!,
                                 it.cameraDeviceId.getPref())
-                        val switchPref = findPreference<SwitchPreferenceCompat>(getString(R.string.useCamera2))
-                        if(!supportsCamera2){
-                                switchPref?.isChecked = false
-                                switchPref?.isEnabled = false
-                        }
-                        else{
-                                switchPref?.isEnabled = true
-                        }
+                        val disabledPref = findPreference<Preference>(getString(R.string.camera2features))
+                        disabledPref?.isVisible = !supportsCamera2
+                        val featureSwitch = findPreference<SwitchPreferenceCompat>(getString(R.string.useCamera2))
+                        featureSwitch?.isEnabled = supportsCamera2
+                        featureSwitch?.isChecked = supportsCamera2
                 }
         }
 

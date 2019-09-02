@@ -51,17 +51,14 @@
     <string name="cameraSettingsSummary">Resolution, Orientation, Bitrate</string>
     <string name="cameraResolutionTitle">Resolution</string>
     <string name="cameraOrientationTitle">Orientation</string>
-    <string name="camera2EnabledTitle">Use Camera2 API</string>
-    <string name="camera2EnabledSummary">Use the Camera API introduced in Android 5.0.0 (API21).
-        Try disabling if device is not rendering fast enough. Locks the resolution to 640x480 when disabled.
-        Disabled if device does not support it</string>
-
+    <string name="camera2DisabledTitle">Camera2 Disabled</string>
+    <string name="camera2DisabledSummary">Device is using legacy camera API.
+        Resolution is locked at 640x480. Disabled since device OS is below 5.0
+        or selected camera id does not support new camera api</string>
     <!--Microphone-->
     <string name="microphoneSettingsTitle">Microphone</string>
     <string name="microphoneSettingsSummary">Volume, Bitrate</string>
     <string name="micVolumeBoostTitle">Volume Boost</string>
-
-
     <!--Audio/Speaker-->
     <string name="audioSettingsTitle">Audio and Commands</string>
     <string name="audioSettingsSummary">Text to Speech, Device Volume, Commands</string>
