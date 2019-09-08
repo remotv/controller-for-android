@@ -15,6 +15,6 @@ class ClassPref(context : Context, sharedPreferences: SharedPreferences, resId: 
             Class.forName(clazz)
         }catch (e : ClassNotFoundException){
             defaultValue
-        } ?: defaultValue
+        }
     }
 }
