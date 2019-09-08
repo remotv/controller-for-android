@@ -24,6 +24,27 @@ class HardwareWatchdogComponent : Component() {
             when(message.what){
                 EVENT_MAIN -> {
                     resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
+                    resetTimeout()
                 }
             }
         }
