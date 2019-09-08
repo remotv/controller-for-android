@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -24,7 +26,7 @@ class SplashScreen : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-
+        detectIntentUpdateSettings(intent)
         runOnUiThread{
             var needsSetup = false
             RemoSettingsUtil.with(this){ settings ->
@@ -36,11 +38,29 @@ class SplashScreen : FragmentActivity() {
                 }
             }
             if(needsSetup){
-                Toast.makeText(this, "APIKey and Channel ID required to run", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    "APIKey and Channel ID required to run", Toast.LENGTH_SHORT).show()
                 startSetup()
             }
             else
                 next()
+        }
+    }
+
+    private fun detectIntentUpdateSettings(intent: Intent) {
+        Log.d("Splash", "A")
+        val tokenSettingsKey = getString(R.string.connectionApiTokenKey)
+        val channelIdSettingsKey = getString(R.string.connectionChannelIdKey)
+        val token = intent.getStringExtra(tokenSettingsKey)
+        val channelId = intent.getStringExtra(channelIdSettingsKey)
+        if(token != null && channelId != null){
+            Log.d("Splash", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            PreferenceManager.getDefaultSharedPreferences(applicationContext).edit().apply {
+                putString(channelIdSettingsKey, channelId)
+                putString(tokenSettingsKey, token)
+            }.apply()
+            Toast.makeText(this,
+                "APIKey and Channel ID updated", Toast.LENGTH_SHORT).show()
         }
     }
 
