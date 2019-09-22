@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="camera_devices_pref_list">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="resolution_pref_list">
+        <item>640x480</item>
+        <item>768x432</item>
+        <item>1280x720</item>
+    </string-array>
+    <string-array name="orientation_pref_list">
+        <item>Portrait</item>
+        <item>Landscape Right</item>
+        <item>Landscape Left</item>
+        <item>Reverse Portrait</item>
+    </string-array>
+
+    <string-array name="orientation_pref_list_values">
+        <item>DIR_0</item>
+        <item>DIR_90</item>
+        <item>DIR_270</item>
+        <item>DIR_180</item>
+    </string-array>
+
+    <string-array name="bitrate_video_list_values">
+        <item>512</item>
+        <item>768</item>
+        <item>1024</item>
+        <item>1536</item>
+        <item>2048</item>
+    </string-array>
+
+    <string-array name="bitrate_video_list">
+        <item>512 kb/s</item>
+        <item>768 kb/s</item>
+        <item>1024 kb/s</item>
+        <item>1536 kb/s</item>
+        <item>2048 kb/s</item>
+    </string-array>
+
+    <string-array name="bitrate_audio_list_values">
+        <item>32</item>
+        <item>64</item>
+        <item>128</item>
+    </string-array>
+
+    <string-array name="bitrate_audio_list">
+        <item>32 kb/s</item>
+        <item>64 kb/s</item>
+        <item>128 kb/s</item>
+    </string-array>
+
+    <string-array name="volume_mic_list_values">
+        <item>.25</item>
+        <item>.5</item>
+        <item>.75</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="volume_mic_list">
+        <item>1/4X</item>
+        <item>1/2X</item>
+        <item>3/4X</item>
+        <item>1X</item>
+        <item>2X</item>
+        <item>3X</item>
+        <item>4X</item>
+    </string-array>
+</resources>

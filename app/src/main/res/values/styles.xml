@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Switch" parent="Widget.AppCompat.CompoundButton.Switch" />
+
+    <style name="AppTheme.SwitchBar">
+        <item name="switchBarMarginStart">70dp</item>
+        <item name="switchBarMarginEnd">16dp</item>
+        <item name="switchBarBackgroundColor">@color/switchBarThumbColor</item>
+        <item name="switchBarBackgroundActivatedColor">@color/switchBarThumbColor</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>

@@ -1,0 +1,57 @@
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/settings">
+    <Preference
+        app:icon="@drawable/ic_public_black_24dp"
+        app:key="@string/connectionSettingsKey"
+        app:title="@string/connectionSettingsTitle"
+        app:summary="@string/connectionSettingsSummary">
+    </Preference>
+
+    <tv.remo.android.settingsutil.preferences.MasterSwitchPreference
+        app:icon="@drawable/ic_developer_board_black_32dp"
+        app:key="@string/robotSettingsEnableKey"
+        app:title="@string/robotSettingsTitle"
+        app:summary="@string/robotSettingsSummary"/>
+
+    <tv.remo.android.settingsutil.preferences.MasterSwitchPreference
+        app:icon="@drawable/ic_camera_alt_black_24dp"
+        app:key="@string/cameraSettingsEnableKey"
+        app:title="@string/cameraSettingsTitle"
+        app:summary="@string/cameraSettingsSummary"/>
+
+
+    <tv.remo.android.settingsutil.preferences.MasterSwitchPreference
+        app:icon="@drawable/ic_mic_black_32dp"
+        app:key="@string/microphoneSettingsEnableKey"
+        app:title="@string/microphoneSettingsTitle"
+        app:summary="@string/microphoneSettingsSummary"/>
+
+    <tv.remo.android.settingsutil.preferences.MasterSwitchPreference
+        app:icon="@drawable/ic_volume_up_black_24dp"
+        app:key="@string/audioSettingsEnableKey"
+        app:title="@string/audioSettingsTitle"
+        app:summary="@string/audioSettingsSummary"/>
+
+    <Preference
+        app:icon="@drawable/ic_phone_android_black_24dp"
+        app:key="@string/displaySettingsKey"
+        app:title="@string/displaySettingsTitle"
+        app:summary="@string/displaySettingsSummary">
+    </Preference>
+
+    <Preference
+        app:key="@string/openSourceSettingsKey"
+        app:title="@string/openSourceSettingsTitle">
+    </Preference>
+
+    <Preference
+        app:key="@string/feedbackSettingsKey"
+        app:title="@string/feedbackSettingsTitle"
+        app:summary="@string/feedbackSettingsSummary">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="https://github.com/remotv/controller-for-android/issues" />
+    </Preference>
+
+</androidx.preference.PreferenceScreen>

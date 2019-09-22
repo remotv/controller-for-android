@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/ff37faef91984f7cf420/maintainability)](https://codeclimate.com/github/remotv/controller-for-android/maintainability)
+
 # controller-for-android
 remo.tv open source software for pairing your Android powered robot with our site. http://dev.remo.tv:5000/
 
@@ -207,7 +209,3 @@ Feel free to add your device to this list if you have tested it via a pull reque
 
 
 This software uses code of <a href=http://ffmpeg.org>FFmpeg</a> licensed under the <a href=http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>LGPLv2.1</a> and its source can be downloaded <a href=https://github.com/btelman96/ffmpeg-android-java>here</a>
-
-
-
-

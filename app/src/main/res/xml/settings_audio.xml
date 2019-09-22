@@ -1,0 +1,48 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/audioSettingsTitle">
+
+    <PreferenceCategory
+        app:key="@string/audioSettingsTTSGroupKey"
+        app:title="@string/textToSpeech">
+        <SwitchPreferenceCompat
+            app:key="@string/audioSettingsTTSRemoEnabledKey"
+            app:defaultValue="true"
+            app:title="@string/audioSettingsTTSRemoEnabledTitle"
+            app:summary="@string/audioSettingsTTSRemoEnabledSummary"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/audioGenericTTSCategoryKey"
+        app:title="@string/generalSettings">
+        <SwitchPreferenceCompat
+            app:key="@string/audioTTSInternalEnabledKey"
+            app:defaultValue="true"
+            app:title="@string/audioInternalTTSTitle"
+            app:summary="@string/audioInternalTTSSummary"/>
+
+        <SwitchPreferenceCompat
+            app:key="@string/audioBanVoiceEnabledKey"
+            app:title="@string/audioBanVoiceTitle"
+            app:dependency="@string/audioTTSInternalEnabledKey"
+            app:summary="@string/audioBanVoiceSummary"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="@string/audioSystemSettingsGroupKey"
+        app:title="@string/systemSettingsTitle">
+        <Preference
+            app:key="@string/audioVolumeSystemSettingsKey"
+            app:title="@string/audioSystemSoundSettingsTitle"
+            app:summary="@string/audioSystemSoundSettingsSummary">
+            <intent android:action="android.settings.SOUND_SETTINGS"/>
+        </Preference>
+
+        <Preference
+            app:key="@string/audioTTSSystemSettingsKey"
+            app:title="@string/audioSystemTTSSettingsTitle"
+            app:summary="@string/audioSystemTTSSettingsSummary">
+            <intent android:action="com.android.settings.TTS_SETTINGS"/>
+        </Preference>
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
