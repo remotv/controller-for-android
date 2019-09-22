@@ -76,9 +76,9 @@ with settings that can be changed. Going into the connection section will bring 
 Only the owner can use this.
 Turns on table top mode, not allowing 'f' and 'b' commands, but allows everything else. Not case sensitive
 
-On: `.table on`
+On: `/table on`
 
-Off: `.table off`
+Off: `/table off`
 
 Toggle on and off: `/stationary`
 
@@ -94,8 +94,8 @@ The robot has to handle this command, unless set in the app settings to be handl
 #### Dev mode ####
 Only works if the owner is added to settings in the connection settings
 
-/devmode on: turn on devmode
-/devmode off: turn off devmode
+`/devmode on`: turn on devmode
+`/devmode off`: turn off devmode
  
 ### Ways to stop the robot:
  
