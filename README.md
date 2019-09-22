@@ -84,13 +84,6 @@ Toggle on and off: `/stationary`
 
 The robot has to handle this command, unless set in the app settings to be handled locally. The option exists for both since some hardware is not programmable, such as a sabertooth serial controller. In the case that the app controls it, the list of restricted controls are configurable as well
 
-#### Disable All Control ####
-Only the owner can use this.
-Disables all commands, even for the owner.
-
-Disable: '.motors off'
-Enable: '.motors on'
-
 #### Exclusive Control ####
 
 `/xcontrol user 60`: give user user control of robot for 60 seconds
