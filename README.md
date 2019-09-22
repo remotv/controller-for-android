@@ -36,7 +36,7 @@ The latest code, mostly stable, but might have issues. Sometimes this code may n
 
 # Setup
 
-## Robot and Camera Ids
+## Robot and API Key
 
 When the app is started, and permissions have been accepted (API > 23), a setup screen will pop up
 with settings that can be changed. Going into the connection section will bring you to an area where the API Key and channel ID can be pasted in.
