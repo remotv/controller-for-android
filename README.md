@@ -1,9 +1,12 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/ff37faef91984f7cf420/maintainability)](https://codeclimate.com/github/remotv/controller-for-android/maintainability)
 
+![](https://github.com/remotv/controller-for-android/workflows/.github/workflows/android.yml/badge.svg)
+![](https://github.com/remotv/controller-for-android/workflows/.github/workflows/deploy.yml/badge.svg)
+
 # controller-for-android
 remo.tv open source software for pairing your Android powered robot with our site. http://dev.remo.tv:5000/
 
-Currently under development. Not everything works at the moment
+Currently under development. Not everything works at the moment, such as volume boost or microphone bitrate
 
 # Development
 
@@ -11,7 +14,9 @@ Currently under development. Not everything works at the moment
 
 ### Android Studio
 
-- Version 3.4 or higher. May not be buildable on lower versions
+- Version 3.5 or higher. May not be buildable on lower versions
+- Android SDK (should be installed with Android Studio)
+- Java 7 or 8 JDK (might be installed with Android Studio)
 
 ## Branches
 
@@ -48,7 +53,7 @@ with settings that can be changed. Going into the connection section will bring 
 
 - Camera Hardware switch
 
-- Camera settings such as resolution, bitrate, and orientation
+- Camera settings such as resolution, bitrate, orientation, and front/back camera
 
 - Enable Microphone Toggle
 
@@ -73,9 +78,13 @@ with settings that can be changed. Going into the connection section will bring 
 Only the owner can use this.
 Turns on table top mode, not allowing 'f' and 'b' commands, but allows everything else. Not case sensitive
 
-On: '.table on'
+On: `.table on`
 
-Off: '.table off'
+Off: `.table off`
+
+Toggle on and off: `/stationary`
+
+The robot has to handle this command, unless set in the app settings to be handled locally. The option exists for both since some hardware is not programmable, such as a sabertooth serial controller. In the case that the app controls it, the list of restricted controls are configurable as well
 
 #### Disable All Control ####
 Only the owner can use this.
@@ -84,27 +93,29 @@ Disables all commands, even for the owner.
 Disable: '.motors off'
 Enable: '.motors on'
 
-#### Battery Level ####
-Only the owner can use this.
-'.battery level'
+#### Exclusive Control ####
 
-Robot says the phone battery level
-'Internal battery 80%'
+`/xcontrol user 60`: give user user control of robot for 60 seconds
+`/xcontrol ~ 60` (button): give user who pressed the button exclusive control for 60 seconds
+`/xcontrol user`: user user gets exclusive control indefinitely or until the robot reboots
+`/xcontrol off`: turn off exclusive control
 
-#### TTS Language ####
-'.locale en-US'
-Sets the locale of the TTS (System TTS Only)
+#### Dev mode ####
+Only works if the owner is added to settings in the connection settings
 
-Language must be installed for it to speak using it. This only changes the accent, and does not translate.
+/devmode on: turn on devmode
+/devmode off: turn off devmode
  
 ### Ways to stop the robot:
  
  - A notification will appear that states that the app is active. Use the "Terminate App" Button to 
  kill the app from anywhere
  
- - Hit the POWER button again when it is green to disable
+ - Hit the app's POWER button again when it is green to disable
  
  - Swipe app away from recents
+ 
+ - typing `/estop` in the chat. Will send a `stop` command to the hardware then kill the app forcibly
 
 ### App Permissions ###
 
@@ -120,19 +131,13 @@ Needed to stream the camera. Only requested if camera is enabled in settings
 
 Needed to stream the microphone. Only requested if the mic is enabled in settings
 
-#### Storage ####
-
-Required on some devices for importing a QR Code from a photo on the device. 
-Only requested when that feature is used
-
-### Troubleshooting issues
+### Troubleshooting issues (TODO)
 
 #### Flickering Camera and Microphone indicators
 
-Reload the robot page on LetsRobot.tv
+Reload the robot page on Remo.TV (May be unnecessary)
 
-Also check that the robotId, cameraId, and cameraPass match with the site. 
-If your camera password on the site is empty, your password is "hello"
+Also check that the api key, and channel id match with the site.
 
 #### Most indicators immediately go red
 
@@ -149,16 +154,11 @@ Check the phone's internet connection
 #### Robot turns off after some time if I turn the screen off ####
 This only applies to Android 6.0 and above
 
-- Go to the app settings and turn battery optimization off for this app
+- Go to the app settings and turn battery optimization off for this app (There is a shortcut for this in display settings in Remo app)
 
 ## Adding separate components
 
-Make a class that extends and implements methods of Component
-
-Then add to the Builder's externalComponents list
-
-See PlayAudioComponentExample.kt
-See MainRobotController.kt for an example of CustomComponentExample being added
+TODO
 
 ### Devices supported
  
@@ -174,7 +174,7 @@ See MainRobotController.kt for an example of CustomComponentExample being added
 
 ## Error reporting
 
-Errors do not get reported at the moment
+Errors do not get reported, but will show a notification on the device if a component fails
 
 # Some known issues
 
