@@ -1,6 +1,4 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/ff37faef91984f7cf420/maintainability)](https://codeclimate.com/github/remotv/controller-for-android/maintainability)
-
-[![Actions](https://github.com/remotv/controller-for-android/workflows/Android%20CI/badge.svg)]()
+[![Maintainability](https://api.codeclimate.com/v1/badges/ff37faef91984f7cf420/maintainability)](https://codeclimate.com/github/remotv/controller-for-android/maintainability)[![Actions](https://github.com/remotv/controller-for-android/workflows/Android%20CI/badge.svg)]()[![Deploy build](https://github.com/remotv/controller-for-android/workflows/Deploy%20build/badge.svg)]()
 
 
 # controller-for-android
