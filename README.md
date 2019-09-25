@@ -198,5 +198,9 @@ Feel free to add your device to this list if you have tested it via a pull reque
 
 - Samsung Galaxy J5 (tested with 768x432, 512kb/s)
 
+- Samsung Galaxy M20 (9 Pie)
+
+- Samsung Galaxy A90 (9 Pie)
+
 
 This software uses code of <a href=http://ffmpeg.org>FFmpeg</a> licensed under the <a href=http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>LGPLv2.1</a> and its source can be downloaded <a href=https://github.com/btelman96/ffmpeg-android-java>here</a>
