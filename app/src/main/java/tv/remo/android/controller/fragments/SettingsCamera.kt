@@ -4,6 +4,7 @@ import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
 import tv.remo.android.controller.R
@@ -24,6 +25,24 @@ class SettingsCamera : BasePreferenceFragmentCompat(
                         val featureSwitch = findPreference<SwitchPreferenceCompat>(getString(R.string.useCamera2))
                         featureSwitch?.isEnabled = supportsCamera2
                         featureSwitch?.isChecked = supportsCamera2
+                        listenAndReplaceIfEmpty(R.string.ffmpegOutputOptionsPrefsKey,
+                                R.string.ffmpegDefaultOutputOptions)
+                        listenAndReplaceIfEmpty(R.string.ffmpegInputOptionsPrefsKey,
+                                R.string.ffmpegDefaultInputOptions)
+                }
+        }
+
+        private fun listenAndReplaceIfEmpty(prefRes : Int, defaultValue : Int) {
+                findPreference<EditTextPreference>(getString(prefRes))
+                        ?.setOnPreferenceChangeListener { preference, newValue ->
+                        if(newValue.toString().isBlank()){
+                                (preference as EditTextPreference).text =
+                                        getString(defaultValue)
+                                false
+                        }
+                        else{
+                                true
+                        }
                 }
         }
 
