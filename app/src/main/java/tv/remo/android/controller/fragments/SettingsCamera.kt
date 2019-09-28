@@ -30,7 +30,7 @@ class SettingsCamera : BasePreferenceFragmentCompat(
                         listenAndReplaceIfEmpty(R.string.ffmpegInputOptionsPrefsKey,
                                 R.string.ffmpegDefaultInputOptions)
                         listenAndReplaceIfEmpty(R.string.ffmpegFilterAddition,
-                                R.string.ffmpegDefaultFilterOptions)
+                                R.string.ffmpegDefaultFilterOptions, true)
                 }
         }
 
