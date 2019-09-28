@@ -29,13 +29,15 @@ class SettingsCamera : BasePreferenceFragmentCompat(
                                 R.string.ffmpegDefaultOutputOptions)
                         listenAndReplaceIfEmpty(R.string.ffmpegInputOptionsPrefsKey,
                                 R.string.ffmpegDefaultInputOptions)
+                        listenAndReplaceIfEmpty(R.string.ffmpegFilterAddition,
+                                R.string.ffmpegDefaultFilterOptions)
                 }
         }
 
-        private fun listenAndReplaceIfEmpty(prefRes : Int, defaultValue : Int) {
+        private fun listenAndReplaceIfEmpty(prefRes : Int, defaultValue : Int, allowBlank : Boolean = false) {
                 findPreference<EditTextPreference>(getString(prefRes))
                         ?.setOnPreferenceChangeListener { preference, newValue ->
-                        if(newValue.toString().isBlank()){
+                        if(newValue.toString().isBlank() && !allowBlank || newValue.toString().isEmpty()){
                                 (preference as EditTextPreference).text =
                                         getString(defaultValue)
                                 false

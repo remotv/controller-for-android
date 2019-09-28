@@ -42,7 +42,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val useCamera2 = BooleanPref(context, sharedPreferences, R.string.useCamera2, Build.VERSION.SDK_INT >= 21)
 
     val cameraFFmpegFilterOptions = StringPref(context, sharedPreferences,
-        R.string.ffmpegFilterAddition, "")
+        R.string.ffmpegFilterAddition, context.getString(R.string.ffmpegDefaultFilterOptions))
     val ffmpegInputOptions = StringPref(context, sharedPreferences,
         R.string.ffmpegInputOptionsPrefsKey, context.getString(R.string.ffmpegDefaultInputOptions))
     val ffmpegOutputOptions = StringPref(context, sharedPreferences,

@@ -54,6 +54,7 @@
         <EditTextPreference
             app:key="@string/ffmpegFilterAddition"
             app:title="@string/ffmpegFilterTitle"
+            app:defaultValue="@string/ffmpegDefaultFilterOptions"
             app:useSimpleSummaryProvider="true"
             app:isPreferenceVisible="true"/>
         <EditTextPreference

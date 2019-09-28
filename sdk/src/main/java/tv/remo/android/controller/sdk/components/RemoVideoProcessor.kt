@@ -24,7 +24,8 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
                 filter = settings.cameraFFmpegFilterOptions.getPref()
             }
         }
-        return super.getFilterOptions(props)+filter //intentionally no space added.
+        filter.replace("\${internal}", super.getFilterOptions(props))
+        return filter
     }
 
     override fun getVideoInputOptions(props: StreamInfo): ArrayList<String> {
