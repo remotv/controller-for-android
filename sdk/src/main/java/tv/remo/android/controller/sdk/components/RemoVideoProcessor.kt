@@ -4,6 +4,7 @@ import android.content.Context
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.streaming.video.processors.FFmpegVideoProcessor
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.models.StringPref
 
 /**
  * More customized video processor that ties into the remo app better
@@ -29,35 +30,35 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
     }
 
     override fun getVideoInputOptions(props: StreamInfo): ArrayList<String> {
-        var command : ArrayList<String>? = null
-        RemoSettingsUtil.with(context!!){
-            it.ffmpegInputOptions.getPref().let {inputCommand ->
-                command = processCommand(inputCommand, props)
-                    ?: processCommand(it.ffmpegInputOptions.defaultValue, props)
-                    ?: throw IllegalArgumentException("Invalid input options")
-            }
+        return RemoSettingsUtil.with(context!!){
+            return@with getAndProcessPreference(it.ffmpegInputOptions, props)
         }
-        return command!!
     }
 
     override fun getVideoOutputOptions(props: StreamInfo): ArrayList<String> {
-        var command : ArrayList<String>? = null
-        RemoSettingsUtil.with(context!!){
-            it.ffmpegOutputOptions.getPref().let {outputCommand ->
-                command = processCommand(outputCommand, props)
-                    ?: processCommand(it.ffmpegOutputOptions.defaultValue, props)
-                    ?: throw IllegalArgumentException("Invalid output options")
-            }
+        return RemoSettingsUtil.with(context!!){
+            return@with getAndProcessPreference(it.ffmpegOutputOptions, props)
         }
-        return command!!
+    }
+
+    private fun getAndProcessPreference(options: StringPref, props: StreamInfo) : ArrayList<String>{
+        options.getPref().let { inputCommand ->
+            return processCommand(inputCommand, props)
+                //was not right, so lets just process the default
+                ?: processCommand(options.defaultValue, props)
+                        //default is also broken. Should never happen outside of development
+                        ?: throw IllegalArgumentException("Invalid options!")
+        }
     }
 
     /**
      * process command to replace with camera props
      */
     private fun processCommand(command: String?, props: StreamInfo): ArrayList<String>? {
-        if(command.isNullOrEmpty()) return null
+        if(command.isNullOrEmpty()) return null //nothing here, cannot use this command
         var processedCommand : String = command
+
+        //replace any defined variables that were wrapped in ${}
         props.apply {
             processedCommand = processedCommand.replace("\$width", "$width")
                 .replace("\${height}", "$height")
