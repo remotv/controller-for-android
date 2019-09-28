@@ -109,5 +109,8 @@
     <string name="internalCommandBlockingTitle">Internal stationary mode</string>
     <string name="internalCommandsToBlockTitle">Commands to block (comma delimited list)</string>
     <string name="serverOwnerTitle">Server owner username</string>
+    <string name="ffmpegFilterTitle">FFmpeg additional filters (no spaces!)</string>
+    <string name="ffmpegInputOptionsTitle">ffmpeg input options</string>
+    <string name="ffmpegOutputOptionsTitle">ffmpeg output options</string>
     <!--EndRegion-->
 </resources>

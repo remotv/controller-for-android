@@ -8,6 +8,7 @@
     <string name="robotConnectionTypeKey">robotConnectionType</string>
     <string name="robotProtocolTypeKey">robotProtocolType</string>
 
+    <string name="cameraDeviceIdKey">cameraDeviceId</string>
     <string name="cameraSettingsGeneralGroupKey">genericCameraSettingsGroupKey</string>
     <string name="cameraSettingsEnableKey">cameraSettingsEnable</string>
     <string name="cameraResolutionKey">cameraResolution</string>
@@ -45,4 +46,6 @@
     <string name="serverOwnerKey">serverOwnerKey</string>
     <string name="camera2features">camera2featuresKey</string>
     <string name="ffmpegFilterAddition">ffmpegVFPrefsKey</string>
+    <string name="ffmpegInputOptionsPrefsKey">ffmpegInputOptions</string>
+    <string name="ffmpegOutputOptionsPrefsKey">ffmpegOutputOptions</string>
 </resources>

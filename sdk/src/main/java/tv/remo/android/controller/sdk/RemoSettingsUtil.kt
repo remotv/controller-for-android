@@ -39,8 +39,14 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val cameraOrientation = StringPref(context, sharedPreferences, R.string.cameraOrientationKey, "DIR_90")
     val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0)
     val cameraBitrate = StringPref(context, sharedPreferences, R.string.cameraBitrateKey, "1024")
-    val cameraFFmpegFilterOptions = StringPref(context, sharedPreferences, R.string.ffmpegFilterAddition, "")
     val useCamera2 = BooleanPref(context, sharedPreferences, R.string.useCamera2, Build.VERSION.SDK_INT >= 21)
+
+    val cameraFFmpegFilterOptions = StringPref(context, sharedPreferences,
+        R.string.ffmpegFilterAddition, "")
+    val ffmpegInputOptions = StringPref(context, sharedPreferences,
+        R.string.ffmpegInputOptionsPrefsKey, context.getString(R.string.ffmpegDefaultInputOptions))
+    val ffmpegOutputOptions = StringPref(context, sharedPreferences,
+        R.string.ffmpegOutputOptionsPrefsKey, context.getString(R.string.ffmpegDefaultOutputOptions))
 
     //microphone related settings
     val microphoneEnabled = BooleanPref(context, sharedPreferences, R.string.microphoneSettingsEnableKey, false)

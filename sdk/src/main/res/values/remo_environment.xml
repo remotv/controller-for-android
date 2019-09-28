@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ffmpegDefaultInputOptions">
+        -f rawvideo -s ${resolution} -r 25 -pix_fmt nv21 -i ${inputStream}
+    </string>
+
+    <string name="ffmpegDefaultOutputOptions">
+        -f mpegts -framerate ${framerate} -codec:v mpeg1video ${bitrateflags} -bf 0
+    </string>
+
+    <!--TODO integrate with app-->
+    <string name="endpointHost">
+        http://dev.remo.tv:1567
+    </string>
+</resources>

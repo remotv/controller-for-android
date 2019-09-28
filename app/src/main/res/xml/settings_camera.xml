@@ -46,20 +46,27 @@
                 app:entries="@array/camera_devices_pref_list"
                 app:entryValues="@array/camera_devices_pref_list"/>
     </PreferenceCategory>
-    <!--TODO Settings V2-->
-    <!--<PreferenceCategory-->
-        <!--app:key="advanced"-->
-        <!--app:title="@string/advancedSettings"-->
-        <!--app:initialExpandedChildrenCount="0">-->
-        <!--<EditTextPreference-->
-            <!--app:key="ffmpegFilters"-->
-            <!--app:title="FFmpeg filters"-->
-            <!--app:useSimpleSummaryProvider="true"-->
-            <!--app:isPreferenceVisible="true"/>-->
-        <!--<EditTextPreference-->
-            <!--app:key="ffmpegInput"-->
-            <!--app:title="FFmpeg stream external url"-->
-            <!--app:useSimpleSummaryProvider="true"-->
-            <!--app:isPreferenceVisible="true"/>-->
-    <!--</PreferenceCategory>-->
+
+    <PreferenceCategory
+        app:key="advanced"
+        app:title="@string/advancedSettings"
+        app:initialExpandedChildrenCount="0">
+        <EditTextPreference
+            app:key="@string/ffmpegFilterAddition"
+            app:title="@string/ffmpegFilterTitle"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="true"/>
+        <EditTextPreference
+            app:key="@string/ffmpegInputOptionsPrefsKey"
+            app:title="@string/ffmpegInputOptionsTitle"
+            app:defaultValue="@string/ffmpegDefaultInputOptions"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="true"/>
+        <EditTextPreference
+                app:key="@string/ffmpegOutputOptionsPrefsKey"
+                app:defaultValue="@string/ffmpegDefaultOutputOptions"
+                app:title="@string/ffmpegOutputOptionsTitle"
+                app:useSimpleSummaryProvider="true"
+                app:isPreferenceVisible="true"/>
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
