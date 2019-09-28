@@ -164,7 +164,7 @@ Putting any of the following in the command fields except for filter options wil
 - `${endpoint}` : endpoint that the video will stream to. No need to put this in output options at the end, since that is already done
 - `${bitrateflags}` : Flags for bitrate, by default it replaces it with `-b ${bitrate}k -minrate ${bitrate}k -maxrate ${bitrate}k -bufsize ${bitrate/1.5}k"`
 
-For filter options, `${internal}` be replaced by the app filters, which by default is what handles the video orientation changes.
+For filter options, `${internal}` will be replaced by the app filters, which by default is what handles the video orientation changes.
 
 To reset to default settings, clear the field and hit submit. It will then replace it back with the stock command
 
