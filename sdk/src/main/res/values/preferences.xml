@@ -44,4 +44,5 @@
     <string name="internalCommandsToBlock">internalCommandsBlockingArrayKey</string>
     <string name="serverOwnerKey">serverOwnerKey</string>
     <string name="camera2features">camera2featuresKey</string>
+    <string name="ffmpegFilterAddition">ffmpegVFPrefsKey</string>
 </resources>
