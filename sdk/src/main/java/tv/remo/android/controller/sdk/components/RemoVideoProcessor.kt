@@ -25,7 +25,7 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
                 filter = settings.cameraFFmpegFilterOptions.getPref()
             }
         }
-        filter.replace("\${internal}", super.getFilterOptions(props))
+        filter = filter.replace("\${internal}", super.getFilterOptions(props))
         return filter
     }
 
