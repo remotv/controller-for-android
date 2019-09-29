@@ -7,6 +7,7 @@ import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.components.AudioComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.enums.Orientation
+import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
@@ -14,6 +15,7 @@ import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.components.RemoVideoProcessor
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -57,6 +59,8 @@ object ComponentBuilderUtil {
                 ,width = resolution[0].toInt()
                 ,height = resolution[1].toInt()
             )
+            //use our customized remo class
+            VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }
 

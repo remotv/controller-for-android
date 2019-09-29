@@ -147,6 +147,27 @@ This only applies to Android 6.0 and above
 
 - Go to the app settings and turn battery optimization off for this app (There is a shortcut for this in display settings in Remo app)
 
+## FFmpeg Customization ##
+
+In the camera app settings under advanced, there exist options to change values in ffmpeg to make it work differently.
+
+Smart replacement of options to prevent hardcoding
+
+Putting any of the following in the command fields except for filter options will be replaced with dynamic variables
+
+- `${height}` : will be replaced by height from settings
+- `${width}` : will be replaced by width from settings
+- `${resolution}` : will be replaced by resolution from settings, same as `${width}x${height}` 
+- `${framerate}` : will be replaced by the app's framerate variable, which is usually `30`
+- `${bitrate}` : will be replaced by video bitrate from settings
+- `${inputStream}` : stream that receives the camera frames. Usually just `-`
+- `${endpoint}` : endpoint that the video will stream to. No need to put this in output options at the end, since that is already done
+- `${bitrateflags}` : Flags for bitrate, by default it replaces it with `-b ${bitrate}k -minrate ${bitrate}k -maxrate ${bitrate}k -bufsize ${bitrate/1.5}k"`
+
+For filter options, `${internal}` will be replaced by the app filters, which by default is what handles the video orientation changes.
+
+To reset to default settings, clear the field and hit submit. It will then replace it back with the stock command
+
 ## Adding separate components
 
 TODO
