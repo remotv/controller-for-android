@@ -11,7 +11,7 @@ android {
         release {
             storeFile file("deploy.jks")
             storePassword System.getenv("KEY_PASS_RELEASE")
-            keyAlias System.getenv("KEY_ALIAS")
+            keyAlias System.getenv("KEY_ALIAS_RELEASE")
             keyPassword System.getenv("KEY_PASS_RELEASE")
         }
     }
