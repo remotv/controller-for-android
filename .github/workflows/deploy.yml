@@ -28,7 +28,9 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: Release.txt
+        files: |
+         Release.txt
+         app/build/outputs/apk/release/app-release-signed.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         KEY_ALIAS_RELEASE: ${{ secrets.KEY_ALIAS }}
