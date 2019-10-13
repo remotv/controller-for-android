@@ -16,8 +16,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Unzip Release Key
+      run: base64 -d ${{ secrets.SIGNING_KEY }} > deploy.jks
     - name: Build with Gradle
-      run: chmod a+x ./gradlew && ./gradlew build
+      run: chmod a+x ./gradlew && ./gradlew assembleRelease
     - name: Build
       run: echo ${{ github.sha }} > Release.txt
     - name: Test
@@ -29,3 +31,5 @@ jobs:
         files: Release.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        KEY_ALIAS_RELEASE: ${{ secrets.KEY_ALIAS }}
+        KEY_PASS_RELEASE: ${{ secrets.SIGNING_KEY_PASS }}
