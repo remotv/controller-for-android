@@ -2,9 +2,8 @@ name: Deploy build
 
 on:
   push:
-    #branches:
-    #- master
-    #- release/*
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
