@@ -9,7 +9,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("deploy.jks")
+            storeFile file("../deploy.jks")
             storePassword System.getenv("KEY_PASS_RELEASE")
             keyAlias System.getenv("KEY_ALIAS_RELEASE")
             keyPassword System.getenv("KEY_PASS_RELEASE")
