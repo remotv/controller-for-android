@@ -22,7 +22,7 @@ jobs:
       run: chmod a+x ./gradlew && ./gradlew assembleRelease
       env:
         KEY_ALIAS_RELEASE: ${{ secrets.KEY_ALIAS }}
-        KEY_PASS_RELEASE: ${{ secrets.KEY_PASS }}
+        KEY_PASS_RELEASE: ${{ secrets.SIGNING_KEY_PASS }}
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
