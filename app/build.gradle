@@ -6,6 +6,16 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
+
+    signingConfigs {
+        release {
+            storeFile file("../deploy.jks")
+            storePassword System.getenv("KEY_PASS_RELEASE")
+            keyAlias System.getenv("KEY_ALIAS_RELEASE")
+            keyPassword System.getenv("KEY_PASS_RELEASE")
+        }
+    }
+
     defaultConfig {
         applicationId "tv.remo.android.controller"
         minSdkVersion 16
@@ -16,6 +26,10 @@ android {
     }
     buildTypes {
         release {
+            if(System.getenv("KEY_ALIAS")){
+                signingConfig signingConfigs.release
+            }
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
