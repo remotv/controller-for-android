@@ -2,8 +2,8 @@ name: Deploy build
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    #tags:
+      #- 'v*.*.*'
 
 jobs:
   build:
