@@ -16,7 +16,6 @@ import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.RemoVideoProcessor
-import tv.remo.android.controller.sdk.utils.EndpointBuilder
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -49,11 +48,10 @@ object ComponentBuilderUtil {
     fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
         val steamingBundle = Bundle().apply {
-            val channel = settings.channelId.getPref()
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
-                EndpointBuilder.getVideoUrl(settings.context, channel),
-                EndpointBuilder.getAudioUrl(settings.context, channel)
+                settings.videoUrl
+                ,settings.audioUrl
                 ,deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref())
                 ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
                 ,bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512

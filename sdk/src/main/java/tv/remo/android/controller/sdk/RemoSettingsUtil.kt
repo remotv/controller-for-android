@@ -10,6 +10,7 @@ import tv.remo.android.controller.sdk.models.BooleanPref
 import tv.remo.android.controller.sdk.models.ClassPref
 import tv.remo.android.controller.sdk.models.IntPref
 import tv.remo.android.controller.sdk.models.StringPref
+import tv.remo.android.controller.sdk.utils.EndpointBuilder
 
 /**
  * Each settings key in the settings, easily accessible throughout the app.
@@ -17,12 +18,16 @@ import tv.remo.android.controller.sdk.models.StringPref
  * StringProperty annotation tells the StoreUtil what stringId the field is attached to,
  * based off of the name of the field
  */
-class RemoSettingsUtil(val context : Context, sharedPreferences: SharedPreferences) {
+class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) {
 
     //Connection settings
     val apiKey = StringPref(context, sharedPreferences, R.string.connectionApiTokenKey, "")
     val channelId = StringPref(context, sharedPreferences, R.string.connectionChannelIdKey, "")
     val serverOwner = StringPref(context, sharedPreferences, R.string.serverOwnerKey, "")
+
+    //url settings (Read Only)
+    val videoUrl = EndpointBuilder.getVideoUrl(context, channelId.getPref())
+    val audioUrl = EndpointBuilder.getAudioUrl(context, channelId.getPref())
 
     //hardware related settings
     val robotSettingsEnable = BooleanPref(context, sharedPreferences, R.string.robotSettingsEnableKey, false)
