@@ -26,10 +26,9 @@ android {
     }
     buildTypes {
         release {
-            if(System.getenv("KEY_ALIAS")){
-
+            if(System.getenv("KEY_ALIAS_RELEASE")){
+                signingConfig signingConfigs.release
             }
-            signingConfig signingConfigs.release
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
