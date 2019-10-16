@@ -2,8 +2,8 @@ name: Deploy build
 
 on:
   push:
-    #tags:
-      #- 'v*.*.*'
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -28,7 +28,6 @@ jobs:
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
     - name: Rename APK
       run: |
-        ls ./app/build/outputs/apk/release/
         mv ./app/build/outputs/apk/release/app-release.apk ./remo-controller-for-android-${{ steps.get_version.outputs.VERSION }}.apk
     - name: Release
       uses: softprops/action-gh-release@v1
