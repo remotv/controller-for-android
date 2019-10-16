@@ -27,7 +27,8 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
     - name: Rename APK
-      run: mv ./app/build/outputs/apk/release/app-release.apk ./remo-controller-for-android-${{ steps.get_version.outputs.VERSION }}.apk
+      run: |
+        mv ./app/build/outputs/apk/release/app-release.apk ./remo-controller-for-android-${{ steps.get_version.outputs.VERSION }}.apk
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')

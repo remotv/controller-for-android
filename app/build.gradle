@@ -26,7 +26,7 @@ android {
     }
     buildTypes {
         release {
-            if(System.getenv("KEY_ALIAS")){
+            if(System.getenv("KEY_ALIAS_RELEASE")){
                 signingConfig signingConfigs.release
             }
 
