@@ -12,8 +12,7 @@
         -f mpegts -framerate ${framerate} -codec:v mpeg1video ${bitrateflags} -bf 0
     </string>
 
-    <!--TODO integrate with app-->
     <string name="endpointHost">
-        http://dev.remo.tv:1567
+        remo.tv
     </string>
 </resources>

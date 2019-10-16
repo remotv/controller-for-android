@@ -48,11 +48,10 @@ object ComponentBuilderUtil {
     fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
         val steamingBundle = Bundle().apply {
-            val channel = settings.channelId.getPref()
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
-                "http://dev.remo.tv:1567/transmit?name=$channel-video",
-                "http://dev.remo.tv:1567/transmit?name=$channel-audio"
+                settings.videoUrl
+                ,settings.audioUrl
                 ,deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref())
                 ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
                 ,bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512
