@@ -17,7 +17,7 @@ import tv.remo.android.controller.sdk.models.StringPref
  * StringProperty annotation tells the StoreUtil what stringId the field is attached to,
  * based off of the name of the field
  */
-class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) {
+class RemoSettingsUtil(val context : Context, sharedPreferences: SharedPreferences) {
 
     //Connection settings
     val apiKey = StringPref(context, sharedPreferences, R.string.connectionApiTokenKey, "")
