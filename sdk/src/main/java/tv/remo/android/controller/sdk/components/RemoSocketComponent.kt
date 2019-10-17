@@ -45,7 +45,7 @@ class RemoSocketComponent : Component() {
         val listener = SocketListener()
         subToSocketEvents(listener)
         socket = client.newWebSocket(request, listener)
-        client.dispatcher.executorService.shutdown()
+        client.dispatcher().executorService().shutdown()
     }
 
     override fun disableInternal() {
