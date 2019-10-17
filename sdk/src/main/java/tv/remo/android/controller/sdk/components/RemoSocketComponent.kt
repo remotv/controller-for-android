@@ -16,6 +16,7 @@ import tv.remo.android.controller.sdk.models.api.Channel
 import tv.remo.android.controller.sdk.models.api.Message
 import tv.remo.android.controller.sdk.models.api.RobotCommand
 import tv.remo.android.controller.sdk.models.api.RobotServerInfo
+import tv.remo.android.controller.sdk.utils.EndpointBuilder
 import tv.remo.android.controller.sdk.utils.SocketListener
 
 /**
@@ -27,7 +28,7 @@ class RemoSocketComponent : Component() {
     private var socket: WebSocket? = null
     var apiKey : String? = null
     var activeChannelId : String? = null
-    val request = Request.Builder().url("ws://dev.remo.tv:3231/").build()
+    lateinit var request : Request
     val client = OkHttpClient()
     private var serverInfo: RobotServerInfo? = null
     private var activeChannel : Channel? = null
@@ -35,6 +36,7 @@ class RemoSocketComponent : Component() {
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
         apiKey = bundle?.getString(API_TOKEN_BUNDLE_KEY)
+        request = Request.Builder().url(EndpointBuilder.buildWebsocketUrl(applicationContext)).build()
         activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
         apiKey?: throw Exception("api key not found")
     }
@@ -43,7 +45,7 @@ class RemoSocketComponent : Component() {
         val listener = SocketListener()
         subToSocketEvents(listener)
         socket = client.newWebSocket(request, listener)
-        client.dispatcher.executorService.shutdown()
+        client.dispatcher().executorService().shutdown()
     }
 
     override fun disableInternal() {

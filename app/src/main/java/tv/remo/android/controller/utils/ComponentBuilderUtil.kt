@@ -7,6 +7,7 @@ import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.components.AudioComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.enums.Orientation
+import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
@@ -14,6 +15,7 @@ import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.components.RemoVideoProcessor
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -46,17 +48,18 @@ object ComponentBuilderUtil {
     fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
         val steamingBundle = Bundle().apply {
-            val channel = settings.channelId.getPref()
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
-                "http://dev.remo.tv:1567/transmit?name=$channel-video",
-                "http://dev.remo.tv:1567/transmit?name=$channel-audio"
+                settings.videoUrl
+                ,settings.audioUrl
                 ,deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref())
                 ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
                 ,bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512
                 ,width = resolution[0].toInt()
                 ,height = resolution[1].toInt()
             )
+            //use our customized remo class
+            VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }
 
