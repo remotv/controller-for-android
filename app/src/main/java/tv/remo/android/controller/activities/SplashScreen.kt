@@ -10,13 +10,10 @@ import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg
-import kotlinx.coroutines.runBlocking
 import org.btelman.controlsdk.hardware.drivers.BluetoothClassicDriver
 import org.btelman.controlsdk.hardware.interfaces.DriverComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
-import org.btelman.controlsdk.streaming.utils.FFmpegUtil
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
@@ -75,7 +72,6 @@ class SplashScreen : FragmentActivity() {
                 ClassScanner.getClasses(this)
                 runOnUiThread {
                     @Suppress("DeferredResultUnused")
-                    runBlocking { FFmpegUtil.initFFmpeg(FFmpeg.getInstance(applicationContext)) }
                     classScanComplete = true
                     next()
                 }
