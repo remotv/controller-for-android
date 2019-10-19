@@ -22,7 +22,7 @@ Currently under development. Not everything works at the moment, such as volume 
  
 The most stable code in the repo. Can be used for testing and is known to work
 
-### devel
+### develop
 
 The latest code, mostly stable, but might have issues. Sometimes this code may not be buildable
 
