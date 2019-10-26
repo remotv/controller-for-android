@@ -1,2 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="tv.remo.android.controller.sdk"/>
+          package="tv.remo.android.controller.sdk">
+    <permission
+            android:name="tv.remo.android.controller.sdk.socket.controls"
+            android:label="@string/controlSocketLabel"
+            android:description="@string/controlSocketLabelPermissionDescription"
+            android:protectionLevel="dangerous" />
+</manifest>
