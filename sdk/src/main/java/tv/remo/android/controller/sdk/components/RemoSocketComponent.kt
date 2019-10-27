@@ -25,6 +25,7 @@ import tv.remo.android.controller.sdk.utils.SocketListener
  * Note: Do not instantiate in the activity! Must pass it to the ControlSDK Service
  */
 class RemoSocketComponent : Component() {
+    private val bannedList = ArrayList<String>()
     private var socket: WebSocket? = null
     var apiKey : String? = null
     var activeChannelId : String? = null
@@ -121,9 +122,19 @@ class RemoSocketComponent : Component() {
                 it.badges.contains("owner"),
                 message_id = it.id
             )
+            if(bannedList.contains(data.user)) return
+            if(TTSFilterUtil.filter(data)){
+                silence(data.user)
+            }
             eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.TTS, EVENT_MAIN, data, this))
         }.also {
             //TODO store in local database?
+        }
+    }
+
+    private fun silence(user: String?) {
+        user?.let {
+            bannedList.add(it)
         }
     }
 

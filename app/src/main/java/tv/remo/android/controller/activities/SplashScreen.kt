@@ -17,6 +17,7 @@ import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.components.TTSFilterUtil
 
 class SplashScreen : FragmentActivity() {
 
@@ -25,6 +26,7 @@ class SplashScreen : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+        TTSFilterUtil.precache()
         detectIntentUpdateSettings(intent)
         runOnUiThread{
             var needsSetup = false
