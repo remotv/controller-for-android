@@ -28,7 +28,9 @@ class RemoSocketComponent : Component() {
     private var socket: WebSocket? = null
     var apiKey : String? = null
     var activeChannelId : String? = null
-    lateinit var request : Request
+    private val listener = SocketListener()
+    private var url: String? = null
+    var request : Request? = null
     val client = OkHttpClient()
     private var serverInfo: RobotServerInfo? = null
     private var activeChannel : Channel? = null
@@ -36,16 +38,14 @@ class RemoSocketComponent : Component() {
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
         apiKey = bundle?.getString(API_TOKEN_BUNDLE_KEY)
-        request = Request.Builder().url(EndpointBuilder.buildWebsocketUrl(applicationContext)).build()
+        url = EndpointBuilder.buildWebsocketUrl(applicationContext)
         activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
         apiKey?: throw Exception("api key not found")
     }
 
     override fun enableInternal() {
-        val listener = SocketListener()
         subToSocketEvents(listener)
-        socket = client.newWebSocket(request, listener)
-        client.dispatcher().executorService().shutdown()
+        attemptReconnect()
     }
 
     override fun disableInternal() {
@@ -69,6 +69,10 @@ class RemoSocketComponent : Component() {
         }.on(SocketListener.ON_CLOSE){
             Log.d("TAG","onClosing $it")
         }.on(SocketListener.ON_ERROR){
+            handler.postDelayed ({
+                //attempt a reconnect every second
+                attemptReconnect()
+            }, 1000)
             Log.d("TAG","onFailure $it")
         }.on("ROBOT_VALIDATED"){
             sendChannelsRequest(it)
@@ -82,6 +86,14 @@ class RemoSocketComponent : Component() {
             sendCommandUpwards(it)
         }
         //.on("SEND_CHAT") //TODO? of type Messages
+    }
+
+    private fun attemptReconnect() {
+        url ?: return
+        socket?.close(1000, "service ended normally")
+        request = Request.Builder().url(url!!).build()
+        client.connectionPool().evictAll()
+        socket = client.newWebSocket(request!!, listener)
     }
 
     private fun sendCommandUpwards(it: String) {
