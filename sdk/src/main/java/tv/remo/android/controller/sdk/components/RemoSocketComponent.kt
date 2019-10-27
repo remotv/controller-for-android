@@ -97,7 +97,7 @@ class RemoSocketComponent : Component() {
     private fun sendChatUpwards(json: String) {
         Gson().fromJson(json, Message::class.java).also {
             if(it.type == "robot") return //we don't want the robot talking to itself
-            if(activeChannel?.chat != it.chatId) return
+            if(activeChannel?.id != it.channelId) return
             if(searchAndSendCommand(it)) return
             val data = TTSBaseComponent.TTSObject(
                 it.message,

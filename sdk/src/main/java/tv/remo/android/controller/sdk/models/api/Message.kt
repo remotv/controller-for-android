@@ -22,6 +22,8 @@ data class Message(
     val senderId: String,
     @SerializedName("server_id")
     val serverId: String,
+    @SerializedName("channel_id")
+    val channelId: String,
     @SerializedName("time_stamp")
     val timeStamp: Long,
     @SerializedName("type")
