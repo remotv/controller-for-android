@@ -150,7 +150,7 @@ class RemoSocketComponent : Component() {
     private fun verifyAndSubToChannel(json: String) {
         serverInfo = Gson().fromJson(json, RobotServerInfo::class.java).also { serverInfo ->
             for (channel in serverInfo.channels) {
-                if(channel.id != activeChannelId) continue
+                if(channel.id != activeChannelId && channel.name != activeChannelId) continue
                 activeChannel = channel
                 sendChatMessage("Robot connected. Commands cleared")
             }
