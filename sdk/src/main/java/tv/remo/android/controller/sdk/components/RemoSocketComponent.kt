@@ -171,8 +171,15 @@ class RemoSocketComponent : Component() {
                     sendMessage(_socket, "JOIN_CHANNEL", id)
                     sendMessage(_socket, "GET_CHAT", chat)
                 }
+                sendChannelUpwards(this)
             }
         }
+    }
+
+    private fun sendChannelUpwards(channel: Channel) {
+        eventDispatcher?.handleMessage(
+            ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN, channel, this)
+        )
     }
 
     private fun sendChannelsRequest(json : String) {

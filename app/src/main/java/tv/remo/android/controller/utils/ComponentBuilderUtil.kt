@@ -5,17 +5,13 @@ import org.btelman.controlsdk.hardware.components.HardwareComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.components.AudioComponent
-import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
-import tv.remo.android.controller.sdk.components.RemoCommandHandler
-import tv.remo.android.controller.sdk.components.RemoSocketComponent
-import tv.remo.android.controller.sdk.components.RemoVideoProcessor
+import tv.remo.android.controller.sdk.components.*
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -64,7 +60,7 @@ object ComponentBuilderUtil {
         }
 
         if(settings.cameraEnabled.getPref()){
-            val videoComponent = ComponentHolder(VideoComponent::class.java, steamingBundle)
+            val videoComponent = ComponentHolder(RemoVideoComponent::class.java, steamingBundle)
             streamList.add(videoComponent)
         }
 
