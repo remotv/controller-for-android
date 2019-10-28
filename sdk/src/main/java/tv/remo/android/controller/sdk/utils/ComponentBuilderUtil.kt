@@ -11,7 +11,11 @@ import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.*
+import tv.remo.android.controller.sdk.components.RemoCommandHandler
+import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
+import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
+import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot

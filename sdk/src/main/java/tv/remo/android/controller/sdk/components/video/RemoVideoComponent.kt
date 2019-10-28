@@ -1,9 +1,11 @@
-package tv.remo.android.controller.sdk.components
+package tv.remo.android.controller.sdk.components.video
 
 import android.os.Bundle
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import tv.remo.android.controller.sdk.components.RemoCommandHandler
+import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.models.api.Channel
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 

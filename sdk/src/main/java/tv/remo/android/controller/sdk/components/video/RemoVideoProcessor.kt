@@ -1,4 +1,4 @@
-package tv.remo.android.controller.sdk.components
+package tv.remo.android.controller.sdk.components.video
 
 import android.content.Context
 import org.btelman.controlsdk.streaming.models.StreamInfo
