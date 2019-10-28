@@ -1,8 +1,8 @@
-package tv.remo.android.controller.sdk.components.video
+package tv.remo.android.controller.sdk.components.audio
 
 import android.os.Bundle
 import org.btelman.controlsdk.models.ComponentEventObject
-import org.btelman.controlsdk.streaming.components.VideoComponent
+import org.btelman.controlsdk.streaming.components.AudioComponent
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
@@ -10,18 +10,11 @@ import tv.remo.android.controller.sdk.models.api.Channel
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 
 /**
- * Created by Brendon on 10/27/2019.
+ * Remo Audio component.
  */
-class RemoVideoComponent : VideoComponent() {
-    private var sleepMode = false
-
+class RemoAudioComponent : AudioComponent() {
     override fun enableInternal() {
         //Do nothing. We want to delay it until we get a response from the control socket
-    }
-
-    override fun doWorkLoop() {
-        if(!sleepMode)
-            super.doWorkLoop()
     }
 
     override fun handleExternalMessage(message: ComponentEventObject): Boolean {
@@ -45,37 +38,17 @@ class RemoVideoComponent : VideoComponent() {
     private fun handleStringCommand(data: String) {
         when {
             data == "/stream sleep" -> {
-                sleepMode = true
-                retriever.disable()
-            }
-            data == "/stream wakeup" -> {
-                sleepMode = false
-                retriever.enable(context!!, streamInfo)
-                //TODO start grabbing camera again
+                disableInternal()
             }
             data == "/stream reset" -> {
-                sleepMode = false
                 reload()
             }
-            data.startsWith("/bitrate") -> {
-                data.replace("/bitrate ", "").toIntOrNull()?.let{
-                    setNewBitrate(it)
-                }
-            }
         }
-    }
-
-    private fun setNewBitrate(bitrate: Int) {
-        rebuildStream {
-            //TODO save this value to prefs
-            putInt("bitrate", bitrate) //overwrite the endpoint with the new one
-        }
-        reload()
     }
 
     private fun setNewEndpoint(channel : Channel) {
         context?.let {
-            val endpoint = EndpointBuilder.getVideoUrl(it, channel.id)
+            val endpoint = EndpointBuilder.getAudioUrl(it, channel.id)
             rebuildStream {
                 putString("endpoint", endpoint) //overwrite the endpoint with the new one
             }

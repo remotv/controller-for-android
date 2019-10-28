@@ -71,7 +71,7 @@ class RemoCommandHandler : Component(){
             command == "/devmode on" -> handleDevMode(packet, true)
             command == "/devmode off" -> handleDevMode(packet, false)
             command.startsWith("/bitrate") -> handleVideoAudioCommand(command)
-            command == "/stream reset" -> handleVideoAudioCommand(command)
+            command.startsWith("/stream") -> handleVideoAudioCommand(command)
             command.contains("/xcontrol") -> parseXControl(packet)
             else -> processCommand(packet)
         }
