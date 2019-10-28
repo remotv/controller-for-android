@@ -1,4 +1,4 @@
-package tv.remo.android.controller.utils
+package tv.remo.android.controller.sdk.utils
 
 import android.os.Bundle
 import org.btelman.controlsdk.hardware.components.HardwareComponent
