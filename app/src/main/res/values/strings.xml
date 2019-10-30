@@ -112,5 +112,8 @@
     <string name="ffmpegFilterTitle">FFmpeg additional filters (no spaces!)</string>
     <string name="ffmpegInputOptionsTitle">ffmpeg input options</string>
     <string name="ffmpegOutputOptionsTitle">ffmpeg output options</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--EndRegion-->
 </resources>

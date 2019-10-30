@@ -42,7 +42,11 @@
     <fragment
         android:id="@+id/settingsConnection"
         android:name="tv.remo.android.controller.fragments.SettingsConnection"
-        android:label="@string/connectionSettingsTitle" />
+        android:label="@string/connectionSettingsTitle" >
+        <action
+                android:id="@+id/action_settingsConnection_to_login"
+                app:destination="@id/loginSettingsEntry" />
+    </fragment>
     <fragment
         android:id="@+id/settingsRobot"
         android:name="tv.remo.android.controller.fragments.SettingsRobot"
@@ -88,4 +92,9 @@
         android:name="tv.remo.android.controller.fragments.SettingsLicenseViewer"
         android:label="@string/openSourceSettingsTitle"
         tools:layout="@layout/fragment_license_viewer" />
+    <fragment
+            android:id="@+id/loginSettingsEntry"
+            android:name="tv.remo.android.controller.Login"
+            android:label="fragment_login"
+            tools:layout="@layout/fragment_login" />
 </navigation>
