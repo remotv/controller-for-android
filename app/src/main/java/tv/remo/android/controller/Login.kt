@@ -24,6 +24,7 @@ class Login : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        //TODO ONLY ALLOW ON API 19 AND ABOVE
         super.onViewCreated(view, savedInstanceState)
         webViewRemoLogin.settings.apply {
             javaScriptEnabled = true
