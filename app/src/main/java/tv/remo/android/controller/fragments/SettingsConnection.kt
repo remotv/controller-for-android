@@ -1,4 +1,5 @@
 package tv.remo.android.controller.fragments
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,12 +21,16 @@ class SettingsConnection : BasePreferenceFragmentCompat(
 ){
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
                 super.onViewCreated(view, savedInstanceState)
-                setHasOptionsMenu(true)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        setHasOptionsMenu(true)
+                }
         }
 
         override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
                 super.onCreateOptionsMenu(menu, inflater)
-                inflater.inflate(R.menu.connection_menu, menu)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        inflater.inflate(R.menu.connection_menu, menu)
+                }
         }
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
