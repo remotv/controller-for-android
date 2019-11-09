@@ -16,6 +16,7 @@ class StringUtilTest {
         assertTrue("hehe, check this link: http://www.example.com/".isUrl())
         assertTrue("https://remo.tv:5000".isUrl())
         assertTrue("https://example.com".isUrl())
+        assertTrue("HTTPS://EXAMPLE.COM".isUrl())
         assertTrue("http://example.com".isUrl())
         assertTrue("www.example.com".isUrl())
         assertTrue("http://www.example".isUrl())
@@ -28,9 +29,7 @@ class StringUtilTest {
         assertFalse("Lorem Ipsum".isUrl())
         assertFalse("[[aaaaaaaaaaaaaaa".isUrl())
         assertFalse("test".isUrl())
-        assertFalse("lorem.ipsum".isUrl())
         assertFalse("example.com".isUrl())
-        assertFalse("remo.tv:5000".isUrl())
         assertFalse("http".isUrl())
         assertFalse("https".isUrl())
         assertFalse("https://".isUrl())
@@ -38,19 +37,3 @@ class StringUtilTest {
         assertFalse("http://example.".isUrl())
     }
 }
-/**
-ReconDelta090: test
-ReconDelta090: lorem.ipsum
-ReconDelta090: example.com
-ReconDelta090: https://example.com
-ReconDelta090: www.example.com
-ReconDelta090: http://example.com
-ReconDelta090: [[aaaaaaaaa
-ReconDelta090: remo.tv:5000
-ReconDelta090: http
-ReconDelta090: https
-ReconDelta090: https://
-ReconDelta090: http://example
-ReconDelta090: http://example.
-ReconDelta090: http://www.example
- */
