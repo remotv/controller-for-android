@@ -51,7 +51,6 @@ class RemoVideoComponent : VideoComponent() {
             data == "/stream wakeup" -> {
                 sleepMode = false
                 retriever.enable(context!!, streamInfo)
-                //TODO start grabbing camera again
             }
             data == "/stream reset" -> {
                 sleepMode = false
