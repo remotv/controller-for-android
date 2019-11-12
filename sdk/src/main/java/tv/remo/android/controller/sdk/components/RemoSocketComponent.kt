@@ -18,6 +18,7 @@ import tv.remo.android.controller.sdk.models.api.RobotCommand
 import tv.remo.android.controller.sdk.models.api.RobotServerInfo
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 import tv.remo.android.controller.sdk.utils.SocketListener
+import tv.remo.android.controller.sdk.utils.isUrl
 
 /**
  * Remo Socket component
@@ -111,6 +112,10 @@ class RemoSocketComponent : Component() {
             if(it.type == "robot") return //we don't want the robot talking to itself
             if(activeChannel?.id != it.channelId) return
             if(searchAndSendCommand(it)) return
+
+            //filter urls out after command sending in case something is implemented to handle urls
+            if(it.message.isUrl()) return
+
             val data = TTSBaseComponent.TTSObject(
                 it.message,
                 1.0f,
