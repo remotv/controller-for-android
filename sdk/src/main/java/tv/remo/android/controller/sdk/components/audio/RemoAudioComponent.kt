@@ -13,6 +13,7 @@ import tv.remo.android.controller.sdk.utils.EndpointBuilder
  * Remo Audio component.
  */
 class RemoAudioComponent : AudioComponent() {
+    private var sleepMode = false
     override fun enableInternal() {
         //Do nothing. We want to delay it until we get a response from the control socket
     }
@@ -22,6 +23,11 @@ class RemoAudioComponent : AudioComponent() {
             handleSocketCommand(message)
         }
         return super.handleExternalMessage(message)
+    }
+
+    override fun doWorkLoop() {
+        if(!sleepMode)
+            super.doWorkLoop()
     }
 
     private fun handleSocketCommand(message: ComponentEventObject) {
@@ -38,9 +44,15 @@ class RemoAudioComponent : AudioComponent() {
     private fun handleStringCommand(data: String) {
         when {
             data == "/stream sleep" -> {
-                disableInternal()
+                sleepMode = true
+                retriever.disable()
+            }
+            data == "/stream wakeup" -> {
+                sleepMode = false
+                retriever.enable(context!!, streamInfo)
             }
             data == "/stream reset" -> {
+                sleepMode = false
                 reload()
             }
         }
