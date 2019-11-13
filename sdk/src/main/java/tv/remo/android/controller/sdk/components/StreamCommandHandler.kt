@@ -25,7 +25,7 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
         }
     }
 
-    fun shouldDoWork() : Boolean = sleepMode
+    fun shouldDoWork() : Boolean = !sleepMode
 
     private fun handleSocketCommand(message: ComponentEventObject) {
         when(message.data){
@@ -73,9 +73,13 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
 
     private fun setNewEndpoint(channel : Channel) {
         context?.let {
-            val endpoint = EndpointBuilder.getAudioUrl(it, channel.id)
+            val audioEndPoint = EndpointBuilder.getAudioUrl(it, channel.id)
+            val videoEndpoint = EndpointBuilder.getVideoUrl(it, channel.id)
             val streamInfo = rebuildStream(streamHandler.pullStreamInfo()) {
-                putString("endpoint", endpoint) //overwrite the endpoint with the new one
+                //Yes, this duplicates and is not needed for all, but this makes it work no
+                // matter what uses it
+                putString("endpoint", videoEndpoint) //overwrite the endpoint with the new one
+                putString("audioEndpoint", audioEndPoint) //overwrite the endpoint with the new one
             }
             streamHandler.pushStreamInfo(streamInfo)
         }
