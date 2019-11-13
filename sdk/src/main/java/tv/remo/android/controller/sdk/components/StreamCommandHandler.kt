@@ -4,28 +4,20 @@ import android.content.Context
 import android.os.Bundle
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
 import tv.remo.android.controller.sdk.models.api.Channel
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 
-data class CommandSubscriptionData(val hasToEqual : Boolean = true, val message : String, val lambda : (String)->Boolean)
-
-interface CommandStreamHandler{
-    fun resetComponents()
-
-    fun disableRetriever()
-    fun disableProcessor()
-
-    fun getStreamInfo() : StreamInfo
-    fun setStreamInfo(streamInfo: StreamInfo)
-
-    fun enableRetriever()
-    fun enableProcessor()
-
-    fun onRegisterCustomCommands() : ArrayList<CommandSubscriptionData>
-}
-
-class StreamComponentOverrides(val context: Context?, val streamHandler : CommandStreamHandler){
+/**
+ * External command handler that can be shared between video and audio components.
+ *
+ * Probably the best way to do this without changing the structure of the Stream components,
+ * and allows new commands to work for both seamlessly, but still may not look pretty
+ */
+class StreamCommandHandler(val context: Context?, val streamHandler : CommandStreamHandler){
     var sleepMode = false
+
+    private val subscriptionList = streamHandler.onRegisterCustomCommands()
 
     fun handleExternalMessage(message: ComponentEventObject){
         if(message.source is RemoSocketComponent || message.source is RemoCommandHandler){
@@ -47,18 +39,34 @@ class StreamComponentOverrides(val context: Context?, val streamHandler : Comman
     }
 
     private fun handleStringCommand(data: String) {
+        context?:return
         when {
             data == "/stream sleep" -> {
                 sleepMode = true
-                streamHandler.disableRetriever()
+                streamHandler.acquireRetriever().disable()
             }
             data == "/stream wakeup" -> {
                 sleepMode = false
-                streamHandler.enableProcessor()
+                streamHandler.acquireRetriever().enable(context, streamHandler.pullStreamInfo())
             }
             data == "/stream reset" -> {
                 sleepMode = false
                 reload()
+            }
+        }
+        processSubscribedArrayForCommand(data)
+    }
+
+    /**
+     * Iterate through the array and trigger the subscribers if conditions are met
+     */
+    private fun processSubscribedArrayForCommand(data: String) {
+        subscriptionList?.forEach {
+            if(it.hasToEqual && data == it.message){
+                it.lambda(data)
+            }
+            else if(!it.hasToEqual && data.contains(it.message)){
+                it.lambda(data)
             }
         }
     }
@@ -66,10 +74,10 @@ class StreamComponentOverrides(val context: Context?, val streamHandler : Comman
     private fun setNewEndpoint(channel : Channel) {
         context?.let {
             val endpoint = EndpointBuilder.getAudioUrl(it, channel.id)
-            val streamInfo = rebuildStream(streamHandler.getStreamInfo()) {
+            val streamInfo = rebuildStream(streamHandler.pullStreamInfo()) {
                 putString("endpoint", endpoint) //overwrite the endpoint with the new one
             }
-            streamHandler.setStreamInfo(streamInfo)
+            streamHandler.pushStreamInfo(streamInfo)
         }
         reload()
     }
@@ -78,10 +86,12 @@ class StreamComponentOverrides(val context: Context?, val streamHandler : Comman
         streamHandler.resetComponents()
     }
 
-    private fun rebuildStream(streamInfo: StreamInfo, action: Bundle.() -> Unit) : StreamInfo{
-        val bundle = streamInfo.toBundle().apply {
-            action()
+    companion object{
+        fun rebuildStream(streamInfo: StreamInfo, action: Bundle.() -> Unit) : StreamInfo{
+            val bundle = streamInfo.toBundle().apply {
+                action()
+            }
+            return StreamInfo.fromBundle(bundle)!!
         }
-        return StreamInfo.fromBundle(bundle)!!
     }
 }
