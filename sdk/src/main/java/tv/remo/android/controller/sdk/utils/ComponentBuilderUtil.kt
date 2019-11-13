@@ -47,7 +47,29 @@ object ComponentBuilderUtil {
 
     fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
-        val steamingBundle = Bundle().apply {
+        buildStreamingBundle(settings).apply {
+            if(settings.cameraEnabled.getPref()){
+                val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this)
+                streamList.add(videoComponent)
+            }
+
+            if(settings.microphoneEnabled.getPref()){
+                val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this)
+                streamList.add(audioComponent)
+            }
+        }
+
+        return streamList
+    }
+
+    fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
+        return ComponentHolder(
+            RemoSocketComponent::class.java,
+            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
+    }
+
+    private fun buildStreamingBundle(settings: RemoSettingsUtil): Bundle {
+        return Bundle().apply {
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
                 settings.videoUrl
@@ -62,22 +84,5 @@ object ComponentBuilderUtil {
             VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }
-
-        if(settings.cameraEnabled.getPref()){
-            val videoComponent = ComponentHolder(RemoVideoComponent::class.java, steamingBundle)
-            streamList.add(videoComponent)
-        }
-
-        if(settings.microphoneEnabled.getPref()){
-            val audioComponent = ComponentHolder(RemoAudioComponent::class.java, steamingBundle)
-            streamList.add(audioComponent)
-        }
-        return streamList
-    }
-
-    fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
-        return ComponentHolder(
-            RemoSocketComponent::class.java,
-            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
     }
 }
