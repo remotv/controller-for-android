@@ -45,7 +45,7 @@ with settings that can be changed. Going into the connection section will bring 
 
 - API Key
 
-- Channel Id
+- Channel Id or Channel name (Will default to first channel if not set)
 
 - Robot Hardware switch
 
@@ -96,6 +96,22 @@ Only works if the owner is added to settings in the connection settings
 
 `/devmode on`: turn on devmode
 `/devmode off`: turn off devmode
+
+#### Stream commands ####
+
+`/stream sleep`: Put the stream into a light sleep mode. Stops sending data, but keeps ffmpeg alive 
+to save bandwidth and performance when nobody is watching the stream. This may not have much use 
+right now, but will be built upon to add toggleable auto sleep functionality.
+Currently still allows robot movement in this mode
+
+`/stream wakeup`: wake up the stream. No automatic code is setup to use this yet, 
+but it can be put in a button or typed
+
+`/stream reset`: reset just the stream by disabling and re-enabling. 
+Does not disable movement while it re-connects
+
+`/bitrate {number in kb}`: Adjust the video bitrate (in kilobytes). (ex `/bitrate 1024`)
+
  
 ### Ways to stop the robot:
  
