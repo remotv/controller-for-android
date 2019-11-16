@@ -2,6 +2,7 @@ package tv.remo.android.controller.sdk.components.video
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.StreamSubComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
@@ -49,7 +50,11 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     }
 
     override fun resetComponents() {
-        disableInternal()
+        try { //maybe was never initialized?
+            disableInternal()
+        } catch (e: Exception) {
+            Log.e("Video","Attempt to disable video components", e)
+        }
         super.enableInternal()
     }
 
