@@ -1,4 +1,4 @@
-package tv.remo.android.controller.sdk.components
+package tv.remo.android.controller.sdk.components.hardware
 
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component

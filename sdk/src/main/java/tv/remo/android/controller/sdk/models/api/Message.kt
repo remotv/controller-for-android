@@ -15,7 +15,7 @@ data class Message(
     @SerializedName("id")
     val id: String,
     @SerializedName("message")
-    val message: String,
+    var message: String,
     @SerializedName("sender")
     val sender: String,
     @SerializedName("sender_id")

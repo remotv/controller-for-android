@@ -14,7 +14,7 @@ import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.utils.ComponentBuilderUtil
+import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var recording = false

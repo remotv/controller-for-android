@@ -1,21 +1,21 @@
-package tv.remo.android.controller.utils
+package tv.remo.android.controller.sdk.utils
 
 import android.os.Bundle
 import org.btelman.controlsdk.hardware.components.HardwareComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
-import org.btelman.controlsdk.streaming.components.AudioComponent
-import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
-import tv.remo.android.controller.sdk.components.RemoVideoProcessor
+import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
+import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
+import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
+import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -47,7 +47,29 @@ object ComponentBuilderUtil {
 
     fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
-        val steamingBundle = Bundle().apply {
+        buildStreamingBundle(settings).apply {
+            if(settings.cameraEnabled.getPref()){
+                val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this)
+                streamList.add(videoComponent)
+            }
+
+            if(settings.microphoneEnabled.getPref()){
+                val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this)
+                streamList.add(audioComponent)
+            }
+        }
+
+        return streamList
+    }
+
+    fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
+        return ComponentHolder(
+            RemoSocketComponent::class.java,
+            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
+    }
+
+    private fun buildStreamingBundle(settings: RemoSettingsUtil): Bundle {
+        return Bundle().apply {
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
                 settings.videoUrl
@@ -62,22 +84,5 @@ object ComponentBuilderUtil {
             VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }
-
-        if(settings.cameraEnabled.getPref()){
-            val videoComponent = ComponentHolder(VideoComponent::class.java, steamingBundle)
-            streamList.add(videoComponent)
-        }
-
-        if(settings.microphoneEnabled.getPref()){
-            val audioComponent = ComponentHolder(AudioComponent::class.java, steamingBundle)
-            streamList.add(audioComponent)
-        }
-        return streamList
-    }
-
-    fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
-        return ComponentHolder(
-            RemoSocketComponent::class.java,
-            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
     }
 }
