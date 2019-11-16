@@ -18,6 +18,7 @@ import tv.remo.android.controller.sdk.models.api.RobotCommand
 import tv.remo.android.controller.sdk.models.api.RobotServerInfo
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 import tv.remo.android.controller.sdk.utils.SocketListener
+import tv.remo.android.controller.sdk.utils.isUrl
 
 /**
  * Remo Socket component
@@ -107,23 +108,39 @@ class RemoSocketComponent : Component() {
      * Send chat upwards using the event manager so other classes can intercept
      */
     private fun sendChatUpwards(json: String) {
-        Gson().fromJson(json, Message::class.java).also {
-            if(it.type == "robot") return //we don't want the robot talking to itself
-            if(activeChannel?.id != it.channelId) return
-            if(searchAndSendCommand(it)) return
+        Gson().fromJson(json, Message::class.java).also { rawMessage ->
+            if(rawMessage.type == "robot") return //we don't want the robot talking to itself
+            if(activeChannel?.id != rawMessage.channelId) return
+            val message = lookForCommandsAndMaybeReplace(rawMessage)
+            if(searchAndSendCommand(message)) return
+
+            //filter urls out after command sending in case something is implemented to handle urls
+            if(message.message.isUrl()) return
+
             val data = TTSBaseComponent.TTSObject(
-                it.message,
+                message.message,
                 1.0f,
-                it.sender,
+                message.sender,
                 false,
                 false,
                 true,
-                it.badges.contains("owner"),
-                message_id = it.id
+                message.badges.contains("owner"),
+                message_id = message.id
             )
             eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.TTS, EVENT_MAIN, data, this))
         }.also {
             //TODO store in local database?
+        }
+    }
+
+    private fun lookForCommandsAndMaybeReplace(message: Message): Message {
+        return when(message.type){
+            "self" -> {
+                 message.also {
+                     it.message = it.sender + " " + it.message
+                 }
+            }
+            else -> message
         }
     }
 
@@ -171,8 +188,15 @@ class RemoSocketComponent : Component() {
                     sendMessage(_socket, "JOIN_CHANNEL", id)
                     sendMessage(_socket, "GET_CHAT", chat)
                 }
+                sendChannelUpwards(this)
             }
         }
+    }
+
+    private fun sendChannelUpwards(channel: Channel) {
+        eventDispatcher?.handleMessage(
+            ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN, channel, this)
+        )
     }
 
     private fun sendChannelsRequest(json : String) {
