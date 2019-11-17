@@ -45,6 +45,7 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
         streamInfo = rebuildStream(streamInfo) {
             //TODO save this value to prefs
             putInt("bitrate", bitrate) //overwrite the endpoint with the new one
+            RemoSocketComponent.sendToSiteChat(eventDispatcher,"Reloading streaming...")
         }
         resetComponents()
     }
