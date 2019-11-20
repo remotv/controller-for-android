@@ -63,10 +63,10 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
     private fun processSubscribedArrayForCommand(data: String) {
         subscriptionList?.forEach {
             if(it.hasToEqual && data == it.message){
-                it.lambda(data)
+                it.callFun(data)
             }
             else if(!it.hasToEqual && data.contains(it.message)){
-                it.lambda(data)
+                it.callFun(data)
             }
         }
     }
