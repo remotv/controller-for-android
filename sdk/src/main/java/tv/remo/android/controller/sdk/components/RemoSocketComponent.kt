@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 import org.btelman.controlsdk.enums.ComponentType
+import org.btelman.controlsdk.interfaces.ComponentEventListener
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
@@ -226,6 +227,13 @@ class RemoSocketComponent : Component() {
 
         private fun sendMessage(webSocket: WebSocket, event: String, data: String) {
             webSocket.send("{\"e\":\"$event\",\"d\":\"$data\"}")
+        }
+
+        fun sendToSiteChat(eventDispatcher : ComponentEventListener?, message : String){
+            RemoSocketChatPacket(message).also {
+                eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
+                    it, this))
+            }
         }
     }
 }

@@ -2,10 +2,14 @@ package tv.remo.android.controller.sdk.components.audio
 
 import android.content.Context
 import android.os.Bundle
+import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.AudioComponent
 import org.btelman.controlsdk.streaming.components.StreamSubComponent
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import org.btelman.controlsdk.tts.TTSBaseComponent
+import tv.remo.android.controller.sdk.R
+import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
@@ -61,6 +65,49 @@ class RemoAudioComponent : AudioComponent() , CommandStreamHandler {
     }
 
     override fun onRegisterCustomCommands(): ArrayList<CommandSubscriptionData>? {
-        return null
+        return ArrayList<CommandSubscriptionData>().apply {
+            add(CommandSubscriptionData(false, "/audio bitrate"){ bitrateString ->
+                setNewBitrate(bitrateString.toInt())
+            })
+            add(CommandSubscriptionData(false, "/audio mute"){
+                disableInternal()
+                "audio muted".also { text ->
+                    sendChatUp(text)
+                    RemoSocketComponent.sendToSiteChat(eventDispatcher,text)
+                }
+            })
+            add(CommandSubscriptionData(false, "/audio unmute"){
+                super.enableInternal()
+                RemoSocketComponent.sendToSiteChat(eventDispatcher,"audio unmuted")
+                sendChatUp("The Microphone is back on")
+            })
+        }
+    }
+
+    private fun sendChatUp(text : String){
+        val data = TTSBaseComponent.TTSObject(
+            text,
+            .5f,
+            isSpeakable = true
+        )
+        eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.TTS, EVENT_MAIN, data, this))
+    }
+
+    private fun setNewBitrate(value: Int) {
+        if(context?.resources?.getStringArray(R.array.bitrate_audio_list_values)?.contains(value.toString()) != true){
+            RemoSocketComponent.sendToSiteChat(eventDispatcher, "audio bitrate not accepted! Accepted options: 32, 64, 128, 192")
+        }
+        else{
+            RemoSettingsUtil.with(context!!){
+                it.microphoneBitrate.apply {
+                    sharedPreferences.edit().putString(key, value.toString()).apply()
+                    RemoSocketComponent.sendToSiteChat(eventDispatcher,"Setting saved. Reloading audio...")
+                }
+
+                //we only care about rebooting ffmpeg
+                processor.disable()
+                processor.enable(context!!, streamInfo)
+            }
+        }
     }
 }

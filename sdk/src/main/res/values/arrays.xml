@@ -54,12 +54,14 @@
         <item>32</item>
         <item>64</item>
         <item>128</item>
+        <item>192</item>
     </string-array>
 
     <string-array name="bitrate_audio_list">
         <item>32 kb/s</item>
         <item>64 kb/s</item>
         <item>128 kb/s</item>
+        <item>192 kb/s</item>
     </string-array>
 
     <string-array name="volume_mic_list_values">
