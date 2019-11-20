@@ -66,7 +66,7 @@ class RemoAudioComponent : AudioComponent() , CommandStreamHandler {
 
     override fun onRegisterCustomCommands(): ArrayList<CommandSubscriptionData>? {
         return ArrayList<CommandSubscriptionData>().apply {
-            add(CommandSubscriptionData(false, "/audio bitrate"){ bitrateString ->
+            add(CommandSubscriptionData(false, "/audio bitrate "){ bitrateString ->
                 setNewBitrate(bitrateString.toInt())
             })
             add(CommandSubscriptionData(false, "/audio mute"){

@@ -77,7 +77,7 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
 
     override fun onRegisterCustomCommands(): ArrayList<CommandSubscriptionData>? {
         return ArrayList<CommandSubscriptionData>().apply {
-            add(CommandSubscriptionData(false, "/bitrate"){ bitrateString ->
+            add(CommandSubscriptionData(false, "/bitrate "){ bitrateString ->
                 setNewBitrate(bitrateString.toInt())
             })
         }

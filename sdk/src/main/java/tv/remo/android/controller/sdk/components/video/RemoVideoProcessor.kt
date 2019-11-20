@@ -68,7 +68,7 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
                 .replace("\${inputStream}", "-")
                 .replace("\${endpoint}", endpoint)
                 .replace("\${bitrateflags}",
-                    "-b ${bitrate}k -minrate ${bitrate}k -maxrate ${bitrate}k -bufsize ${bitrate/1.5}k")
+                    "-b:v ${bitrate}k -minrate ${bitrate}k -maxrate ${bitrate}k -bufsize ${bitrate/1.5}k")
         }
 
         return ArrayList<String>().also { list ->
