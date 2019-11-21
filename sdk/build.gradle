@@ -40,8 +40,9 @@ dependencies {
     api "org.btelman.controlsdk:texttospeech:$controlsdk_version"
     //noinspection GradleDependency. We cannot upgrade this without losing support for Android 4.4 and below
     api 'com.squareup.okhttp3:okhttp:3.12.6'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    api 'com.google.code.gson:gson:2.8.5'
     api project(path: ':licensehelper')
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 }
 repositories {
     mavenCentral()

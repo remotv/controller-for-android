@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="8dp"
+    android:layout_height="wrap_content">
+    <TableRow
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <!--Add Badges here, of width 24dp-->
+        <TextView
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:id="@+id/remoChatUserField"
+            android:layout_width="match_parent"
+            android:textColor="#dddddd"
+            android:gravity="center|start"
+            android:layout_height="24dp"
+            android:text="ReconDelta090:"
+            android:textSize="12sp"/>
+    </TableRow>
+    <TextView
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="#fff"
+        android:id="@+id/remoChatMessageField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:text="John Madden drinks Bepis and eats Spaghetti"
+        android:textSize="20sp"/>
+</LinearLayout>

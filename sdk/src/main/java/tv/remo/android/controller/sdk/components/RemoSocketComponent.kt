@@ -1,8 +1,10 @@
 package tv.remo.android.controller.sdk.components
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -113,6 +115,7 @@ class RemoSocketComponent : Component() {
             if(rawMessage.type == "robot") return //we don't want the robot talking to itself
             if(activeChannel?.id != rawMessage.channelId) return
             val message = lookForCommandsAndMaybeReplace(rawMessage)
+            broadcastChatMessage(context!!, message)
             if(searchAndSendCommand(message)) return
 
             //filter urls out after command sending in case something is implemented to handle urls
@@ -217,6 +220,9 @@ class RemoSocketComponent : Component() {
     companion object{
         const val API_TOKEN_BUNDLE_KEY = "API_TOKEN"
         const val CHANNEL_ID_BUNDLE_KEY = "CHANNEL_ID"
+        const val REMO_CHAT_MESSAGE_WITH_NAME_BROADCAST = "tv.remo.chat.chat_message_with_name"
+        const val REMO_CHAT_MESSAGE_REMOVED_BROADCAST = "tv.remo.chat.message_removed"
+        const val REMO_CHAT_USER_REMOVED_BROADCAST = "tv.remo.chat.user_removed"
 
         fun createBundle(apiKey : String, channelId : String? = null) : Bundle {
             return Bundle().apply {
@@ -234,6 +240,16 @@ class RemoSocketComponent : Component() {
                 eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
                     it, this))
             }
+        }
+
+        fun broadcastChatMessage(context: Context, msg: Message) {
+            //send the packet via Local Broadcast. Anywhere in this app can intercept this
+            LocalBroadcastManager.getInstance(context)
+                .sendBroadcast(
+                    Intent(REMO_CHAT_MESSAGE_WITH_NAME_BROADCAST)
+                        .also { intent ->
+                            intent.putExtra("json", msg)
+                        })
         }
     }
 }

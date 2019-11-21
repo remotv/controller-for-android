@@ -2,6 +2,7 @@ package tv.remo.android.controller.sdk.models.api
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Message(
     @SerializedName("badges")
@@ -28,4 +29,8 @@ data class Message(
     val timeStamp: Long,
     @SerializedName("type")
     val type: String
-)
+) : Serializable{
+    companion object{
+        const val serialversionUID = 3124135231234895L
+    }
+}
