@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -20,11 +21,14 @@ import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
 
+    private var timeAtStart = System.currentTimeMillis()
     var classScanComplete = false
+    val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+
         detectIntentUpdateSettings(intent)
         runOnUiThread{
             var needsSetup = false
@@ -94,6 +98,15 @@ class SplashScreen : FragmentActivity() {
             setupError()
             return
         }
+
+        val timeDiffSinceStart = System.currentTimeMillis()-timeAtStart
+        if(timeDiffSinceStart in 1..499) {
+            handler.postDelayed({
+                next()
+            }, timeDiffSinceStart)
+            return
+        }
+
         //All checks are done. Lets startup the activity!
         ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, ControlSDKService::class.java))
         startActivity(MainActivity.getIntent(this))
