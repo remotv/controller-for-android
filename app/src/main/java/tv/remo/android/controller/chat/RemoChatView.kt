@@ -38,8 +38,8 @@ class RemoChatView : RecyclerView{
 
     private val onUserRemovedReceiver = LocalBroadcastReceiverExtended(context,
             IntentFilter(RemoSocketComponent.REMO_CHAT_USER_REMOVED_BROADCAST)){ _, intent ->
-        intent?.extras?.getString("username", null)?.let {
-            remoAdapter?.removeUser(it)
+        intent?.extras?.getString("userId", null)?.let {
+            remoAdapter?.removeUserWithUserId(it)
         }
     }
 

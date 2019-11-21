@@ -15,10 +15,7 @@ import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import org.json.JSONObject
-import tv.remo.android.controller.sdk.models.api.Channel
-import tv.remo.android.controller.sdk.models.api.Message
-import tv.remo.android.controller.sdk.models.api.RobotCommand
-import tv.remo.android.controller.sdk.models.api.RobotServerInfo
+import tv.remo.android.controller.sdk.models.api.*
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 import tv.remo.android.controller.sdk.utils.SocketListener
 import tv.remo.android.controller.sdk.utils.isUrl
@@ -88,6 +85,8 @@ class RemoSocketComponent : Component() {
             sendChatUpwards(it)
         }.on("BUTTON_COMMAND"){
             sendCommandUpwards(it)
+        }.on("LOCAL_MODERATION"){
+            processChatModeration(it)
         }
         //.on("SEND_CHAT") //TODO? of type Messages
     }
@@ -180,6 +179,14 @@ class RemoSocketComponent : Component() {
         socket?.send(json)
     }
 
+    private fun processChatModeration(json: String) {
+        Gson().fromJson(json, Moderation::class.java).also { moderationData ->
+            if(moderationData.serverId == activeChannel?.hostId){
+                broadcastChatMessageRemovalRequest(context!!, moderationData.user)
+            }
+        }
+    }
+
     private fun verifyAndSubToChannel(json: String) {
         serverInfo = Gson().fromJson(json, RobotServerInfo::class.java).also { serverInfo ->
             for (channel in serverInfo.channels) {
@@ -240,6 +247,16 @@ class RemoSocketComponent : Component() {
                 eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
                     it, this))
             }
+        }
+
+        fun broadcastChatMessageRemovalRequest(context: Context, userId: String){
+            //send the packet via Local Broadcast. Anywhere in this app can intercept this
+            LocalBroadcastManager.getInstance(context)
+                .sendBroadcast(
+                    Intent(REMO_CHAT_USER_REMOVED_BROADCAST)
+                        .also { intent ->
+                            intent.putExtra("userId", userId)
+                        })
         }
 
         fun broadcastChatMessage(context: Context, msg: Message) {
