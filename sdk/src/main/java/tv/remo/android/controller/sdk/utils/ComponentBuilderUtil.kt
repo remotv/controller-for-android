@@ -79,8 +79,8 @@ object ComponentBuilderUtil {
                 ,deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref())
                 ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
                 ,bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512
-                ,width = 1280
-                ,height = 720
+                ,width = resolution[0].toInt()
+                ,height = resolution[1].toInt()
             )
             //use our customized remo classes
             VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
