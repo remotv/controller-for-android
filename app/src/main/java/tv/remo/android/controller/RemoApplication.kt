@@ -1,11 +1,11 @@
 package tv.remo.android.controller
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 
 /**
  * Created by Brendon on 7/28/2019.
  */
-class RemoApplication : Application() {
+class RemoApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

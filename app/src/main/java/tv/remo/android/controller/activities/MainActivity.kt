@@ -16,6 +16,8 @@ import org.btelman.controlsdk.services.observeAutoCreate
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.integration.discord.DiscordComponent
+import tv.remo.android.controller.sdk.integration.discord.DiscordData
 import tv.remo.android.controller.sdk.models.api.Message
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
@@ -101,6 +103,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
+            val discordModel = DiscordData("TOKEN", 76800)
+            arrayList.add(ComponentHolder(DiscordComponent::class.java, discordModel.toBundle()))
         }
     }
 
