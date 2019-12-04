@@ -46,21 +46,18 @@ class RemoChatAdapter(
         var color = colorTable[senderId]
         if(color == null){
             val random = Random()
-            val min = .2f
-            val max = 1f
+            val range = Pair(.2f, 1f)
             color = rgbCompat(
-                randomFloatRange(min, max, random),
-                randomFloatRange(min, max, random),
-                randomFloatRange(min, max, random)
+                ValueUtil.randomFloatRange(range, random),
+                ValueUtil.randomFloatRange(range, random),
+                ValueUtil.randomFloatRange(range, random)
             )
             colorTable[senderId] = color
         }
         return color
     }
 
-    fun randomFloatRange(min : Float, max : Float, random : Random = Random()) : Float{
-        return ValueUtil.map(random.nextFloat(), 0f, 1f, min, max, 1.0f)
-    }
+
 
     /**
      * We have to copy and paste Color.rgb to actually get this Int...
