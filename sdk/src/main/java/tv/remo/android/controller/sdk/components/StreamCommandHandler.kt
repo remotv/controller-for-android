@@ -40,16 +40,20 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
 
     private fun handleStringCommand(data: String) {
         context?:return
-        when {
-            data == ".stream sleep" -> {
-                sleepMode = true
-                streamHandler.acquireRetriever().disable()
+        when (data) {
+            ".stream sleep" -> {
+                if(!sleepMode){
+                    sleepMode = true
+                    streamHandler.acquireRetriever().disable()
+                }
             }
-            data == ".stream wakeup" -> {
-                sleepMode = false
-                streamHandler.acquireRetriever().enable(context, streamHandler.pullStreamInfo())
+            ".stream wakeup" -> {
+                if(sleepMode) {
+                    sleepMode = false
+                    streamHandler.acquireRetriever().enable(context, streamHandler.pullStreamInfo())
+                }
             }
-            data == ".stream reset" -> {
+            ".stream reset" -> {
                 sleepMode = false
                 reload()
             }
