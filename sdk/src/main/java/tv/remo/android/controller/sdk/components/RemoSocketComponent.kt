@@ -12,6 +12,7 @@ import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import org.json.JSONObject
+import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.models.api.*
 import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
@@ -31,6 +32,7 @@ class RemoSocketComponent : Component() {
     private var url: String? = null
     var request : Request? = null
     val client = OkHttpClient()
+    var allowChat = false
     private var serverInfo: RobotServerInfo? = null
     private var activeChannel : Channel? = null
 
@@ -40,6 +42,9 @@ class RemoSocketComponent : Component() {
         url = EndpointBuilder.buildWebsocketUrl(applicationContext)
         activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
         apiKey?: throw Exception("api key not found")
+        RemoSettingsUtil.with(applicationContext){
+            allowChat = it.siteTextToSpeechEnabled.getPref()
+        }
     }
 
     override fun enableInternal() {
@@ -112,9 +117,9 @@ class RemoSocketComponent : Component() {
             if(rawMessage.type == "robot") return //we don't want the robot talking to itself
             if(activeChannel?.id != rawMessage.channelId) return
             val message = lookForCommandsAndMaybeReplace(rawMessage)
-            ChatUtil.broadcastChatMessage(context!!, message)
-            if(searchAndSendCommand(message)) return
 
+            if(searchAndSendCommand(message) || !allowChat) return
+            ChatUtil.broadcastChatMessage(context!!, message)
             //filter urls out after command sending in case something is implemented to handle urls
             if(message.message.isUrl()) return
 
