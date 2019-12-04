@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
@@ -15,28 +17,22 @@ import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.models.api.Message
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var recording = false
     private val arrayList = ArrayList<ComponentHolder<*>>()
     private var controlSDKServiceApi: ControlSdkApi? = null
+    private lateinit var handler : Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        handler = Handler(Looper.getMainLooper())
         setContentView(R.layout.activity_main)
-        settingsButton.setOnClickListener(this)
-
-        controlSDKServiceApi = ControlSDKServiceConnection.getNewInstance(this)
-        controlSDKServiceApi?.getServiceStateObserver()?.observeAutoCreate(this, operationObserver)
-        controlSDKServiceApi?.getServiceBoundObserver()?.observeAutoCreate(this){ connected ->
-            powerButton.isEnabled = connected == Operation.OK
-        }
-        controlSDKServiceApi?.connectToService()
-        createComponentHolders()
-        powerButton?.setOnClickListener(this)
+        setupControlSDK()
+        setupUI()
     }
 
     override fun onClick(v: View?) {
@@ -46,6 +42,35 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && recording) hideSystemUI()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        controlSDKServiceApi?.disconnectFromService()
+    }
+
+    private fun setupControlSDK() {
+        controlSDKServiceApi = ControlSDKServiceConnection.getNewInstance(this)
+        controlSDKServiceApi?.getServiceStateObserver()?.observeAutoCreate(this, operationObserver)
+        controlSDKServiceApi?.getServiceBoundObserver()?.observeAutoCreate(this){ connected ->
+            powerButton.isEnabled = connected == Operation.OK
+        }
+        controlSDKServiceApi?.connectToService()
+        createComponentHolders()
+    }
+
+    private fun setupUI() {
+        remoChatView.setOnTouchListener { _, _ ->
+            handleSleepLayoutTouch()
+            return@setOnTouchListener false
+        }
+        settingsButton.setOnClickListener(this)
+        powerButton?.setOnClickListener(this)
+    }
+
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
         powerButton?.let {
             powerButton.setTextColor(parseColorForOperation(serviceStatus))
@@ -53,16 +78,46 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             powerButton.isEnabled = !isLoading
             if(isLoading) return@let //processing command. Disable button
             recording = serviceStatus == Operation.OK
-            /*if(recording && settings.autoHideMainControls.value)
-                startSleepDelayed()*/
+            if(recording) {
+                handleSleepLayoutTouch()
+            }
+            else{
+                remoChatView.keepScreenOn = false //go ahead and remove the flag
+            }
+        }
+    }
+
+    private fun handleSleepLayoutTouch(): Boolean {
+        showSystemUI()
+        RemoSettingsUtil.with(this){
+            if(it.keepScreenOn.getPref()){
+                remoChatView.keepScreenOn = true //Could be attached to any view, but this is fine
+            }
+            if(it.hideScreenControls.getPref()){
+                startSleepDelayed()
+            }
+        }
+        return false
+    }
+
+    private fun startSleepDelayed() {
+        buttonGroupMainActivity.visibility = View.VISIBLE
+        handler.removeCallbacks(hideScreenRunnable)
+        handler.postDelayed(hideScreenRunnable, 10000) //10 second delay
+    }
+
+    private val hideScreenRunnable = Runnable {
+        if (recording){
+            buttonGroupMainActivity.visibility = View.GONE
+            hideSystemUI()
         }
     }
 
     private fun UnitTestRunChat(){
         val json = "{\"message\":\"test\",\"sender\":\"ReconDelta090\",\"sender_id\":\"user-6a9591cc-f3d3-4e47-a208-e749679a899a\",\"chat_id\":\"chat-8a05f730-c663-434d-9f24-6d8c24453c5f\",\"server_id\":\"serv-46437781-4a9b-4531-9db1-74bc2f818b58\",\"id\":\"mesg-ec54bf9a-23d4-4fa6-b6f1-9a5c8e3e2440\",\"time_stamp\":1574296097994,\"broadcast\":\"\",\"channel_id\":\"chan-7a304995-cba0-463c-81a6-ffeffc059058\",\"display_message\":true,\"badges\":[\"owner\"],\"type\":\"\"}"
         Gson().fromJson(json, Message::class.java).also { rawMessage ->
-            RemoSocketComponent.broadcastChatMessage(this, rawMessage)
-            RemoSocketComponent.broadcastChatMessage(this, rawMessage) //should just be ignored
+            ChatUtil.broadcastChatMessage(this, rawMessage)
+            ChatUtil.broadcastChatMessage(this, rawMessage) //should just be ignored
         }
     }
 
@@ -102,9 +157,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        controlSDKServiceApi?.disconnectFromService()
+    private fun hideSystemUI() {
+        // Enables regular immersive mode.
+        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
+        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    // Shows the system bars by removing all the flags
+// except for the ones that make the content appear under the system bars.
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
     }
 
     companion object{

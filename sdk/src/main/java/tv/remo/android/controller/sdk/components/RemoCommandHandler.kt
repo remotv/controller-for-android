@@ -7,6 +7,7 @@ import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.models.api.User
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import kotlin.system.exitProcess
 
 /**
@@ -169,7 +170,7 @@ class RemoCommandHandler : Component(){
     }
 
     private fun sendChat(message : String){
-        RemoSocketComponent.sendToSiteChat(eventDispatcher,message)
+        ChatUtil.sendToSiteChat(eventDispatcher,message)
     }
 
     override fun getType(): ComponentType {

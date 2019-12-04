@@ -5,6 +5,7 @@ import android.content.IntentFilter
 import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.models.api.Message
 import tv.remo.android.controller.sdk.utils.LocalBroadcastReceiverExtended
@@ -28,14 +29,6 @@ class RemoChatView : RecyclerView{
         }
     }
 
-    private val onChatMessageRemovedReceiver = LocalBroadcastReceiverExtended(
-            context,
-            IntentFilter(RemoSocketComponent.REMO_CHAT_MESSAGE_REMOVED_BROADCAST)){ _, intent ->
-        intent?.extras?.getString("message_id", null)?.let {
-            remoAdapter?.removeMessage(it)
-        }
-    }
-
     private val onUserRemovedReceiver = LocalBroadcastReceiverExtended(context,
             IntentFilter(RemoSocketComponent.REMO_CHAT_USER_REMOVED_BROADCAST)){ _, intent ->
         intent?.extras?.getString("userId", null)?.let {
@@ -52,8 +45,11 @@ class RemoChatView : RecyclerView{
                 (layoutManager as LinearLayoutManager).smoothScrollToPosition(recyclerView, null, adapter!!.itemCount)
             }
         })
-        onChatMessageRemovedReceiver.register()
-        onUserRemovedReceiver.register()
-        onChatMessageReceiver.register()
+        RemoSettingsUtil.with(context){
+            if(it.chatDisplayEnabled.getPref()){
+                onUserRemovedReceiver.register()
+                onChatMessageReceiver.register()
+            }
+        }
     }
 }

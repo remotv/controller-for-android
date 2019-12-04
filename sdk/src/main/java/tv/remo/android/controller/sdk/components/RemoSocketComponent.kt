@@ -1,21 +1,19 @@
 package tv.remo.android.controller.sdk.components
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
 import org.btelman.controlsdk.enums.ComponentType
-import org.btelman.controlsdk.interfaces.ComponentEventListener
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import org.json.JSONObject
 import tv.remo.android.controller.sdk.models.api.*
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 import tv.remo.android.controller.sdk.utils.SocketListener
 import tv.remo.android.controller.sdk.utils.isUrl
@@ -114,7 +112,7 @@ class RemoSocketComponent : Component() {
             if(rawMessage.type == "robot") return //we don't want the robot talking to itself
             if(activeChannel?.id != rawMessage.channelId) return
             val message = lookForCommandsAndMaybeReplace(rawMessage)
-            broadcastChatMessage(context!!, message)
+            ChatUtil.broadcastChatMessage(context!!, message)
             if(searchAndSendCommand(message)) return
 
             //filter urls out after command sending in case something is implemented to handle urls
@@ -182,7 +180,7 @@ class RemoSocketComponent : Component() {
     private fun processChatModeration(json: String) {
         Gson().fromJson(json, Moderation::class.java).also { moderationData ->
             if(moderationData.serverId == activeChannel?.hostId){
-                broadcastChatMessageRemovalRequest(context!!, moderationData.user)
+                ChatUtil.broadcastChatMessageRemovalRequest(context!!, moderationData.user)
             }
         }
     }
@@ -228,7 +226,6 @@ class RemoSocketComponent : Component() {
         const val API_TOKEN_BUNDLE_KEY = "API_TOKEN"
         const val CHANNEL_ID_BUNDLE_KEY = "CHANNEL_ID"
         const val REMO_CHAT_MESSAGE_WITH_NAME_BROADCAST = "tv.remo.chat.chat_message_with_name"
-        const val REMO_CHAT_MESSAGE_REMOVED_BROADCAST = "tv.remo.chat.message_removed"
         const val REMO_CHAT_USER_REMOVED_BROADCAST = "tv.remo.chat.user_removed"
 
         fun createBundle(apiKey : String, channelId : String? = null) : Bundle {
@@ -240,33 +237,6 @@ class RemoSocketComponent : Component() {
 
         private fun sendMessage(webSocket: WebSocket, event: String, data: String) {
             webSocket.send("{\"e\":\"$event\",\"d\":\"$data\"}")
-        }
-
-        fun sendToSiteChat(eventDispatcher : ComponentEventListener?, message : String){
-            RemoSocketChatPacket(message).also {
-                eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
-                    it, this))
-            }
-        }
-
-        fun broadcastChatMessageRemovalRequest(context: Context, userId: String){
-            //send the packet via Local Broadcast. Anywhere in this app can intercept this
-            LocalBroadcastManager.getInstance(context)
-                .sendBroadcast(
-                    Intent(REMO_CHAT_USER_REMOVED_BROADCAST)
-                        .also { intent ->
-                            intent.putExtra("userId", userId)
-                        })
-        }
-
-        fun broadcastChatMessage(context: Context, msg: Message) {
-            //send the packet via Local Broadcast. Anywhere in this app can intercept this
-            LocalBroadcastManager.getInstance(context)
-                .sendBroadcast(
-                    Intent(REMO_CHAT_MESSAGE_WITH_NAME_BROADCAST)
-                        .also { intent ->
-                            intent.putExtra("json", msg)
-                        })
         }
     }
 }

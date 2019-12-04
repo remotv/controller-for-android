@@ -15,6 +15,7 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
 import tv.remo.android.controller.sdk.models.CommandSubscriptionData
+import tv.remo.android.controller.sdk.utils.ChatUtil
 
 /**
  * Remo Audio component.
@@ -73,12 +74,12 @@ class RemoAudioComponent : AudioComponent() , CommandStreamHandler {
                 disableInternal()
                 "audio muted".also { text ->
                     sendChatUp(text)
-                    RemoSocketComponent.sendToSiteChat(eventDispatcher,text)
+                    ChatUtil.sendToSiteChat(eventDispatcher,text)
                 }
             })
             add(CommandSubscriptionData(false, "/audio unmute"){
                 super.enableInternal()
-                RemoSocketComponent.sendToSiteChat(eventDispatcher,"audio unmuted")
+                ChatUtil.sendToSiteChat(eventDispatcher,"audio unmuted")
                 sendChatUp("The Microphone is back on")
             })
         }
@@ -95,13 +96,13 @@ class RemoAudioComponent : AudioComponent() , CommandStreamHandler {
 
     private fun setNewBitrate(value: Int) {
         if(context?.resources?.getStringArray(R.array.bitrate_audio_list_values)?.contains(value.toString()) != true){
-            RemoSocketComponent.sendToSiteChat(eventDispatcher, "audio bitrate not accepted! Accepted options: 32, 64, 128, 192")
+            ChatUtil.sendToSiteChat(eventDispatcher, "audio bitrate not accepted! Accepted options: 32, 64, 128, 192")
         }
         else{
             RemoSettingsUtil.with(context!!){
                 it.microphoneBitrate.apply {
                     sharedPreferences.edit().putString(key, value.toString()).apply()
-                    RemoSocketComponent.sendToSiteChat(eventDispatcher,"Setting saved. Reloading audio...")
+                    ChatUtil.sendToSiteChat(eventDispatcher,"Setting saved. Reloading audio...")
                 }
 
                 //we only care about rebooting ffmpeg
