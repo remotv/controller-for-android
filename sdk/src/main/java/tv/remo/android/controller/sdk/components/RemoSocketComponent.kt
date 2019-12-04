@@ -12,10 +12,9 @@ import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import org.json.JSONObject
-import tv.remo.android.controller.sdk.models.api.Channel
-import tv.remo.android.controller.sdk.models.api.Message
-import tv.remo.android.controller.sdk.models.api.RobotCommand
-import tv.remo.android.controller.sdk.models.api.RobotServerInfo
+import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.models.api.*
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 import tv.remo.android.controller.sdk.utils.SocketListener
 import tv.remo.android.controller.sdk.utils.isUrl
@@ -33,6 +32,7 @@ class RemoSocketComponent : Component() {
     private var url: String? = null
     var request : Request? = null
     val client = OkHttpClient()
+    var allowChat = false
     private var serverInfo: RobotServerInfo? = null
     private var activeChannel : Channel? = null
 
@@ -42,6 +42,9 @@ class RemoSocketComponent : Component() {
         url = EndpointBuilder.buildWebsocketUrl(applicationContext)
         activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
         apiKey?: throw Exception("api key not found")
+        RemoSettingsUtil.with(applicationContext){
+            allowChat = it.siteTextToSpeechEnabled.getPref()
+        }
     }
 
     override fun enableInternal() {
@@ -85,6 +88,8 @@ class RemoSocketComponent : Component() {
             sendChatUpwards(it)
         }.on("BUTTON_COMMAND"){
             sendCommandUpwards(it)
+        }.on("LOCAL_MODERATION"){
+            processChatModeration(it)
         }
         //.on("SEND_CHAT") //TODO? of type Messages
     }
@@ -112,8 +117,9 @@ class RemoSocketComponent : Component() {
             if(rawMessage.type == "robot") return //we don't want the robot talking to itself
             if(activeChannel?.id != rawMessage.channelId) return
             val message = lookForCommandsAndMaybeReplace(rawMessage)
-            if(searchAndSendCommand(message)) return
 
+            if(searchAndSendCommand(message) || !allowChat) return
+            ChatUtil.broadcastChatMessage(context!!, message)
             //filter urls out after command sending in case something is implemented to handle urls
             if(message.message.isUrl()) return
 
@@ -176,6 +182,14 @@ class RemoSocketComponent : Component() {
         socket?.send(json)
     }
 
+    private fun processChatModeration(json: String) {
+        Gson().fromJson(json, Moderation::class.java).also { moderationData ->
+            if(moderationData.serverId == activeChannel?.hostId){
+                ChatUtil.broadcastChatMessageRemovalRequest(context!!, moderationData.user)
+            }
+        }
+    }
+
     private fun verifyAndSubToChannel(json: String) {
         serverInfo = Gson().fromJson(json, RobotServerInfo::class.java).also { serverInfo ->
             for (channel in serverInfo.channels) {
@@ -216,6 +230,8 @@ class RemoSocketComponent : Component() {
     companion object{
         const val API_TOKEN_BUNDLE_KEY = "API_TOKEN"
         const val CHANNEL_ID_BUNDLE_KEY = "CHANNEL_ID"
+        const val REMO_CHAT_MESSAGE_WITH_NAME_BROADCAST = "tv.remo.chat.chat_message_with_name"
+        const val REMO_CHAT_USER_REMOVED_BROADCAST = "tv.remo.chat.user_removed"
 
         fun createBundle(apiKey : String, channelId : String? = null) : Bundle {
             return Bundle().apply {

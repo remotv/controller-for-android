@@ -7,14 +7,15 @@ import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.models.api.User
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import kotlin.system.exitProcess
 
 /**
  * Handle and potentially filter controls/commands.
  * Any commands not handled through Android will get sent the the robot if possible.
  *
- * ex. `/devmode on` will get processed in Android, and not sent to the bot,
- * but `/speed 100` is not processed, and will get sent to the bot as is
+ * ex. `.devmode on` will get processed in Android, and not sent to the bot,
+ * but `.speed 100` is not processed, and will get sent to the bot as is
  *
  * Commands can come from a button or from the chat. Commands from chat are only able to be used
  * by the owner and moderators
@@ -58,21 +59,22 @@ class RemoCommandHandler : Component(){
     private fun handleCommand(packet: Packet) {
         val command = packet.message
         when {
-            command == "/estop" -> {
+            command == ".estop" -> {
+                sendChat("Shutting Down...")
                 sendHardwareCommand("stop")
                 exclusiveUser = ""
                 handler.postDelayed({
                     exitProcess(0)
                 }, 500)
             }
-            command == "/stationary" -> handleStationary(packet)
-            command == "/table on" -> handleStationary(packet, true)
-            command == "/table off" -> handleStationary(packet, false)
-            command == "/devmode on" -> handleDevMode(packet, true)
-            command == "/devmode off" -> handleDevMode(packet, false)
-            command.startsWith("/bitrate") -> handleVideoAudioCommand(command)
-            command.startsWith("/stream") -> handleVideoAudioCommand(command)
-            command.contains("/xcontrol") -> parseXControl(packet)
+            command == ".stationary" -> handleStationary(packet)
+            command == ".table on" -> handleStationary(packet, true)
+            command == ".table off" -> handleStationary(packet, false)
+            command == ".devmode on" -> handleDevMode(packet, true)
+            command == ".devmode off" -> handleDevMode(packet, false)
+            command.startsWith(".bitrate") -> handleVideoAudioCommand(command)
+            command.startsWith(".stream") || command.startsWith(".audio") -> handleVideoAudioCommand(command)
+            command.contains(".xcontrol") -> parseXControl(packet)
             else -> processCommand(packet)
         }
     }
@@ -167,9 +169,8 @@ class RemoCommandHandler : Component(){
         }
     }
 
-    fun sendChat(message : String){
-        eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
-            RemoSocketComponent.RemoSocketChatPacket(message), this))
+    private fun sendChat(message : String){
+        ChatUtil.sendToSiteChat(eventDispatcher,message)
     }
 
     override fun getType(): ComponentType {

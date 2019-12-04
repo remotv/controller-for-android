@@ -13,6 +13,7 @@ import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.components.StreamCommandHandler.Companion.rebuildStream
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
 import tv.remo.android.controller.sdk.models.CommandSubscriptionData
+import tv.remo.android.controller.sdk.utils.ChatUtil
 
 /**
  * Created by Brendon on 10/27/2019.
@@ -45,6 +46,7 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
         streamInfo = rebuildStream(streamInfo) {
             //TODO save this value to prefs
             putInt("bitrate", bitrate) //overwrite the endpoint with the new one
+            ChatUtil.sendToSiteChat(eventDispatcher,"Reloading streaming...")
         }
         resetComponents()
     }
@@ -76,9 +78,15 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
 
     override fun onRegisterCustomCommands(): ArrayList<CommandSubscriptionData>? {
         return ArrayList<CommandSubscriptionData>().apply {
-            add(CommandSubscriptionData(false, "/bitrate"){ bitrateUnprocessed ->
-                bitrateUnprocessed.replace("/bitrate ", "").toIntOrNull()?.let{
-                    setNewBitrate(it)
+            add(CommandSubscriptionData(false, ".bitrate ") { bitrateString ->
+                setNewBitrate(bitrateString.toInt())
+            })
+            add(CommandSubscriptionData(true, ".stream sleep"){
+                retriever.removeListenerForFrame()
+            })
+            add(CommandSubscriptionData(true, ".stream wakeup"){
+                retriever.listenForFrame{
+                    onFrameUpdate()
                 }
             })
         }

@@ -65,9 +65,6 @@
     <string name="textToSpeech">Text To Speech</string>
     <string name="audioSettingsTTSRemoEnabledTitle">Allow Text To Speech</string>
     <string name="audioSettingsTTSRemoEnabledSummary">Receive chat from remo.tv. Still will allow commands if disabled</string>
-    <string name="audioBanVoiceTitle">Timeout/Ban Notify</string>
-    <string name="audioBanVoiceSummary">Robot will say \'User timed out\' or \'User banned\' and
-        will stop current TTS sound</string>
     <string name="audioInternalTTSTitle">Internal App Messages</string>
     <string name="audioInternalTTSSummary">Internal app events via TTS, such as
         connectivity</string>

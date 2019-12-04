@@ -24,7 +24,6 @@
     <string name="audioSettingsTTSGroupKey">ttsCategoryKey</string>
     <string name="audioSettingsTTSRemoEnabledKey">ttsRemoEnabled</string>
     <string name="audioGenericTTSCategoryKey">genericTTSCategoryKey</string>
-    <string name="audioBanVoiceEnabledKey">banVoiceEnabledKey</string>
     <string name="audioTTSInternalEnabledKey">ttsInternalEnabled</string>
     <string name="audioSystemSettingsGroupKey">systemSoundSettings</string>
     <string name="audioVolumeSystemSettingsKey">volumeSettingsPage</string>

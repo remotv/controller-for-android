@@ -61,7 +61,6 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     //tts related settings
     val textToSpeechEnabled = BooleanPref(context, sharedPreferences, R.string.audioSettingsEnableKey, false)
     val siteTextToSpeechEnabled = BooleanPref(context, sharedPreferences, R.string.audioSettingsTTSRemoEnabledKey, false)
-    val ttsWhenUserBannedEnabled = BooleanPref(context, sharedPreferences, R.string.audioBanVoiceEnabledKey, false)
     val ttsInternalEnabled = BooleanPref(context, sharedPreferences, R.string.audioTTSInternalEnabledKey, false)
 
     //display settings
