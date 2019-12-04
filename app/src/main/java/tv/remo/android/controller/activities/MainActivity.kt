@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         controlSDKServiceApi?.connectToService()
         createComponentHolders()
         powerButton?.setOnClickListener(this)
-        UnitTestRunChat()
     }
 
     override fun onClick(v: View?) {
@@ -58,8 +57,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 startSleepDelayed()*/
         }
     }
-
-
 
     private fun UnitTestRunChat(){
         val json = "{\"message\":\"test\",\"sender\":\"ReconDelta090\",\"sender_id\":\"user-6a9591cc-f3d3-4e47-a208-e749679a899a\",\"chat_id\":\"chat-8a05f730-c663-434d-9f24-6d8c24453c5f\",\"server_id\":\"serv-46437781-4a9b-4531-9db1-74bc2f818b58\",\"id\":\"mesg-ec54bf9a-23d4-4fa6-b6f1-9a5c8e3e2440\",\"time_stamp\":1574296097994,\"broadcast\":\"\",\"channel_id\":\"chan-7a304995-cba0-463c-81a6-ffeffc059058\",\"display_message\":true,\"badges\":[\"owner\"],\"type\":\"\"}"
