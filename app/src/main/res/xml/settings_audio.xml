@@ -20,12 +20,6 @@
             app:defaultValue="true"
             app:title="@string/audioInternalTTSTitle"
             app:summary="@string/audioInternalTTSSummary"/>
-
-        <SwitchPreferenceCompat
-            app:key="@string/audioBanVoiceEnabledKey"
-            app:title="@string/audioBanVoiceTitle"
-            app:dependency="@string/audioTTSInternalEnabledKey"
-            app:summary="@string/audioBanVoiceSummary"/>
     </PreferenceCategory>
     <PreferenceCategory
         app:key="@string/audioSystemSettingsGroupKey"

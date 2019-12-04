@@ -27,7 +27,7 @@
         android:layout_gravity="center_vertical"
         android:maxLines="2"
         android:ellipsize="end"
-        android:textAppearance="@style/AppTheme.SwitchBar"
+        android:textAppearance="@style/AppThemeWithActionBar.SwitchBar"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp"
         android:gravity="start" />

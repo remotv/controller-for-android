@@ -35,10 +35,6 @@
             android:id="@+id/action_settingsLanding_to_licenseViewer"
             app:destination="@id/licenseViewer" />
     </fragment>
-    <action
-        android:id="@+id/action_nav_settings_pop"
-        app:popUpTo="@id/nav_settings"
-        app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/settingsConnection"
         android:name="tv.remo.android.controller.fragments.SettingsConnection"
@@ -88,4 +84,9 @@
         android:name="tv.remo.android.controller.fragments.SettingsLicenseViewer"
         android:label="@string/openSourceSettingsTitle"
         tools:layout="@layout/fragment_license_viewer" />
+    <action
+            android:id="@+id/action_nav_settings_pop2"
+            app:popUpTo="@id/nav_settings"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true" />
 </navigation>

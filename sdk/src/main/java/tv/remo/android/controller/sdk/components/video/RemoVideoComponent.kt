@@ -13,6 +13,7 @@ import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.components.StreamCommandHandler.Companion.rebuildStream
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
 import tv.remo.android.controller.sdk.models.CommandSubscriptionData
+import tv.remo.android.controller.sdk.utils.ChatUtil
 
 /**
  * Created by Brendon on 10/27/2019.
@@ -45,7 +46,7 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
         streamInfo = rebuildStream(streamInfo) {
             //TODO save this value to prefs
             putInt("bitrate", bitrate) //overwrite the endpoint with the new one
-            RemoSocketComponent.sendToSiteChat(eventDispatcher,"Reloading streaming...")
+            ChatUtil.sendToSiteChat(eventDispatcher,"Reloading streaming...")
         }
         resetComponents()
     }
