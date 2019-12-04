@@ -67,17 +67,17 @@ class RemoAudioComponent : AudioComponent() , CommandStreamHandler {
 
     override fun onRegisterCustomCommands(): ArrayList<CommandSubscriptionData>? {
         return ArrayList<CommandSubscriptionData>().apply {
-            add(CommandSubscriptionData(false, "/audio bitrate "){ bitrateString ->
+            add(CommandSubscriptionData(false, ".audio bitrate "){ bitrateString ->
                 setNewBitrate(bitrateString.toInt())
             })
-            add(CommandSubscriptionData(false, "/audio mute"){
+            add(CommandSubscriptionData(false, ".audio mute"){
                 disableInternal()
                 "audio muted".also { text ->
                     sendChatUp(text)
                     ChatUtil.sendToSiteChat(eventDispatcher,text)
                 }
             })
-            add(CommandSubscriptionData(false, "/audio unmute"){
+            add(CommandSubscriptionData(false, ".audio unmute"){
                 super.enableInternal()
                 ChatUtil.sendToSiteChat(eventDispatcher,"audio unmuted")
                 sendChatUp("The Microphone is back on")
