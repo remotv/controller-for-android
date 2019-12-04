@@ -64,11 +64,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             RemoSocketComponent.broadcastChatMessage(this, rawMessage)
             RemoSocketComponent.broadcastChatMessage(this, rawMessage) //should just be ignored
         }
-
     }
 
     private fun launchSettings() {
-        controlSDKServiceApi?.disable()
+        if(controlSDKServiceApi?.getServiceStateObserver()?.value == Operation.OK){
+            powerCycle()
+        }
         startActivity(SettingsActivity.getIntent(this))
         finish()
     }
