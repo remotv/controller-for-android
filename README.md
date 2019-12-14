@@ -72,6 +72,12 @@ with settings that can be changed. Going into the connection section will bring 
  
 ### Supported Commands ###
 
+#### Flush TTS ####
+
+Flush the current TTS queue, in case of spam.
+
+`.flush tts`
+
 #### Table mode ####
 Only the owner can use this.
 Turns on table top mode, not allowing 'f' and 'b' commands, but allows everything else. Not case sensitive

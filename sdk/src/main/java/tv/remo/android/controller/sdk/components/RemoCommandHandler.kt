@@ -5,6 +5,7 @@ import android.os.Bundle
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
+import org.btelman.controlsdk.tts.TTSBaseComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.models.api.User
 import tv.remo.android.controller.sdk.utils.ChatUtil
@@ -67,6 +68,7 @@ class RemoCommandHandler : Component(){
                     exitProcess(0)
                 }, 500)
             }
+            command == ".flush tts" -> flushChat()
             command == ".stationary" -> handleStationary(packet)
             command == ".table on" -> handleStationary(packet, true)
             command == ".table off" -> handleStationary(packet, false)
@@ -76,6 +78,20 @@ class RemoCommandHandler : Component(){
             command.startsWith(".stream") || command.startsWith(".audio") -> handleVideoAudioCommand(command)
             command.contains(".xcontrol") -> parseXControl(packet)
             else -> processCommand(packet)
+        }
+    }
+
+    private fun flushChat() {
+        TTSBaseComponent.TTSObject(
+            "",
+            1.0f,
+            "",
+            false,
+            true,
+            true,
+            true
+        ).also {
+            eventDispatcher?.handleMessage(ComponentEventObject(ComponentType.TTS, EVENT_MAIN, it, this))
         }
     }
 
