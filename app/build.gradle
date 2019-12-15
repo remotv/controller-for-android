@@ -20,8 +20,8 @@ android {
         applicationId "tv.remo.android.controller"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 8
-        versionName "0.12.1"
+        versionCode 9
+        versionName "0.13.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
