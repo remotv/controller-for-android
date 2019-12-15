@@ -25,26 +25,30 @@ class SettingsCamera : BasePreferenceFragmentCompat(
             val currCameraId = it.cameraDeviceId.getPref()
             checkForCamera2SupportAndReact(it.cameraDeviceId.getPref())
             updateUIFromCameraSelection(currCameraId)
-            listenAndReplaceIfEmpty(
-                R.string.ffmpegOutputOptionsPrefsKey,
-                R.string.ffmpegDefaultOutputOptions
-            )
-            listenAndReplaceIfEmpty(
-                R.string.ffmpegInputOptionsPrefsKey,
-                R.string.ffmpegDefaultInputOptions
-            )
-            listenAndReplaceIfEmpty(
-                R.string.ffmpegFilterAddition,
-                R.string.ffmpegDefaultFilterOptions, true
-            )
-            listenToPref<ListPreference>(R.string.cameraDeviceIdKey) { _, value ->
-                (value as String).toInt().also { value ->
-                    updateUIFromCameraSelection(value)
-                    checkForCamera2SupportAndReact(value)
-                }
+            addListeners()
+        }
+    }
 
-                true
+    private fun addListeners() {
+        listenAndReplaceIfEmpty(
+            R.string.ffmpegOutputOptionsPrefsKey,
+            R.string.ffmpegDefaultOutputOptions
+        )
+        listenAndReplaceIfEmpty(
+            R.string.ffmpegInputOptionsPrefsKey,
+            R.string.ffmpegDefaultInputOptions
+        )
+        listenAndReplaceIfEmpty(
+            R.string.ffmpegFilterAddition,
+            R.string.ffmpegDefaultFilterOptions, true
+        )
+        listenToPref<ListPreference>(R.string.cameraDeviceIdKey) { _, value ->
+            (value as String).toInt().also { value ->
+                updateUIFromCameraSelection(value)
+                checkForCamera2SupportAndReact(value)
             }
+
+            true
         }
     }
 
