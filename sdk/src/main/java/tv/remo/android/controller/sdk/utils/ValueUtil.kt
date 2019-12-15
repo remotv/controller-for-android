@@ -24,4 +24,9 @@ object ValueUtil {
         }
         return output
     }
+
+    //https://stackoverflow.com/questions/6618994/simplifying-fractions-in-java/6619098
+    fun gcm(a: Int, b: Int): Int {
+        return if (b == 0) a else gcm(b, a % b) // Not bad for one line of code :)
+    }
 }

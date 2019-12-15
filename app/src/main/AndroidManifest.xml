@@ -21,6 +21,22 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name=".activities.UsbInterceptor"
+                android:excludeFromRecents="true"
+                android:exported="false"
+                android:label="Remo.TV USB"
+                android:noHistory="true"
+                android:process=":UsbEventReceiverActivityProcess"
+                android:taskAffinity="tv.remo.android.controller.taskAffinityUsbEventReceiver">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                    android:resource="@xml/usb_device_filter" />
+        </activity>
     </application>
 
 </manifest>
