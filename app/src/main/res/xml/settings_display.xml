@@ -8,7 +8,7 @@
 
     <SwitchPreferenceCompat
         app:key="@string/displayPersistKey"
-        app:defaultValue="true"
+        app:defaultValue="false"
         app:title="@string/displayPersistTitle"
         app:summary="@string/displayPersistSummary"/>
 
@@ -20,7 +20,7 @@
 
     <SwitchPreferenceCompat
         app:key="@string/autoHideControlsEnabledKey"
-        app:defaultValue="true"
+        app:defaultValue="false"
         app:title="@string/autoHideControlsEnabledTitle"
         app:summary="@string/autoHideControlsEnabledSummary"/>
     </PreferenceCategory>
