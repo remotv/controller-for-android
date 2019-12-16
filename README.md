@@ -60,7 +60,7 @@ Feel free to add your device to this list if you have tested it via a pull reque
 
 - Pixel 2 XL (9 Pie)
 
-- Samsung Galaxy J5 (tested with 768x432, 512kb/s)
+- Samsung Galaxy J5
 
 - Samsung Galaxy M20 (9 Pie)
 
