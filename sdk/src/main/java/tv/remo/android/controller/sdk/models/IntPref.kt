@@ -19,4 +19,7 @@ class IntPref(
             sharedPreferences.getString(key, defaultValue.toString())?.toInt() ?: defaultValue
         }
     }
+    override fun setPref(value : Int) {
+        sharedPreferences.edit().putInt(key, value).apply()
+    }
 }

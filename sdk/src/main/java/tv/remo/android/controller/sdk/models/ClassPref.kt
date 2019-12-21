@@ -17,4 +17,8 @@ class ClassPref(context : Context, sharedPreferences: SharedPreferences, resId: 
             defaultValue
         }
     }
+
+    override fun setPref(value : Class<*>) {
+        sharedPreferences.edit().putString(key, value.name).apply()
+    }
 }

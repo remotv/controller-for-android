@@ -74,10 +74,28 @@ class RemoCommandHandler : Component(){
             command == ".table off" -> handleStationary(packet, false)
             command == ".devmode on" -> handleDevMode(packet, true)
             command == ".devmode off" -> handleDevMode(packet, false)
+            command.startsWith(".ffmpeg") -> handleFFmpegInjection(command)
             command.startsWith(".bitrate") -> handleVideoAudioCommand(command)
             command.startsWith(".stream") || command.startsWith(".audio") -> handleVideoAudioCommand(command)
             command.contains(".xcontrol") -> parseXControl(packet)
             else -> processCommand(packet)
+        }
+    }
+
+    private fun handleFFmpegInjection(command: String) {
+        RemoSettingsUtil.with(context!!){ settings ->
+            when{
+                command.startsWith(".ffmpeg filters ") -> {
+                    settings.cameraFFmpegFilterOptions.setPref(command.replace(".ffmpeg filters ", ""))
+                }
+                command.startsWith(".ffmpeg input ") -> {
+                    settings.ffmpegInputOptions.setPref(command.replace(".ffmpeg input ", ""))
+                }
+                command.startsWith(".ffmpeg output ") -> {
+                    settings.ffmpegOutputOptions.setPref(command.replace(".ffmpeg output ", ""))
+                }
+            }
+            handleVideoAudioCommand(".stream reset")
         }
     }
 
