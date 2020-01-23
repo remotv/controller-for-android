@@ -1,1 +1,1 @@
-include ':app', ':sdk', ':settingsutil', ':licensehelper', ':FFmpegAndroidRelease'
+include ':app', ':sdk', ':settingsutil', ':licensehelper'
