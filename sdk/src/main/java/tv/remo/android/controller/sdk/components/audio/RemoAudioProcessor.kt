@@ -1,6 +1,5 @@
 package tv.remo.android.controller.sdk.components.audio
 
-import android.util.Log
 import org.btelman.controlsdk.streaming.audio.processors.FFmpegAudioProcessor
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import tv.remo.android.controller.sdk.RemoSettingsUtil
@@ -31,10 +30,5 @@ class RemoAudioProcessor : FFmpegAudioProcessor() {
             "-muxdelay 0.001",
             "-filter:a volume=$volumeBoost"
         )
-    }
-
-    override fun onProgress(message: String?) {
-        super.onProgress(message)
-        Log.d(TAG, "onProgress : $message")
     }
 }
