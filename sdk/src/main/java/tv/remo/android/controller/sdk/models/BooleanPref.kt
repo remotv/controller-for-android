@@ -12,4 +12,8 @@ class BooleanPref(
     override fun getPref(): Boolean {
         return sharedPreferences.getBoolean(key, defaultValue)
     }
+
+    override fun savePref(value: Boolean) {
+        sharedPreferences.edit().putBoolean(key, value).apply()
+    }
 }

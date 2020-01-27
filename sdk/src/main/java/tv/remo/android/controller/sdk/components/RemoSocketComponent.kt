@@ -13,6 +13,7 @@ import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import org.json.JSONObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.*
 import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
@@ -24,7 +25,7 @@ import tv.remo.android.controller.sdk.utils.isUrl
  *
  * Note: Do not instantiate in the activity! Must pass it to the ControlSDK Service
  */
-class RemoSocketComponent : Component() {
+class RemoSocketComponent : Component() , RemoCommandSender {
     private var socket: WebSocket? = null
     var apiKey : String? = null
     var activeChannelId : String? = null

@@ -68,6 +68,10 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val keepScreenOn = BooleanPref(context, sharedPreferences, R.string.displayPersistKey, false)
     val hideScreenControls = BooleanPref(context, sharedPreferences, R.string.autoHideControlsEnabledKey, false)
 
+    //misc settings
+    val streamSleepMode = BooleanPref(context, sharedPreferences, R.string.streamAutoSleepEnabledKey, false)
+    val streamSleepTimeOut = IntPref(context, sharedPreferences, R.string.streamAutoSleepTimeoutKey, 5*60) //5 minutes
+
     companion object{
         private var INSTANCE : RemoSettingsUtil? = null
 
