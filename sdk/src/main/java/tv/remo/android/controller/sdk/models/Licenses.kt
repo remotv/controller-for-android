@@ -20,7 +20,7 @@ object Licenses {
             License("ControlSDK, github.com/btelman96/ControlSDK", LicenseType.APACHE2_0),
             License("github.com/felHR85/UsbSerial", LicenseType.MIT),
             License("OkHttp", LicenseType.APACHE2_0),
-            License("FFmpeg, github.com/btelman96/ffmpeg-android-java", LicenseType.GPL3),
+            License("FFmpeg, github.com/btelman96/ffmpeg-android", LicenseType.LGPL3),
             License("github.com/btelman96/AndroidUvcDemo", LicenseType.GPL3
                     , "https://raw.githubusercontent.com/btelman96/AndroidUvcDemo/master/LICENCE")
     )
