@@ -52,8 +52,8 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
                 EVENT_MAIN -> {
                     if(message.data as? String != "stop"){
                         maybeStartSleepTimer()
+                        resetTimeout()
                     }
-                    resetTimeout()
                 }
             }
         }
