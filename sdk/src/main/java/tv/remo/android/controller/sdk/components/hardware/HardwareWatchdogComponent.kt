@@ -50,9 +50,11 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
         if(message.type == ComponentType.HARDWARE){
             when(message.what){
                 EVENT_MAIN -> {
-                    if(message.data as? String != "stop"){
-                        maybeStartSleepTimer()
-                        resetTimeout()
+                    (message.data as? String)?.let {
+                        if(it != "stop"){
+                            maybeStartSleepTimer()
+                            resetTimeout()
+                        }
                     }
                 }
             }
@@ -133,12 +135,12 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
     private fun maybeStartSleepTimer() {
         if(sleepEnabled && !sleepMode){
             killSleepTimer()
-            handler.postDelayed(sleepRobot, streamSleepTime)
+            handler.postDelayed(sleepRobot, streamSleepTime*1000)
         }
     }
 
     private val sleepRobot = Runnable {
-        eventDispatcher?.handleMessage(ComponentType.CUSTOM, EVENT_MAIN, ".stream sleep", this)
+        eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, ".stream sleep", this as RemoCommandSender)
         killSleepTimer()
     }
 
