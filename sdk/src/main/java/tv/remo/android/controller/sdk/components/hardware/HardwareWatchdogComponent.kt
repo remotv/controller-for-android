@@ -6,8 +6,6 @@ import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.RemoCommandHandler
-import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.utils.ChatUtil
 
@@ -71,19 +69,15 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
         context?:return
         when (data) {
             ".stream sleep" -> {
-                if(!sleepMode){
-                    sleepMode = true
-                    killSleepTimer()
-                }
+                sleepMode = true
+                killSleepTimer()
             }
             ".stream wakeup" -> {
-                if(sleepMode) {
-                    maybeStartSleepTimer()
-                    sleepMode = false
-                }
+                maybeResetSleepTimer()
+                sleepMode = false
             }
             ".stream reset" -> {
-                maybeStartSleepTimer()
+                maybeResetSleepTimer()
                 sleepMode = false
             }
             else -> {
@@ -108,7 +102,7 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
                 "Setting sleeptime to disabled (time < 0)"
             }
             killSleepTimer()
-            maybeStartSleepTimer()
+            maybeResetSleepTimer()
             ChatUtil.sendToSiteChat(eventDispatcher, chatMessage)
         } ?: run{
             ChatUtil.sendToSiteChat(eventDispatcher, ".stream sleeptime {seconds}")
@@ -132,8 +126,13 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
     /**
      * Reset the sleep counter when called.
      */
-    private fun maybeStartSleepTimer() {
-        if(sleepEnabled && !sleepMode){
+    private fun maybeResetSleepTimer() {
+        if(sleepEnabled){
+            if(sleepMode){
+                sleepMode = false //apparently we don't get sent our own events back, so track it here
+                //we want events sent to the bot to wake it up automatically
+                eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, ".stream wakeup", this as RemoCommandSender)
+            }
             killSleepTimer()
             handler.postDelayed(sleepRobot, streamSleepTime*1000)
         }
@@ -141,6 +140,7 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
 
     private val sleepRobot = Runnable {
         eventDispatcher?.handleMessage(ComponentType.HARDWARE, EVENT_MAIN, ".stream sleep", this as RemoCommandSender)
+        sleepMode = true //apparently we don't get sent our own events back, so track it here
         killSleepTimer()
     }
 
