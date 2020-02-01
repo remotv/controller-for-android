@@ -51,10 +51,10 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
             when(message.what){
                 EVENT_MAIN -> {
                     (message.data as? String)?.let {
-                        if(it != "stop"){
-                            maybeStartSleepTimer()
-                            resetTimeout()
+                        if(it != "stop" && !it.startsWith(".")){
+                            maybeResetSleepTimer()
                         }
+                        resetTimeout()
                     }
                 }
             }
