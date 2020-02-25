@@ -22,6 +22,9 @@ allprojects {
         maven {
             url  "https://dl.bintray.com/btelman96/maven"
         }
+        maven {
+            url "https://repo.eclipse.org/content/repositories/paho-snapshots/"
+        }
         maven { url "https://jitpack.io" }
     }
 }
