@@ -1,5 +1,6 @@
 package tv.remo.android.controller.sdk.utils
 
+import android.os.Build
 import android.os.Bundle
 import org.btelman.controlsdk.hardware.components.HardwareComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
@@ -7,6 +8,7 @@ import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.factories.AudioProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
+import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
@@ -16,6 +18,7 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
+import tv.remo.android.controller.sdk.components.video.Camera2Override
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 
@@ -82,6 +85,8 @@ object ComponentBuilderUtil {
                 ,width = resolution[0].toInt()
                 ,height = resolution[1].toInt()
             )
+            if(Build.VERSION.SDK_INT >= 21)
+                VideoRetrieverFactory.putClassInBundle(Camera2Override::class.java, this)
             //use our customized remo classes
             VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)
