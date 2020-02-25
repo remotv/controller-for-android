@@ -218,7 +218,7 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
     }
 
     private fun setUpCaptureRequestBuilder(builder: CaptureRequest.Builder) {
-        builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+        builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_VIDEO)
     }
 
     private fun closePreviewSession() {
