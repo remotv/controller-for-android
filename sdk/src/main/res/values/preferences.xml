@@ -47,4 +47,6 @@
     <string name="ffmpegFilterAddition">ffmpegVFPrefsKey</string>
     <string name="ffmpegInputOptionsPrefsKey">ffmpegInputOptions</string>
     <string name="ffmpegOutputOptionsPrefsKey">ffmpegOutputOptions</string>
+    <string name="streamAutoSleepEnabledKey">streamAutoSleepEnabled</string>
+    <string name="streamAutoSleepTimeoutKey">streamAutoSleepTimeout</string>
 </resources>

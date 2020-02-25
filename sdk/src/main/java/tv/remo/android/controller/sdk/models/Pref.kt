@@ -15,4 +15,5 @@ abstract class Pref<T>(
     val key : String = context.getString(resId)
 ) {
     abstract fun getPref() : T
+    abstract fun savePref(value : T)
 }
