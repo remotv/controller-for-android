@@ -7,6 +7,7 @@ import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.factories.AudioProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
+import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
@@ -16,6 +17,7 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
+import tv.remo.android.controller.sdk.components.video.CameraCompatOverride
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 
@@ -83,6 +85,7 @@ object ComponentBuilderUtil {
                 ,height = resolution[1].toInt()
             )
             //use our customized remo classes
+            VideoRetrieverFactory.putClassInBundle(CameraCompatOverride::class.java, this)
             VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
