@@ -16,7 +16,7 @@ For setup guide and button templates, please check out the [WIKI](https://github
 
 ### Android Studio
 
-- Version 3.5 or higher. May not be buildable on lower versions
+- Version 3.6 or higher. May not be buildable on lower versions
 - Android SDK (should be installed with Android Studio)
 - Java 7 or 8 JDK (might be installed with Android Studio)
 
