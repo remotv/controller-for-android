@@ -23,6 +23,14 @@
             app:entries="@array/resolution_pref_list"
             app:entryValues="@array/resolution_pref_list"/>
         <androidx.preference.ListPreference
+            app:key="@string/cameraFocusKey"
+            app:dependency="@string/useCamera2"
+            app:title="@string/cameraFocusTitle"
+            app:defaultValue="auto"
+            app:useSimpleSummaryProvider="true"
+            app:entries="@array/focus_pref_list"
+            app:entryValues="@array/focus_pref_list_values"/>
+        <androidx.preference.ListPreference
             app:key="@string/cameraOrientationKey"
             app:title="@string/cameraOrientationTitle"
             app:useSimpleSummaryProvider="true"

@@ -14,17 +14,20 @@ import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
-import org.btelman.controlsdk.streaming.video.retrievers.SurfaceTextureVideoRetriever
+import org.btelman.controlsdk.streaming.video.retrievers.BaseVideoRetriever
+import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 /**
  * Copied from org.btelman.controlsdk.streaming.video.retrievers.api21.Camera2SurfaceTextureComponent
  */
 @RequiresApi(21)
-class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvailableListener {
+class Camera2Override : BaseVideoRetriever(), ImageReader.OnImageAvailableListener {
 
     private var data: ByteArray? = null
     private var width = 0
     private var height = 0
+
+    private var focusMode = "video"
 
     var reader : ImageReader? = null
 
@@ -63,8 +66,21 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
 
     }
 
+    override fun enable(context: Context, streamInfo: StreamInfo) {
+        super.enable(context, streamInfo)
+        setupCamera(streamInfo)
+        RemoSettingsUtil.with(context){
+            focusMode = it.cameraFocus.getPref()
+        }
+    }
+
+    override fun disable() {
+        super.disable()
+        releaseCamera()
+    }
+
     @SuppressLint("MissingPermission") //Already handled. No way to call this
-    override fun setupCamera(streamInfo : StreamInfo?) {
+    fun setupCamera(streamInfo : StreamInfo?) {
         startBackgroundThread()
         width = streamInfo?.width ?: 640
         height = streamInfo?.height ?: 640
@@ -91,7 +107,7 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
         }
     }
 
-    override fun releaseCamera() {
+    private fun releaseCamera() {
         stopBackgroundThread()
         reader?.close()
         closePreviewSession()
@@ -175,8 +191,6 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
         }
         try {
             closePreviewSession()
-            val texture = mStManager?.surfaceTexture!!
-            texture.setDefaultBufferSize(height, width)
             mPreviewBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
             mPreviewBuilder!!.addTarget(reader?.surface!!)
 
@@ -215,13 +229,34 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     private fun setUpCaptureRequestBuilder(builder: CaptureRequest.Builder) {
         builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(15, 30))
-        builder.set(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_MODE_OFF)
-        builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 10f)
+        val focusMode = when(focusMode){
+            "video" -> {
+                CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_VIDEO
+            }
+            "picture" -> {
+                CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_PICTURE
+            }
+            "auto" -> {
+                null
+            }
+            "off" -> {
+                CameraMetadata.CONTROL_MODE_OFF
+            }
+            else -> {
+                CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_VIDEO
+            }
+        }
+        focusMode?.let {
+            builder.set(CaptureRequest.CONTROL_AF_MODE, focusMode)
+            if(it == CameraMetadata.CONTROL_MODE_OFF)
+                builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 10f)
+        } ?: run{
+            builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
+        }
     }
 
     private fun closePreviewSession() {
