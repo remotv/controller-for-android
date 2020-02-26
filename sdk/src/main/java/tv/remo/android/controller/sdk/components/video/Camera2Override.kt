@@ -9,6 +9,7 @@ import android.media.ImageReader
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Range
 import androidx.annotation.NonNull
 import androidx.annotation.RequiresApi
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
@@ -176,7 +177,7 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
             closePreviewSession()
             val texture = mStManager?.surfaceTexture!!
             texture.setDefaultBufferSize(height, width)
-            mPreviewBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+            mPreviewBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
             mPreviewBuilder!!.addTarget(reader?.surface!!)
 
             mCameraDevice!!.createCaptureSession(listOf(/*previewSurface, */reader?.surface),
@@ -218,8 +219,9 @@ class Camera2Override : SurfaceTextureVideoRetriever(), ImageReader.OnImageAvail
     }
 
     private fun setUpCaptureRequestBuilder(builder: CaptureRequest.Builder) {
-        builder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_OFF)
+        builder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE, Range(15, 30))
         builder.set(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_MODE_OFF)
+        builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 10f)
     }
 
     private fun closePreviewSession() {
