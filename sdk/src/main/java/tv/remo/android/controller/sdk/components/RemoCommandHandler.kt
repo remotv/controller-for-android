@@ -7,6 +7,7 @@ import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.User
 import tv.remo.android.controller.sdk.utils.ChatUtil
 import kotlin.system.exitProcess
@@ -21,7 +22,7 @@ import kotlin.system.exitProcess
  * Commands can come from a button or from the chat. Commands from chat are only able to be used
  * by the owner and moderators
  */
-class RemoCommandHandler : Component(){
+class RemoCommandHandler : Component(), RemoCommandSender {
     private var devModeEnabled = false
     private var stationary = false
     private var serverOwner = ""

@@ -50,6 +50,7 @@
     <string name="cameraDeviceIdTitle">Camera Device ID (0 is back)</string>
     <string name="cameraSettingsSummary">Resolution, Orientation, Bitrate</string>
     <string name="cameraResolutionTitle">Resolution</string>
+    <string name="cameraFocusTitle">Auto Focus</string>
     <string name="cameraOrientationTitle">Orientation</string>
     <string name="camera2DisabledTitle">Camera2 Disabled</string>
     <string name="camera2DisabledSummary">Device is using legacy camera API.

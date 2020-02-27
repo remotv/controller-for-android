@@ -12,4 +12,8 @@ open class StringPref(
     override fun getPref(): String {
         return sharedPreferences.getString(key, defaultValue)?: defaultValue
     }
+
+    override fun savePref(value: String) {
+        sharedPreferences.edit().putString(key, value).apply()
+    }
 }

@@ -1,6 +1,8 @@
 package tv.remo.android.controller.fragments
 
+import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,6 +14,8 @@ import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
 import tv.remo.android.settingsutil.fragments.BasePreferenceFragmentCompat
 import tv.remo.android.settingsutil.preferences.ListSettingsPreference
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SettingsRobot : BasePreferenceFragmentCompat(
         R.xml.settings_robot,
@@ -46,12 +50,22 @@ class SettingsRobot : BasePreferenceFragmentCompat(
         pref ?: return //skip if null
         val classes = ClassScanner.getClassesWithAnnotation(context!!, annotation)
         val classNames = ArrayList<String>()
-        classes.forEach {
-            classNames.add(it.name)
-        }
         val simpleClassNames = ArrayList<String>()
         classes.forEach {
-            simpleClassNames.add(it.simpleName)
+            var deviceSupportsHardware = true
+            if(annotation == DriverComponent::class.java){
+                //check via hardcoding for now.
+                if(it.name.toLowerCase(Locale.US).contains("bluetooth")){
+                    //driver is a bluetooth driver
+                    if(!context!!.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH))
+                        deviceSupportsHardware = false //no support found
+                    //TODO check for ble?
+                }
+            }
+            if(deviceSupportsHardware){
+                classNames.add(it.name)
+                simpleClassNames.add(it.simpleName)
+            }
         }
         val nameArray = simpleClassNames.toArray(Array(0){""})
         val valueArray = classNames.toArray(Array(0){""})

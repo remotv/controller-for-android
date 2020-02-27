@@ -12,6 +12,7 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.components.StreamCommandHandler.Companion.rebuildStream
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
+import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.CommandSubscriptionData
 import tv.remo.android.controller.sdk.utils.ChatUtil
 
@@ -36,7 +37,7 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     }
 
     override fun handleExternalMessage(message: ComponentEventObject): Boolean {
-        if(message.source is RemoSocketComponent || message.source is RemoCommandHandler){
+        if(message.source is RemoCommandSender){
             commandHandler?.handleExternalMessage(message)
         }
         return super.handleExternalMessage(message)

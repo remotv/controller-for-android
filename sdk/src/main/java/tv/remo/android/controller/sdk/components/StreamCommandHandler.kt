@@ -5,6 +5,7 @@ import android.os.Bundle
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
+import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.Channel
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 
@@ -20,7 +21,7 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
     private val subscriptionList = streamHandler.onRegisterCustomCommands()
 
     fun handleExternalMessage(message: ComponentEventObject){
-        if(message.source is RemoSocketComponent || message.source is RemoCommandHandler){
+        if(message.source is RemoCommandSender){
             handleSocketCommand(message)
         }
     }

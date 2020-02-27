@@ -41,6 +41,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     //Camera related settings
     val cameraEnabled = BooleanPref(context, sharedPreferences, R.string.cameraSettingsEnableKey, false)
     val cameraResolution = StringPref(context, sharedPreferences, R.string.cameraResolutionKey, "640x480")
+    val cameraFocus = StringPref(context, sharedPreferences, R.string.cameraFocusKey, "auto")
     val cameraOrientation = StringPref(context, sharedPreferences, R.string.cameraOrientationKey, "DIR_90")
     val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0)
     val cameraBitrate = StringPref(context, sharedPreferences, R.string.cameraBitrateKey, "1024")
@@ -67,6 +68,10 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val chatDisplayEnabled = BooleanPref(context, sharedPreferences, R.string.displayChatEnabledKey, true)
     val keepScreenOn = BooleanPref(context, sharedPreferences, R.string.displayPersistKey, false)
     val hideScreenControls = BooleanPref(context, sharedPreferences, R.string.autoHideControlsEnabledKey, false)
+
+    //misc settings
+    val streamSleepMode = BooleanPref(context, sharedPreferences, R.string.streamAutoSleepEnabledKey, false)
+    val streamSleepTimeOut = IntPref(context, sharedPreferences, R.string.streamAutoSleepTimeoutKey, 5*60) //5 minutes
 
     companion object{
         private var INSTANCE : RemoSettingsUtil? = null
