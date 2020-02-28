@@ -20,7 +20,10 @@ object CameraUtil{
         } else{
             Camera1Util.getCameraSizes(requireContext, cameraIndex)
         }
+        return filterSizes(sizes)
+    }
 
+    private fun filterSizes(sizes: ArrayList<Pair<Int, Int>>): ArrayList<Pair<Int, Int>> {
         val finalList = ArrayList<Pair<Int, Int>>()
         val ratio16by9 = 16f / 9f
         val ratio4by3 = 4f / 3f
@@ -45,7 +48,7 @@ object CameraUtil{
                 "PictureSize: ${width}x${height} : ${width / gcm}:${height / gcm}"
             )
         }
-        return finalList
+        return sizes
     }
 
     fun getCameraCount(context: Context) : Int{
