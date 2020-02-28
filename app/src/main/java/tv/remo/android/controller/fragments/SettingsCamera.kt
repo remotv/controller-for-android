@@ -49,11 +49,33 @@ class SettingsCamera : BasePreferenceFragmentCompat(
 
         RemoSettingsUtil.with(context!!) {
             val currCameraId = it.cameraDeviceId.getPref()
+            setupCameraIdList(currCameraId)
             checkForCamera2SupportAndReact(it.cameraDeviceId.getPref())
             updateUIFromCameraSelection(currCameraId)
             addListeners()
             if(it.cameraEnabled.getPref())
                 checkPermissions()
+        }
+    }
+
+    private fun setupCameraIdList(currCameraId: Int) {
+        val cameras = CameraUtil.getCameraCount(context!!)
+        findPreference<ListPreference>(getString(R.string.cameraDeviceIdKey))?.apply {
+            createEntries(cameras).also {
+                entries = it
+                entryValues = it
+            }
+            if(currCameraId >= cameras){
+                Toast.makeText(context!!, "Last selected camera is no longer available...",
+                    Toast.LENGTH_LONG).show()
+                value = entries[0] as String
+            }
+        }
+    }
+
+    private fun createEntries(size: Int): Array<CharSequence> {
+        return Array(size){
+            it.toString()
         }
     }
 

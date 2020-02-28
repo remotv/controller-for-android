@@ -47,4 +47,9 @@ object Camera2Util {
         }
         return false
     }
+
+    fun getCameras(context: Context) : Int{
+        val cm = (context.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
+        return cm.cameraIdList.size
+    }
 }

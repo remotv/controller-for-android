@@ -21,4 +21,8 @@ object Camera1Util {
         }
         return list
     }
+
+    fun getCameras(): Int {
+        return Camera.getNumberOfCameras()
+    }
 }

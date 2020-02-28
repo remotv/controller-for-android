@@ -48,6 +48,14 @@ object CameraUtil{
         return finalList
     }
 
+    fun getCameraCount(context: Context) : Int{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Camera2Util.getCameras(context)
+        }else{
+            Camera1Util.getCameras()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun isFullyCamera2Compatible(context: Context, cameraIndex: Int): Boolean {
         return Camera2Util.checkFullyCompatible(context, cameraIndex);
