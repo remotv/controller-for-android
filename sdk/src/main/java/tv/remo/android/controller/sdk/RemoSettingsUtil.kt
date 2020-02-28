@@ -84,8 +84,12 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
         }
 
         fun <T> with(context: Context, func : (RemoSettingsUtil)->T) : T{
-            val settingsUtil = INSTANCE ?: create(context)
+            val settingsUtil = with(context)
             return func(settingsUtil)
+        }
+
+        fun with(context: Context) : RemoSettingsUtil{
+            return INSTANCE ?: create(context)
         }
     }
 }

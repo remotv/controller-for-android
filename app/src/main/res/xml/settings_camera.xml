@@ -16,7 +16,6 @@
             app:isPreferenceVisible="false"/>
         <androidx.preference.ListPreference
             app:key="@string/cameraResolutionKey"
-            app:dependency="@string/useCamera2"
             app:title="@string/cameraResolutionTitle"
             app:defaultValue="640x480"
             app:useSimpleSummaryProvider="true"
