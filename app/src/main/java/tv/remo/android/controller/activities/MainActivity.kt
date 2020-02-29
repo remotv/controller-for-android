@@ -76,20 +76,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun buildStatusList() {
-        val prev = websiteConnectionStatusView.x
-        websiteConnectionStatusView.x = 500f
-        websiteConnectionStatusView.animate().also {
-            it.startDelay = 1000
-            it.duration = 1000
-            it.x(prev)
-        }.start()
 
-        handler.postDelayed({
-            websiteConnectionStatusView.animate().also {
-                it.duration = 1000
-                it.x(500f)
-            }.start()
-        }, 5000)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
@@ -193,6 +180,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
+
+    @Suppress("DEPRECATION")
+    fun parseColorForOperation(state : Operation?) : Int{
+        return when(state){
+            Operation.OK -> resources.getColor(R.color.powerIndicatorOn)
+            Operation.NOT_OK -> resources.getColor(R.color.powerIndicatorOff)
+            Operation.LOADING -> resources.getColor(R.color.powerIndicatorInProgress)
+            null -> resources.getColor(R.color.powerIndicatorError)
+            else -> Color.BLACK
+        }
+    }
+
     // Shows the system bars by removing all the flags
 // except for the ones that make the content appear under the system bars.
     private fun showSystemUI() {
@@ -202,17 +201,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     companion object{
         fun getIntent(context: Context) : Intent {
             return Intent(context, MainActivity::class.java)
-        }
-
-        fun parseColorForOperation(state : Operation?) : Int{
-            val color : Int = when(state){
-                Operation.OK -> Color.GREEN
-                Operation.NOT_OK -> Color.RED
-                Operation.LOADING -> Color.YELLOW
-                null -> Color.CYAN
-                else -> Color.BLACK
-            }
-            return color
         }
     }
 }

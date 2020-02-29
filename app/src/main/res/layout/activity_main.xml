@@ -10,19 +10,18 @@
         tools:context=".activities.MainActivity">
     <LinearLayout
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
         android:id="@+id/connectionStatusLayout"
         android:layout_gravity="center"
         android:layout_marginEnd="8dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_marginRight="8dp">
         <tv.remo.android.controller.ui.RemoStatusView
             android:id="@+id/websiteConnectionStatusView"
             android:src="@drawable/ic_cloud_white_24dp"
-            android:background="@drawable/circle"
             android:layout_margin="8dp"
             android:scaleType="centerInside"
             android:layout_height="@dimen/status_view_size"
@@ -30,15 +29,13 @@
         <tv.remo.android.controller.ui.RemoStatusView
             android:id="@+id/hardwareConnectionStatusView"
             android:src="@drawable/ic_developer_board_white_24dp"
-            android:background="@drawable/circle"
             android:layout_margin="8dp"
             android:scaleType="centerInside"
             android:layout_height="@dimen/status_view_size"
             android:layout_width="@dimen/status_view_size"/>
         <tv.remo.android.controller.ui.RemoStatusView
             android:id="@+id/mqttConnectionStatusView"
-            android:src="@drawable/ic_launcher_foreground"
-            android:background="@drawable/circle"
+            android:src="@drawable/ic_phone_android_black_24dp"
             android:layout_margin="8dp"
             android:scaleType="centerInside"
             android:layout_height="@dimen/status_view_size"
@@ -46,7 +43,6 @@
         <tv.remo.android.controller.ui.RemoStatusView
             android:id="@+id/audioConnectionStatusView"
             android:src="@drawable/ic_mic_white_24dp"
-            android:background="@drawable/circle"
             android:layout_margin="8dp"
             android:scaleType="centerInside"
             android:layout_height="@dimen/status_view_size"
@@ -54,7 +50,6 @@
         <tv.remo.android.controller.ui.RemoStatusView
             android:id="@+id/videoConnectionStatusView"
             android:src="@drawable/ic_camera_alt_white_24dp"
-            android:background="@drawable/circle"
             android:layout_margin="8dp"
             android:scaleType="centerInside"
             android:layout_height="@dimen/status_view_size"
@@ -63,7 +58,7 @@
 
     <LinearLayout
             android:id="@+id/buttonGroupMainActivity"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/connectionStatusLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

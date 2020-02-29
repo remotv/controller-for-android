@@ -3,7 +3,6 @@ package tv.remo.android.controller.ui
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -48,20 +47,19 @@ class RemoStatusView @JvmOverloads constructor(
         uiHandler.post(this)
     }
 
-    fun setDrawableColor(drawable: Drawable, id : Int) : Drawable{
+    fun setDrawableColor(id : Int){
         val color : Int = colorLookup.get(id, Color.BLACK)
-        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY)
-        return drawable
+        setColorFilter(color, PorterDuff.Mode.MULTIPLY)
     }
 
     fun setStatus(componentStatus: ComponentStatus){
-        background = when(componentStatus){
-            ComponentStatus.DISABLED_FROM_SETTINGS -> setDrawableColor(background, R.color.colorIndicatorDisabledFromSettings)
-            ComponentStatus.DISABLED -> setDrawableColor(background, R.color.colorIndicatorDisabled)
-            ComponentStatus.CONNECTING -> setDrawableColor(background, R.color.colorIndicatorConnecting)
-            ComponentStatus.STABLE -> setDrawableColor(background, R.color.colorIndicatorStable)
-            ComponentStatus.INTERMITTENT -> setDrawableColor(background, R.color.colorIndicatorUnstable)
-            ComponentStatus.ERROR -> setDrawableColor(background, R.color.colorIndicatorError)
+        when(componentStatus){
+            ComponentStatus.DISABLED_FROM_SETTINGS -> setDrawableColor(R.color.colorIndicatorDisabledFromSettings)
+            ComponentStatus.DISABLED -> setDrawableColor(R.color.colorIndicatorDisabled)
+            ComponentStatus.CONNECTING -> setDrawableColor(R.color.colorIndicatorConnecting)
+            ComponentStatus.STABLE -> setDrawableColor(R.color.colorIndicatorStable)
+            ComponentStatus.INTERMITTENT -> setDrawableColor(R.color.colorIndicatorUnstable)
+            ComponentStatus.ERROR -> setDrawableColor(R.color.colorIndicatorError)
         }
     }
 
