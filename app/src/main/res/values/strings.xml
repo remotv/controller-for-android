@@ -53,9 +53,7 @@
     <string name="cameraFocusTitle">Auto Focus</string>
     <string name="cameraOrientationTitle">Orientation</string>
     <string name="camera2DisabledTitle">Camera2 Disabled</string>
-    <string name="camera2DisabledSummary">Device is using legacy camera API.
-        Resolution is locked at 640x480. Disabled since device OS is below 5.0
-        or selected camera id does not support new camera api</string>
+    <string name="camera2DisabledSummary">Device is using legacy camera API. Some features may be locked</string>
     <!--Microphone-->
     <string name="microphoneSettingsTitle">Microphone</string>
     <string name="microphoneSettingsSummary">Volume, Bitrate</string>
