@@ -161,7 +161,7 @@ class SettingsCamera : BasePreferenceFragmentCompat(
 
         //create a list of known resolutions that are okay. Unknown ones are marked with (not tested)
         val knownWorkingResolutions =
-            listOf(Pair(640, 480), Pair(1280, 720), Pair(1280, 960), Pair(1920, 1080))
+            listOf(Pair(640, 480), Pair(1280, 720), Pair(960, 720), Pair(1280, 960), Pair(1920, 1080))
 
         //iterate through the array to add sizes to values and userFacingValues arrays
         sizes.forEachIndexed { i, pair ->
