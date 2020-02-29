@@ -205,12 +205,6 @@ class SettingsCamera : BasePreferenceFragmentCompat(
         val featureSwitch = findPreference<SwitchPreferenceCompat>(getString(R.string.useCamera2))
         featureSwitch?.isEnabled = supportsCamera2
         featureSwitch?.isChecked = supportsCamera2
-        if (!supportsCamera2)
-            findPreference<ListPreference>(
-                getString(R.string.cameraResolutionKey)
-            )?.let {
-                it.value = "640x480"
-            }
         return supportsCamera2
     }
 
