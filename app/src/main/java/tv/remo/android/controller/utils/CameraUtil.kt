@@ -48,7 +48,7 @@ object CameraUtil{
                 "PictureSize: ${width}x${height} : ${width / gcm}:${height / gcm}"
             )
         }
-        return sizes
+        return finalList
     }
 
     fun getCameraCount(context: Context) : Int{
