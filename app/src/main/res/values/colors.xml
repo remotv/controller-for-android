@@ -4,4 +4,11 @@
     <color name="colorPrimaryDark">#3255fb</color>
     <color name="colorAccent">#8c12cb</color>
     <color name="switchBarThumbColor">#ececec</color>
+
+    <color name="colorIndicatorDisabledFromSettings">#263238</color>
+    <color name="colorIndicatorDisabled">#000000</color>
+    <color name="colorIndicatorStable">#1B5E20</color>
+    <color name="colorIndicatorConnecting">#FFD600</color>
+    <color name="colorIndicatorUnstable">#E65100</color>
+    <color name="colorIndicatorError">#B71C1C</color>
 </resources>

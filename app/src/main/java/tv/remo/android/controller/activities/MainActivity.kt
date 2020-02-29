@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
         setupControlSDK()
         setupUI()
+        window.decorView.post {
+            buildStatusList()
+        }
     }
 
     override fun onClick(v: View?) {
@@ -69,6 +72,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
         settingsButton.setOnClickListener(this)
         powerButton?.setOnClickListener(this)
+
+    }
+
+    private fun buildStatusList() {
+        val prev = websiteConnectionStatusView.x
+        websiteConnectionStatusView.x = 500f
+        websiteConnectionStatusView.animate().also {
+            it.startDelay = 1000
+            it.duration = 1000
+            it.x(prev)
+        }.start()
+
+        handler.postDelayed({
+            websiteConnectionStatusView.animate().also {
+                it.duration = 1000
+                it.x(500f)
+            }.start()
+        }, 5000)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
