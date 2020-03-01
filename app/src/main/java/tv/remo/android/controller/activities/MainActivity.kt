@@ -11,12 +11,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
+import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
 import org.btelman.controlsdk.interfaces.ControlSdkApi
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
+import org.btelman.controlsdk.streaming.components.AudioComponent
+import org.btelman.controlsdk.streaming.components.VideoComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.models.api.Message
 import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
@@ -76,7 +81,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun buildStatusList() {
-
+        websiteConnectionStatusView.registerStatusEvents(RemoSocketComponent::class.java)
+        hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
+        audioConnectionStatusView.registerStatusEvents(AudioComponent::class.java)
+        videoConnectionStatusView.registerStatusEvents(VideoComponent::class.java)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
@@ -158,6 +166,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun createComponentHolders() {
         RemoSettingsUtil.with(this){ settings ->
+            arrayList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
             arrayList.add(ComponentBuilderUtil.createSocketComponent(settings))
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))

@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
+import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
@@ -72,14 +73,17 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         listener.on(SocketListener.ON_OPEN){
             sendHandshakeAuth()
         }.on(SocketListener.ON_CLOSE){
+            status = ComponentStatus.ERROR
             Log.d("TAG","onClosing $it")
         }.on(SocketListener.ON_ERROR){
+            status = ComponentStatus.ERROR
             handler.postDelayed ({
                 //attempt a reconnect every second
                 attemptReconnect()
             }, 1000)
             Log.d("TAG","onFailure $it")
         }.on("ROBOT_VALIDATED"){
+            status = ComponentStatus.STABLE
             sendChannelsRequest(it)
         }.on("SEND_ROBOT_SERVER_INFO"){
             verifyAndSubToChannel(it)
@@ -96,6 +100,7 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     }
 
     private fun attemptReconnect() {
+        status = ComponentStatus.CONNECTING
         url ?: return
         socket?.close(1000, "service ended normally")
         request = Request.Builder().url(url!!).build()

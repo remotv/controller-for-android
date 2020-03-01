@@ -1,6 +1,9 @@
 package tv.remo.android.controller.ui
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Build
@@ -8,8 +11,11 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.util.SparseIntArray
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.btelman.controlsdk.enums.ComponentStatus
+import org.btelman.controlsdk.models.Component
 import tv.remo.android.controller.R
+import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 
 /**
  * Status view that will communicate directly with a chosen component
@@ -18,7 +24,7 @@ import tv.remo.android.controller.R
  */
 class RemoStatusView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : CustomImageView(context, attrs, defStyleAttr), Runnable {
+) : CustomImageView(context, attrs, defStyleAttr), Runnable{
     private var colorLookup = SparseIntArray().also{
         appendColor(context, it, R.color.colorIndicatorDisabledFromSettings)
         appendColor(context, it, R.color.colorIndicatorDisabled)
@@ -27,6 +33,16 @@ class RemoStatusView @JvmOverloads constructor(
         appendColor(context, it, R.color.colorIndicatorUnstable)
         appendColor(context, it, R.color.colorIndicatorError)
     }
+
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                onBroadcastDataReceived(it)
+            }
+        }
+    }
+
+    private val broadcastManager = LocalBroadcastManager.getInstance(context)
 
     @Suppress("DEPRECATION")
     private fun appendColor(context: Context, it: SparseIntArray, resId: Int) {
@@ -45,6 +61,33 @@ class RemoStatusView @JvmOverloads constructor(
     val values = ComponentStatus.values()
     init{
         uiHandler.post(this)
+        post {
+            onCreated()
+        }
+    }
+
+    private fun onCreated() {
+
+    }
+
+    fun onDestroy(){
+        uiHandler.removeCallbacksAndMessages(null)
+    }
+
+    fun <T : Component> registerStatusEvents(statusClassName : Class<T>){
+        broadcastManager.unregisterReceiver(receiver)
+        val filter = IntentFilter(StatusBroadcasterComponent.ACTION_SERVICE_STATUS)
+        filter.addAction(StatusBroadcasterComponent.generateComponentStatusAction(statusClassName))
+        broadcastManager.registerReceiver(receiver, filter)
+    }
+
+    fun unregisterStatusEvents(){
+        broadcastManager.unregisterReceiver(receiver)
+    }
+
+    private fun onBroadcastDataReceived(intent: Intent) {
+        val componentStatus = intent.getSerializableExtra(StatusBroadcasterComponent.STATUS_NAME)
+        status = componentStatus as? ComponentStatus
     }
 
     fun setDrawableColor(id : Int){
@@ -52,7 +95,14 @@ class RemoStatusView @JvmOverloads constructor(
         setColorFilter(color, PorterDuff.Mode.MULTIPLY)
     }
 
-    fun setStatus(componentStatus: ComponentStatus){
+    fun postStatus(status: ComponentStatus){
+        post {
+            this.status = status
+            setStatus(status)
+        }
+    }
+
+    private fun setStatus(componentStatus: ComponentStatus){
         when(componentStatus){
             ComponentStatus.DISABLED_FROM_SETTINGS -> setDrawableColor(R.color.colorIndicatorDisabledFromSettings)
             ComponentStatus.DISABLED -> setDrawableColor(R.color.colorIndicatorDisabled)
@@ -85,22 +135,5 @@ class RemoStatusView @JvmOverloads constructor(
         if(i > values.size)
             i = 0
         return status
-    }
-
-    private val onStatus: (Any?) -> Unit = {
-        it?.takeIf { it is ComponentStatus }?.let{
-            status = it as ComponentStatus
-        }
-    }
-
-    fun setComponentInterface(component: String) {
-//        this.component?.let { EventManager.unsubscribe(it, onStatus) }
-//        this.component = component
-//        EventManager.subscribe(component, onStatus)
-    }
-
-    fun onDestroy(){
-//        this.component?.let { EventManager.unsubscribe(it, onStatus) }
-        uiHandler.removeCallbacksAndMessages(null)
     }
 }
