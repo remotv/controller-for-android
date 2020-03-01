@@ -2,6 +2,7 @@ package tv.remo.android.controller.sdk.components
 
 import android.content.Context
 import android.os.Bundle
+import kotlinx.coroutines.runBlocking
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
@@ -45,13 +46,20 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
             ".stream sleep" -> {
                 if(!sleepMode){
                     sleepMode = true
-                    streamHandler.acquireRetriever().disable()
+                    runBlocking {
+                        streamHandler.acquireRetriever().disable().await()
+                    }
                 }
             }
             ".stream wakeup" -> {
                 if(sleepMode) {
                     sleepMode = false
-                    streamHandler.acquireRetriever().enable(context, streamHandler.pullStreamInfo())
+                    runBlocking {
+                        streamHandler.acquireRetriever().also {
+                            it.updateStreamInfo(streamHandler.pullStreamInfo())
+                            it.enable().await()
+                        }
+                    }
                 }
             }
             ".stream reset" -> {
