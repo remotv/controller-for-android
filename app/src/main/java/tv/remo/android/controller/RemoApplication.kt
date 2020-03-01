@@ -9,6 +9,10 @@ class RemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+//        LogUtilInstance(ControlSDKService.CONTROL_SERVICE, LogLevel.VERBOSE).also {
+//            Log.d("RemoApplication", "Setup ControlSDK logger")
+//            LogUtil.addCustomLogUtilInstance(ControlSDKService::class.java.name, it)
+//        }
         Instance = this
     }
 

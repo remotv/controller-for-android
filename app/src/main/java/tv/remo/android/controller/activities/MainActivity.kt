@@ -20,12 +20,12 @@ import org.btelman.controlsdk.interfaces.ControlSdkApi
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
-import org.btelman.controlsdk.streaming.components.AudioComponent
-import org.btelman.controlsdk.streaming.components.VideoComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
+import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
+import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 import tv.remo.android.controller.sdk.models.api.Message
 import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
@@ -105,8 +105,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun buildStatusList() {
         websiteConnectionStatusView.registerStatusEvents(RemoSocketComponent::class.java)
         hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
-        audioConnectionStatusView.registerStatusEvents(AudioComponent::class.java)
-        videoConnectionStatusView.registerStatusEvents(VideoComponent::class.java)
+        audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
+        videoConnectionStatusView.registerStatusEvents(RemoVideoProcessor::class.java)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
