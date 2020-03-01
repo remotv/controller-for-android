@@ -86,6 +86,7 @@ class RemoStatusView @JvmOverloads constructor(
     }
 
     private fun onBroadcastDataReceived(intent: Intent) {
+        if(intent.action == StatusBroadcasterComponent.ACTION_SERVICE_STATUS) return
         val componentStatus = intent.getSerializableExtra(StatusBroadcasterComponent.STATUS_NAME)
         status = componentStatus as? ComponentStatus
     }

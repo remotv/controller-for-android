@@ -1,15 +1,19 @@
 package tv.remo.android.controller.activities
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
+import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
 import org.btelman.controlsdk.interfaces.ControlSdkApi
@@ -31,6 +35,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val arrayList = ArrayList<ComponentHolder<*>>()
     private var controlSDKServiceApi: ControlSdkApi? = null
     private lateinit var handler : Handler
+    private val telemetryEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         window.decorView.post {
             buildStatusList()
         }
+        if(telemetryEnabled)
+            setupChatViewAsLogger();
+    }
+
+    private fun setupChatViewAsLogger() {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.let {
+                    val name = it.getStringExtra(StatusBroadcasterComponent.CLASS_NAME)
+                    val status = it.getSerializableExtra(StatusBroadcasterComponent.STATUS_NAME) as? ComponentStatus
+                    ChatUtil.broadcastChatMessage(context!!,
+                        Message.createDummyMessage(name.split(".").last(), status.toString()))
+                }
+            }
+        }
+        val broadcastManager = LocalBroadcastManager.getInstance(this)
+        broadcastManager.registerReceiver(receiver, IntentFilter(StatusBroadcasterComponent.ACTION_COMPONENT_STATUS))
     }
 
     override fun onClick(v: View?) {

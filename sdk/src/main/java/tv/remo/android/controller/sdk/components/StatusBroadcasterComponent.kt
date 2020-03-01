@@ -36,11 +36,19 @@ class StatusBroadcasterComponent : Component() {
 
     override fun handleExternalMessage(message: ComponentEventObject): Boolean {
         if(message.what == STATUS_EVENT){
-            val intent = Intent(generateComponentStatusAction(message.source.javaClass)).apply {
+
+            //create an intent that will send all classes in the same action
+            val intent = Intent(ACTION_COMPONENT_STATUS).apply {
                 putExtra(CLASS_NAME, message.source.javaClass.name)
                 putExtra(STATUS_NAME, message.data as ComponentStatus)
             }
+            //create an intent that will only contain a single class of statuses
+            val intentClassLevel = Intent(generateComponentStatusAction(message.source.javaClass)).apply {
+                putExtra(STATUS_NAME, message.data as ComponentStatus)
+            }
+            //now send both of them
             localBroadcastManager?.sendBroadcast(intent)
+            localBroadcastManager?.sendBroadcast(intentClassLevel)
         }
         return super.handleExternalMessage(message)
     }

@@ -6,7 +6,7 @@
     <color name="switchBarThumbColor">#ececec</color>
 
     <color name="colorIndicatorDisabledFromSettings">#000000</color>
-    <color name="colorIndicatorDisabled">#00B8D4</color>
+    <color name="colorIndicatorDisabled">#FFFFFF</color>
     <color name="colorIndicatorStable">#00C853</color>
     <color name="colorIndicatorConnecting">#FFD600</color>
     <color name="colorIndicatorUnstable">#FF6D00</color>
