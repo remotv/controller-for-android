@@ -31,6 +31,7 @@ import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val listenerControllerList = ArrayList<ComponentHolder<*>>()
     private var recording = false
     private val arrayList = ArrayList<ComponentHolder<*>>()
     private var controlSDKServiceApi: ControlSdkServiceWrapper? = null
@@ -79,6 +80,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        handleListenerAddOrRemove(Operation.NOT_OK)
         controlSDKServiceApi?.disconnectFromService()
     }
 
@@ -87,9 +89,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         controlSDKServiceApi?.getServiceStateObserver()?.observeAutoCreate(this, operationObserver)
         controlSDKServiceApi?.getServiceBoundObserver()?.observeAutoCreate(this){ connected ->
             powerButton.isEnabled = connected == Operation.OK
+            handleListenerAddOrRemove(connected)
         }
         controlSDKServiceApi?.connectToService()
         createComponentHolders()
+    }
+
+    private fun handleListenerAddOrRemove(connected : Operation) {
+        if(connected == Operation.OK){
+            listenerControllerList.forEach {
+                controlSDKServiceApi?.addListenerOrController(it)
+            }
+        }
+        else if(connected == Operation.NOT_OK){
+            listenerControllerList.forEach {
+                controlSDKServiceApi?.removeListenerOrController(it)
+            }
+        }
     }
 
     private fun setupUI() {
@@ -192,7 +208,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
-            arrayList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
+            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
         }
     }
 
