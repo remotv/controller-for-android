@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
-import org.btelman.controlsdk.interfaces.ControlSdkApi
+import org.btelman.controlsdk.interfaces.ControlSdkServiceWrapper
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
@@ -33,7 +33,7 @@ import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var recording = false
     private val arrayList = ArrayList<ComponentHolder<*>>()
-    private var controlSDKServiceApi: ControlSdkApi? = null
+    private var controlSDKServiceApi: ControlSdkServiceWrapper? = null
     private lateinit var handler : Handler
     private val telemetryEnabled = true
 
