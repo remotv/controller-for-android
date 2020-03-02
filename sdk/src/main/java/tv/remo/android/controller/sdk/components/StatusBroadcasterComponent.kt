@@ -36,7 +36,9 @@ class StatusBroadcasterComponent : Component() {
 
     override fun handleExternalMessage(message: ComponentEventObject): Boolean {
         if(message.what == STATUS_EVENT){
-
+            log.d{
+                "STATUS_EVENT ${message.data as ComponentStatus} from ${message.source.javaClass.name}"
+            }
             //create an intent that will send all classes in the same action
             val intent = Intent(ACTION_COMPONENT_STATUS).apply {
                 putExtra(CLASS_NAME, message.source.javaClass.name)

@@ -15,6 +15,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.models.Component
 import tv.remo.android.controller.R
+import tv.remo.android.controller.RemoApplication
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 
 /**
@@ -25,6 +26,8 @@ import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 class RemoStatusView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : CustomImageView(context, attrs, defStyleAttr), Runnable{
+
+    private var log = RemoApplication.getLogger(this)
     private var colorLookup = SparseIntArray().also{
         appendColor(context, it, R.color.colorIndicatorDisabledFromSettings)
         appendColor(context, it, R.color.colorIndicatorDisabled)
@@ -77,7 +80,11 @@ class RemoStatusView @JvmOverloads constructor(
     fun <T : Component> registerStatusEvents(statusClassName : Class<T>){
         broadcastManager.unregisterReceiver(receiver)
         val filter = IntentFilter(StatusBroadcasterComponent.ACTION_SERVICE_STATUS)
-        filter.addAction(StatusBroadcasterComponent.generateComponentStatusAction(statusClassName))
+        StatusBroadcasterComponent.generateComponentStatusAction(statusClassName).also {
+            filter.addAction(it)
+            log.d { "switching log to $it" }
+            log = RemoApplication.getLogger(this, it)
+        }
         broadcastManager.registerReceiver(receiver, filter)
     }
 
@@ -86,6 +93,9 @@ class RemoStatusView @JvmOverloads constructor(
     }
 
     private fun onBroadcastDataReceived(intent: Intent) {
+        log.v{
+            "onBroadcastDataReceived ${intent.action} ${intent.getSerializableExtra(StatusBroadcasterComponent.STATUS_NAME)}"
+        }
         if(intent.action == StatusBroadcasterComponent.ACTION_SERVICE_STATUS) return
         val componentStatus = intent.getSerializableExtra(StatusBroadcasterComponent.STATUS_NAME)
         status = componentStatus as? ComponentStatus

@@ -188,11 +188,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun createComponentHolders() {
         RemoSettingsUtil.with(this){ settings ->
-            arrayList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
             arrayList.add(ComponentBuilderUtil.createSocketComponent(settings))
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
+            arrayList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
         }
     }
 
