@@ -20,6 +20,7 @@ import org.btelman.controlsdk.interfaces.ControlSdkServiceWrapper
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
+import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val arrayList = ArrayList<ComponentHolder<*>>()
     private var controlSDKServiceApi: ControlSdkServiceWrapper? = null
     private lateinit var handler : Handler
-    private val telemetryEnabled = true
+    private val telemetryEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +124,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
         audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
         videoConnectionStatusView.registerStatusEvents(RemoVideoProcessor::class.java)
+        ttsConnectionStatusView.registerStatusEvents(SystemDefaultTTSComponent::class.java)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
