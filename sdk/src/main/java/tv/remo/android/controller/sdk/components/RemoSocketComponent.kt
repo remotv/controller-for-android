@@ -16,10 +16,7 @@ import org.json.JSONObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.*
-import tv.remo.android.controller.sdk.utils.ChatUtil
-import tv.remo.android.controller.sdk.utils.EndpointBuilder
-import tv.remo.android.controller.sdk.utils.SocketListener
-import tv.remo.android.controller.sdk.utils.isUrl
+import tv.remo.android.controller.sdk.utils.*
 
 /**
  * Remo Socket component
@@ -150,13 +147,6 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             }
             else -> message
         }
-    }
-
-    private fun String.startsWith(vararg prefix : String) : Boolean{
-        prefix.forEach {
-            if(this.startsWith(it, false)) return true
-        }
-        return false
     }
 
     private fun searchAndSendCommand(message: Message) : Boolean{
