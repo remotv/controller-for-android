@@ -22,6 +22,7 @@ object Licenses {
             License("OkHttp", LicenseType.APACHE2_0),
             License("FFmpeg, github.com/btelman96/ffmpeg-android", LicenseType.LGPL3),
             License("github.com/btelman96/AndroidUvcDemo", LicenseType.GPL3
-                    , "https://raw.githubusercontent.com/btelman96/AndroidUvcDemo/master/LICENCE")
+                    , "https://raw.githubusercontent.com/btelman96/AndroidUvcDemo/master/LICENCE"),
+            License("LogUtilKt, https://github.com/btelman96/LogUtilKt", LicenseType.APACHE2_0, "https://github.com/btelman96/LogUtilKt/blob/master/LICENSE")
     )
 }
