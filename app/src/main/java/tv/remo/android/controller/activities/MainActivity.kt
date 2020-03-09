@@ -1,19 +1,14 @@
 package tv.remo.android.controller.activities
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
-import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
 import org.btelman.controlsdk.interfaces.ControlSdkServiceWrapper
@@ -27,8 +22,6 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
-import tv.remo.android.controller.sdk.models.api.Message
-import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -48,23 +41,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         window.decorView.post {
             buildStatusList()
         }
-        if(telemetryEnabled)
-            setupChatViewAsLogger();
-    }
-
-    private fun setupChatViewAsLogger() {
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent?.let {
-                    val name = it.getStringExtra(StatusBroadcasterComponent.CLASS_NAME)
-                    val status = it.getSerializableExtra(StatusBroadcasterComponent.STATUS_NAME) as? ComponentStatus
-                    ChatUtil.broadcastChatMessage(context!!,
-                        Message.createDummyMessage(name.split(".").last(), status.toString()))
-                }
-            }
-        }
-        val broadcastManager = LocalBroadcastManager.getInstance(this)
-        broadcastManager.registerReceiver(receiver, IntentFilter(StatusBroadcasterComponent.ACTION_COMPONENT_STATUS))
     }
 
     override fun onClick(v: View?) {
@@ -166,14 +142,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (recording){
             buttonGroupMainActivity.visibility = View.GONE
             hideSystemUI()
-        }
-    }
-
-    private fun UnitTestRunChat(){
-        val json = "{\"message\":\"test\",\"sender\":\"ReconDelta090\",\"sender_id\":\"user-6a9591cc-f3d3-4e47-a208-e749679a899a\",\"chat_id\":\"chat-8a05f730-c663-434d-9f24-6d8c24453c5f\",\"server_id\":\"serv-46437781-4a9b-4531-9db1-74bc2f818b58\",\"id\":\"mesg-ec54bf9a-23d4-4fa6-b6f1-9a5c8e3e2440\",\"time_stamp\":1574296097994,\"broadcast\":\"\",\"channel_id\":\"chan-7a304995-cba0-463c-81a6-ffeffc059058\",\"display_message\":true,\"badges\":[\"owner\"],\"type\":\"\"}"
-        Gson().fromJson(json, Message::class.java).also { rawMessage ->
-            ChatUtil.broadcastChatMessage(this, rawMessage)
-            ChatUtil.broadcastChatMessage(this, rawMessage) //should just be ignored
         }
     }
 
