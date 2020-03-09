@@ -1,8 +1,6 @@
 package tv.remo.android.controller.fragments
 import android.content.Context
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -15,6 +13,7 @@ import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.utils.ValueUtil
 import tv.remo.android.controller.utils.CameraUtil
+import tv.remo.android.controller.utils.v21.Camera2Util
 import tv.remo.android.settingsutil.fragments.BasePreferenceFragmentCompat
 import tv.remo.android.settingsutil.interfaces.SwitchBarCapableActivity
 import java.util.*
@@ -237,17 +236,7 @@ class SettingsCamera : BasePreferenceFragmentCompat(
 
     private fun validateCamera2Support(context: Context, cameraId: Int): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            try {
-                val cm =
-                    (context.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
-                val hardwareLevel = cm.getCameraCharacteristics(
-                    cm.cameraIdList[cameraId]
-                )[CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL]
-                return hardwareLevel != CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY
-                        && hardwareLevel != CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED
-            } catch (_: Exception) {
-
-            }
+            return Camera2Util.checkFullyCompatible(context, cameraId)
         }
         return false
     }

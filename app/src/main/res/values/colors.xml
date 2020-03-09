@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3255fb</color>
-    <color name="colorPrimaryDark">#3255fb</color>
-    <color name="colorAccent">#8c12cb</color>
+    <color name="colorPrimary">#6200EA</color>
+    <color name="colorPrimaryDark">#4A148C</color>
+    <color name="colorAccent">#304FFE</color>
     <color name="switchBarThumbColor">#ececec</color>
+
+    <color name="colorIndicatorDisabledFromSettings">#000000</color>
+    <color name="colorIndicatorDisabled">#FFFFFF</color>
+    <color name="colorIndicatorStable">#00C853</color>
+    <color name="colorIndicatorConnecting">#FFD600</color>
+    <color name="colorIndicatorUnstable">#FF6D00</color>
+    <color name="colorIndicatorError">#D50000</color>
+
+    <color name="powerIndicatorOff">#D50000</color>
+    <color name="powerIndicatorInProgress">#FFD600</color>
+    <color name="powerIndicatorOn">#00C853</color>
+    <color name="powerIndicatorError">#AA00FF</color>
 </resources>
