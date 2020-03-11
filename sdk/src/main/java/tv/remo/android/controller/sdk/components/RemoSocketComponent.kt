@@ -153,6 +153,10 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         //TODO get list of mods or users that have access to commands
         if(message.message.startsWith(".", "/")){
             if(!message.badges.contains("owner")) return true
+            if(message.message == ".reload"){
+                sendHandshakeAuth()
+                return true
+            }
             eventDispatcher?.handleMessage(
                 ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN,
                     RemoCommandHandler.Packet(
@@ -213,7 +217,7 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         socket?.send(str)
     }
 
-    private fun sendHandshakeAuth(value : String) {
+    private fun sendHandshakeAuth(value : String? = null) {
         val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
         socket?.send(json)
     }
