@@ -6,8 +6,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.Wearable
 import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
@@ -17,12 +20,16 @@ import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
+import tv.remo.android.controller.WearDataUpdater
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val listenerControllerList = ArrayList<ComponentHolder<*>>()
@@ -32,6 +39,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var handler : Handler
     private val telemetryEnabled = false
 
+    fun print(value : String){
+        Log.d("Main", value)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handler = Handler(Looper.getMainLooper())
@@ -40,6 +51,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setupUI()
         window.decorView.post {
             buildStatusList()
+        }
+        WearDataUpdater(this){
+            print("aaaasenda")
+            val dataMap = PutDataMapRequest.create("/robots")
+            dataMap.dataMap.putStringArrayList("robots", it)
+            dataMap.dataMap.putLong("time", Date().time)
+            val request = dataMap.asPutDataRequest()
+            request.setUrgent()
+
+            print("send")
+            val dataItemTask =
+                Wearable.getDataClient(this).putDataItem(request)
+
+            dataItemTask.addOnSuccessListener { dataItem ->
+
+                print("send success ${dataItem.uri.path}")
+            }
         }
     }
 

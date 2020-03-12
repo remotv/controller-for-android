@@ -1,7 +1,7 @@
 package tv.remo.android.controller
 
-import android.app.Application
 import android.util.Log
+import androidx.multidex.MultiDexApplication
 import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.logutil.kotlin.LogLevel
 import org.btelman.logutil.kotlin.LogUtil
@@ -10,7 +10,7 @@ import org.btelman.logutil.kotlin.LogUtilInstance
 /**
  * Created by Brendon on 7/28/2019.
  */
-class RemoApplication : Application() {
+class RemoApplication : MultiDexApplication() {
     private val log = LogUtil("RemoApplication", logID)
 
     override fun onCreate() {
