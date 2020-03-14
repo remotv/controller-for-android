@@ -7,8 +7,6 @@ import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.StreamSubComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.models.StreamInfo
-import tv.remo.android.controller.sdk.components.RemoCommandHandler
-import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.components.StreamCommandHandler.Companion.rebuildStream
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
@@ -39,6 +37,8 @@ class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     override fun handleExternalMessage(message: ComponentEventObject): Boolean {
         if(message.source is RemoCommandSender){
             commandHandler?.handleExternalMessage(message)
+            retriever.handleExternalMessage(message)
+            processor.handleExternalMessage(message)
         }
         return super.handleExternalMessage(message)
     }

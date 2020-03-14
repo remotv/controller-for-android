@@ -75,8 +75,9 @@ class RemoCommandHandler : Component(), RemoCommandSender {
             command == ".table off" -> handleStationary(packet, false)
             command == ".devmode on" -> handleDevMode(packet, true)
             command == ".devmode off" -> handleDevMode(packet, false)
-            command.startsWith(".bitrate") -> handleVideoAudioCommand(command)
-            command.startsWith(".stream") || command.startsWith(".audio") -> handleVideoAudioCommand(command)
+            command.startsWith(".bitrate") -> handleOutboundCommand(command)
+            command.startsWith(".stream") || command.startsWith(".audio") -> handleOutboundCommand(command)
+            command.startsWith(".light") -> handleOutboundCommand(command)
             command.contains(".xcontrol") -> parseXControl(packet)
             else -> processCommand(packet)
         }
@@ -96,7 +97,7 @@ class RemoCommandHandler : Component(), RemoCommandSender {
         }
     }
 
-    private fun handleVideoAudioCommand(command: String) {
+    private fun handleOutboundCommand(command: String) {
         eventDispatcher?.handleMessage(
             ComponentEventObject(ComponentType.CUSTOM, EVENT_MAIN, command, this)
         )
