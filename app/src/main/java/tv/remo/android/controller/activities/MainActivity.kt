@@ -163,10 +163,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             Operation.LOADING -> {} //do nothing
             Operation.OK -> {
+                controlSDKServiceApi?.disable()
                 arrayList.forEach {
                     controlSDKServiceApi?.detachFromLifecycle(it)
                 }
-                controlSDKServiceApi?.disable()
             }
             null -> powerButton.setTextColor(parseColorForOperation(null))
         }
