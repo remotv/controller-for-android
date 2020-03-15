@@ -76,13 +76,13 @@ object ComponentBuilderUtil {
         return Bundle().apply {
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
-                settings.videoUrl
-                ,settings.audioUrl
-                ,deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref())
-                ,orientation = Orientation.valueOf(settings.cameraOrientation.getPref())
-                ,bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512
-                ,width = resolution[0].toInt()
-                ,height = resolution[1].toInt()
+                settings.videoUrl,
+                settings.audioUrl,
+                deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref()),
+                orientation = Orientation.valueOf(settings.cameraOrientation.getPref()),
+                bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512,
+                width = resolution[0].toInt(),
+                height = resolution[1].toInt()
             )
             //use our customized remo classes
             VideoRetrieverFactory.putClassInBundle(CameraCompatOverride::class.java, this)

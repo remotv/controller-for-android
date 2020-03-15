@@ -2,6 +2,7 @@ package tv.remo.android.controller.sdk.components.audio
 
 import android.content.Context
 import android.os.Bundle
+import kotlinx.coroutines.runBlocking
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.AudioComponent
@@ -10,8 +11,6 @@ import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.tts.TTSBaseComponent
 import tv.remo.android.controller.sdk.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
-import tv.remo.android.controller.sdk.components.RemoCommandHandler
-import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
@@ -107,8 +106,11 @@ class RemoAudioComponent : AudioComponent() , CommandStreamHandler {
                 }
 
                 //we only care about rebooting ffmpeg
-                processor.disable()
-                processor.enable(context!!, streamInfo)
+                runBlocking {
+                    processor.disable().await()
+                    processor.updateStreamInfo(streamInfo)
+                    processor.enable().await()
+                }
             }
         }
     }

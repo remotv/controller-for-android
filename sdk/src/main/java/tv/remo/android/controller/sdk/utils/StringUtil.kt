@@ -29,3 +29,10 @@ fun String.isUrl() : Boolean{
     }
     return false
 }
+
+fun String.startsWith(vararg prefix : String) : Boolean{
+    prefix.forEach {
+        if(this.startsWith(it, false)) return true
+    }
+    return false
+}
