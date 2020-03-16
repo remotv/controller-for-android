@@ -1,16 +1,11 @@
 package tv.remo.android.controller.sdk.components
 
 import android.content.Context
-import android.os.Bundle
 import fi.iki.elonen.NanoHTTPD
-import org.btelman.controlsdk.interfaces.ControlSDKMessenger
-import org.btelman.controlsdk.interfaces.IController
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.models.StringPref
 
-class RemoWebServer : IController {
-    private lateinit var context: Context
-    private var api: ControlSDKMessenger? = null
+class RemoWebServer (val context: Context, val onSettingsUpdated : (()->Unit)? = null){
     private val server = object : NanoHTTPD(8080) {
         override fun serve(session: IHTTPSession): Response? {
             when(session.uri){
@@ -21,20 +16,11 @@ class RemoWebServer : IController {
                         buildSettings()
                     } else {
                         saveSettings(parms)
+                        onSettingsUpdated?.invoke()
                         "<p>Saved!</p>"
                     }
                     return newFixedLengthResponse("$msg</body></html>\n")
                 }
-//                "/on" -> {
-//                    enableRobot() //TODO no components were added!
-//                    val msg = "<html><body><h1>Turning robot on</h1>\n"
-//                    return newFixedLengthResponse("$msg</body></html>\n")
-//                }
-//                "/off" -> {
-//                    disableRobot()
-//                    val msg = "<html><body><h1>Turning robot off</h1>\n"
-//                    return newFixedLengthResponse("$msg</body></html>\n")
-//                }
                 else -> {
                     val msg = "<html><body><h1>Hello</h1>\n"
 
@@ -44,18 +30,12 @@ class RemoWebServer : IController {
         }
     }
 
-    override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
+    fun open(){
         server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false)
-        context = applicationContext
         System.out.println("\nRunning! Point your browsers to http://localhost:8080/ \n")
     }
 
-    override fun onControlAPI(controlSDKMessenger: ControlSDKMessenger) {
-        super.onControlAPI(controlSDKMessenger)
-        api = controlSDKMessenger
-    }
-
-    override fun onRemoved() {
+    fun close(){
         server.stop()
     }
 
@@ -73,27 +53,20 @@ class RemoWebServer : IController {
         }
     }
 
-    private fun enableRobot() {
-        api?.enable()
-    }
-
-    private fun disableRobot() {
-        api?.disable()
-    }
-
     private fun buildSettings() : String{
         return RemoSettingsUtil.with(context){
             var msg = "<form action='?' method='get'>"
-            msg += getSettingHtml(it.apiKey.key, "API key")
-            msg += getSettingHtml(it.channelId.key,"Channel name")
-            msg += getSettingHtml(it.serverOwner.key,"Owner name")
-            msg += "<button>Save</button>"
+            msg += getSettingHtml(it.apiKey, "API key", hide = true)
+            msg += getSettingHtml(it.channelId,"Channel name")
+            msg += getSettingHtml(it.serverOwner,"Owner name")
+            msg += "<input type='submit' value='Submit'\"'>"
             msg += "</form>\n"
             return@with msg
         }
     }
 
-    fun getSettingHtml(key : String, userValue : String = key) : String{
-        return "\n<p>$userValue: <input type='text' name='$key'></p>"
+    private fun getSettingHtml(pref : StringPref, label : String = pref.key, hide : Boolean = false) : String{
+        val value = if(hide) "" else pref.getPref()
+        return "\n<p>$label: <input type='${if(hide) "password" else "text"}' name='${pref.key}' value='$value'/></p>"
     }
 }

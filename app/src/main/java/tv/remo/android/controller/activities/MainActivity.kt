@@ -19,7 +19,6 @@ import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
-import tv.remo.android.controller.sdk.components.RemoWebServer
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
@@ -180,7 +179,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
             listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
-            listenerControllerList.add(ComponentHolder(RemoWebServer::class.java, null))
         }
     }
 

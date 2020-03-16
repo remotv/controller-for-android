@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".WebServerSettingsPage">
+
+    <TextView
+        android:padding="16dp"
+        android:id="@+id/webServerHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/webServerHint" />
+    <TextView
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:id="@+id/ipAddrLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/webServerHint"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="IP Address: "/>
+    <TextView
+        android:id="@+id/ipAddrValue"
+        app:layout_constraintStart_toEndOf="@id/ipAddrLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ipAddrLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="192.168.000.000"/>
+    <TextView
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:id="@+id/responseTextView"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/ipAddrLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Data saved!"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
