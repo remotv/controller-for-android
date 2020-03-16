@@ -46,6 +46,7 @@ dependencies {
     api 'com.google.code.gson:gson:2.8.5'
     api project(path: ':licensehelper')
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'org.nanohttpd:nanohttpd:2.2.0'
 }
 repositories {
     mavenCentral()
