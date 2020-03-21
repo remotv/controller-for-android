@@ -44,6 +44,9 @@ class RemoWebServer (val context: Context, val onSettingsUpdated : (()->Unit)? =
             trySaveStringSetting(settings.apiKey, parms)
             trySaveStringSetting(settings.channelId, parms)
             trySaveStringSetting(settings.serverOwner, parms)
+            trySaveStringSetting(settings.ffmpegInputOptions, parms)
+            trySaveStringSetting(settings.ffmpegOutputOptions, parms)
+            trySaveStringSetting(settings.cameraFFmpegFilterOptions, parms)
         }
     }
 
@@ -59,7 +62,10 @@ class RemoWebServer (val context: Context, val onSettingsUpdated : (()->Unit)? =
             msg += getSettingHtml(it.apiKey, "API key", hide = true)
             msg += getSettingHtml(it.channelId,"Channel name")
             msg += getSettingHtml(it.serverOwner,"Owner name")
-            msg += "<input type='submit' value='Submit'\"'>"
+            msg += getSettingHtml(it.ffmpegInputOptions,"FFmpeg input options")
+            msg += getSettingHtml(it.ffmpegOutputOptions,"FFmpeg output options")
+            msg += getSettingHtml(it.cameraFFmpegFilterOptions,"FFmpeg filter options (-vf)")
+            msg += "<input type='submit' value='Submit'>"
             msg += "</form>\n"
             return@with msg
         }
