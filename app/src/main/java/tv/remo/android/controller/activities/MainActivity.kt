@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        handleListenerAddOrRemove(Operation.NOT_OK)
         controlSDKServiceApi?.disconnectFromService()
     }
 
@@ -101,6 +100,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
         videoConnectionStatusView.registerStatusEvents(RemoVideoProcessor::class.java)
         ttsConnectionStatusView.registerStatusEvents(SystemDefaultTTSComponent::class.java)
+        StatusBroadcasterComponent.sendUpdateBroadcast(applicationContext)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
@@ -163,10 +163,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             Operation.LOADING -> {} //do nothing
             Operation.OK -> {
+                //disable the service
                 controlSDKServiceApi?.disable()
-                arrayList.forEach {
-                    controlSDKServiceApi?.detachFromLifecycle(it)
-                }
+                // remove all components that happen to be left over. We may not know what got added
+                // if the activity was lost due to the Android system
+                // Listeners and controllers will still stay, and will not be overridden by the same name
+                controlSDKServiceApi?.reset()
             }
             null -> powerButton.setTextColor(parseColorForOperation(null))
         }
