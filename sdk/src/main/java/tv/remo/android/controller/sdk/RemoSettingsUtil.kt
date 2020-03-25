@@ -41,6 +41,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     //Camera related settings
     val cameraEnabled = BooleanPref(context, sharedPreferences, R.string.cameraSettingsEnableKey, false)
     val cameraResolution = StringPref(context, sharedPreferences, R.string.cameraResolutionKey, "640x480")
+    val cameraFocus = StringPref(context, sharedPreferences, R.string.cameraFocusKey, "auto")
     val cameraOrientation = StringPref(context, sharedPreferences, R.string.cameraOrientationKey, "DIR_90")
     val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0)
     val cameraBitrate = StringPref(context, sharedPreferences, R.string.cameraBitrateKey, "1024")
@@ -83,8 +84,12 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
         }
 
         fun <T> with(context: Context, func : (RemoSettingsUtil)->T) : T{
-            val settingsUtil = INSTANCE ?: create(context)
+            val settingsUtil = with(context)
             return func(settingsUtil)
+        }
+
+        fun with(context: Context) : RemoSettingsUtil{
+            return INSTANCE ?: create(context)
         }
     }
 }

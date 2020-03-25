@@ -20,6 +20,21 @@
         <item>768x432</item>
         <item>1280x720</item>
     </string-array>
+
+    <string-array name="focus_pref_list">
+        <item>System Default</item>
+        <item>Video mode</item>
+        <item>Picture mode</item>
+        <item>Off</item>
+    </string-array>
+
+    <string-array name="focus_pref_list_values">
+        <item>auto</item>
+        <item>video</item>
+        <item>picture</item>
+        <item>off</item>
+    </string-array>
+
     <string-array name="orientation_pref_list">
         <item>Portrait</item>
         <item>Landscape Right</item>

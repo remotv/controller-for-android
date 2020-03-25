@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.WebSocket
+import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
@@ -15,10 +16,7 @@ import org.json.JSONObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.*
-import tv.remo.android.controller.sdk.utils.ChatUtil
-import tv.remo.android.controller.sdk.utils.EndpointBuilder
-import tv.remo.android.controller.sdk.utils.SocketListener
-import tv.remo.android.controller.sdk.utils.isUrl
+import tv.remo.android.controller.sdk.utils.*
 
 /**
  * Remo Socket component
@@ -69,33 +67,33 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     }
 
     private fun subToSocketEvents(listener: SocketListener) {
-        listener.on(SocketListener.ON_OPEN){
-            sendHandshakeAuth()
-        }.on(SocketListener.ON_CLOSE){
-            Log.d("TAG","onClosing $it")
-        }.on(SocketListener.ON_ERROR){
-            handler.postDelayed ({
-                //attempt a reconnect every second
-                attemptReconnect()
-            }, 1000)
-            Log.d("TAG","onFailure $it")
-        }.on("ROBOT_VALIDATED"){
-            sendChannelsRequest(it)
-        }.on("SEND_ROBOT_SERVER_INFO"){
-            verifyAndSubToChannel(it)
-        }.on(SocketListener.ON_MESSAGE){
-            Log.d("SOCKET", it)
-        }.on("MESSAGE_RECEIVED"){
-            sendChatUpwards(it)
-        }.on("BUTTON_COMMAND"){
-            sendCommandUpwards(it)
-        }.on("LOCAL_MODERATION"){
-            processChatModeration(it)
-        }
+        listener.on(SocketListener.ON_CLOSE) {
+                status = ComponentStatus.ERROR
+                Log.d("TAG", "onClosing $it")
+            }.on(SocketListener.ON_OPEN, this::sendHandshakeAuth)
+            .on(SocketListener.ON_ERROR, this::handleConnectionError)
+            .on("ROBOT_VALIDATED", this::sendChannelsRequest)
+            .on("SEND_ROBOT_SERVER_INFO", this::verifyAndSubToChannel)
+            .on("MESSAGE_RECEIVED", this::sendChatUpwards)
+            .on("BUTTON_COMMAND", this::sendCommandUpwards)
+            .on("LOCAL_MODERATION", this::processChatModeration)
+            .on(SocketListener.ON_MESSAGE) {
+                Log.d("SOCKET", it)
+            }
         //.on("SEND_CHAT") //TODO? of type Messages
     }
 
+    private fun handleConnectionError(value: String) {
+        status = ComponentStatus.ERROR
+        handler.postDelayed({
+            //attempt a reconnect every second
+            attemptReconnect()
+        }, 1000)
+        Log.d("TAG", "onFailure $value")
+    }
+
     private fun attemptReconnect() {
+        status = ComponentStatus.CONNECTING
         url ?: return
         socket?.close(1000, "service ended normally")
         request = Request.Builder().url(url!!).build()
@@ -149,13 +147,6 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             }
             else -> message
         }
-    }
-
-    private fun String.startsWith(vararg prefix : String) : Boolean{
-        prefix.forEach {
-            if(this.startsWith(it, false)) return true
-        }
-        return false
     }
 
     private fun searchAndSendCommand(message: Message) : Boolean{
@@ -215,13 +206,14 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     }
 
     private fun sendChannelsRequest(json : String) {
+        status = ComponentStatus.STABLE
         val jsonObject = JSONObject(json)
         val host = jsonObject.getString("host")
         val str = "{\"e\":\"GET_CHANNELS\",\"d\":{\"server_id\":\"$host\"}}"
         socket?.send(str)
     }
 
-    private fun sendHandshakeAuth() {
+    private fun sendHandshakeAuth(value : String) {
         val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
         socket?.send(json)
     }

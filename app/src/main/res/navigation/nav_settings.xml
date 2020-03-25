@@ -38,7 +38,11 @@
     <fragment
         android:id="@+id/settingsConnection"
         android:name="tv.remo.android.controller.fragments.SettingsConnection"
-        android:label="@string/connectionSettingsTitle" />
+        android:label="@string/connectionSettingsTitle" >
+        <action
+            android:id="@+id/action_settingsConnection_to_webServerSettingsPage"
+            app:destination="@id/webServerSettingsPage" />
+    </fragment>
     <fragment
         android:id="@+id/settingsRobot"
         android:name="tv.remo.android.controller.fragments.SettingsRobot"
@@ -89,4 +93,9 @@
             app:popUpTo="@id/nav_settings"
             app:popUpToInclusive="true"
             app:launchSingleTop="true" />
+    <fragment
+        android:id="@+id/webServerSettingsPage"
+        android:name="tv.remo.android.controller.WebServerSettingsPage"
+        android:label="Web Server"
+        tools:layout="@layout/fragment_web_server_settings_page"></fragment>
 </navigation>

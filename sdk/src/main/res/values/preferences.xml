@@ -12,6 +12,7 @@
     <string name="cameraSettingsGeneralGroupKey">genericCameraSettingsGroupKey</string>
     <string name="cameraSettingsEnableKey">cameraSettingsEnable</string>
     <string name="cameraResolutionKey">cameraResolution</string>
+    <string name="cameraFocusKey">cameraFocus</string>
     <string name="cameraOrientationKey">cameraOrientation</string>
     <string name="cameraBitrateKey">cameraBitrate</string>
     <string name="useCamera2">UseCamera2</string>

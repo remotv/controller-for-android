@@ -50,11 +50,10 @@
     <string name="cameraDeviceIdTitle">Camera Device ID (0 is back)</string>
     <string name="cameraSettingsSummary">Resolution, Orientation, Bitrate</string>
     <string name="cameraResolutionTitle">Resolution</string>
+    <string name="cameraFocusTitle">Auto Focus</string>
     <string name="cameraOrientationTitle">Orientation</string>
     <string name="camera2DisabledTitle">Camera2 Disabled</string>
-    <string name="camera2DisabledSummary">Device is using legacy camera API.
-        Resolution is locked at 640x480. Disabled since device OS is below 5.0
-        or selected camera id does not support new camera api</string>
+    <string name="camera2DisabledSummary">Device is using legacy camera API. Some features may be locked</string>
     <!--Microphone-->
     <string name="microphoneSettingsTitle">Microphone</string>
     <string name="microphoneSettingsSummary">Volume, Bitrate</string>
@@ -109,5 +108,8 @@
     <string name="ffmpegFilterTitle">FFmpeg additional filters (no spaces!)</string>
     <string name="ffmpegInputOptionsTitle">ffmpeg input options</string>
     <string name="ffmpegOutputOptionsTitle">ffmpeg output options</string>
+    <string name="webServerHint">Use the web page that is now running to input the connection settings from a PC.
+        \nThis is the only page that runs the web server
+        \nThe device has to be connected to the same Wi-Fi network for this to work</string>
     <!--EndRegion-->
 </resources>

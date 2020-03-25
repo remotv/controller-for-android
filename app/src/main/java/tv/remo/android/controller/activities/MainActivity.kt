@@ -8,25 +8,32 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
-import org.btelman.controlsdk.interfaces.ControlSdkApi
+import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
+import org.btelman.controlsdk.interfaces.ControlSdkServiceWrapper
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
+import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.MqttComponent
 import tv.remo.android.controller.sdk.models.api.Message
 import tv.remo.android.controller.sdk.utils.ChatUtil
+import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
+import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
+import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val listenerControllerList = ArrayList<ComponentHolder<*>>()
     private var recording = false
     private val arrayList = ArrayList<ComponentHolder<*>>()
-    private var controlSDKServiceApi: ControlSdkApi? = null
+    private var controlSDKServiceApi: ControlSdkServiceWrapper? = null
     private lateinit var handler : Handler
+    private val telemetryEnabled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +41,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
         setupControlSDK()
         setupUI()
+        window.decorView.post {
+            buildStatusList()
+        }
     }
 
     override fun onClick(v: View?) {
@@ -58,9 +68,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         controlSDKServiceApi?.getServiceStateObserver()?.observeAutoCreate(this, operationObserver)
         controlSDKServiceApi?.getServiceBoundObserver()?.observeAutoCreate(this){ connected ->
             powerButton.isEnabled = connected == Operation.OK
+            handleListenerAddOrRemove(connected)
         }
         controlSDKServiceApi?.connectToService()
         createComponentHolders()
+    }
+
+    private fun handleListenerAddOrRemove(connected : Operation) {
+        if(connected == Operation.OK){
+            listenerControllerList.forEach {
+                controlSDKServiceApi?.addListenerOrController(it)
+            }
+        }
+        else if(connected == Operation.NOT_OK){
+            listenerControllerList.forEach {
+                controlSDKServiceApi?.removeListenerOrController(it)
+            }
+        }
     }
 
     private fun setupUI() {
@@ -70,6 +94,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
         settingsButton.setOnClickListener(this)
         powerButton?.setOnClickListener(this)
+
+    }
+
+    private fun buildStatusList() {
+        websiteConnectionStatusView.registerStatusEvents(RemoSocketComponent::class.java)
+        hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
+        audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
+        videoConnectionStatusView.registerStatusEvents(RemoVideoProcessor::class.java)
+        ttsConnectionStatusView.registerStatusEvents(SystemDefaultTTSComponent::class.java)
+        StatusBroadcasterComponent.sendUpdateBroadcast(applicationContext)
     }
 
     val operationObserver : (Operation) -> Unit = { serviceStatus ->
@@ -114,14 +148,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun UnitTestRunChat(){
-        val json = "{\"message\":\"test\",\"sender\":\"ReconDelta090\",\"sender_id\":\"user-6a9591cc-f3d3-4e47-a208-e749679a899a\",\"chat_id\":\"chat-8a05f730-c663-434d-9f24-6d8c24453c5f\",\"server_id\":\"serv-46437781-4a9b-4531-9db1-74bc2f818b58\",\"id\":\"mesg-ec54bf9a-23d4-4fa6-b6f1-9a5c8e3e2440\",\"time_stamp\":1574296097994,\"broadcast\":\"\",\"channel_id\":\"chan-7a304995-cba0-463c-81a6-ffeffc059058\",\"display_message\":true,\"badges\":[\"owner\"],\"type\":\"\"}"
-        Gson().fromJson(json, Message::class.java).also { rawMessage ->
-            ChatUtil.broadcastChatMessage(this, rawMessage)
-            ChatUtil.broadcastChatMessage(this, rawMessage) //should just be ignored
-        }
-    }
-
     private fun launchSettings() {
         if(controlSDKServiceApi?.getServiceStateObserver()?.value == Operation.OK){
             powerCycle()
@@ -140,10 +166,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             Operation.LOADING -> {} //do nothing
             Operation.OK -> {
-                arrayList.forEach {
-                    controlSDKServiceApi?.detachFromLifecycle(it)
-                }
+                //disable the service
                 controlSDKServiceApi?.disable()
+                // remove all components that happen to be left over. We may not know what got added
+                // if the activity was lost due to the Android system
+                // Listeners and controllers will still stay, and will not be overridden by the same name
+                controlSDKServiceApi?.reset()
             }
             null -> powerButton.setTextColor(parseColorForOperation(null))
         }
@@ -156,6 +184,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
+            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
         }
     }
 
@@ -174,6 +203,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
+
+    @Suppress("DEPRECATION")
+    fun parseColorForOperation(state : Operation?) : Int{
+        return when(state){
+            Operation.OK -> resources.getColor(R.color.powerIndicatorOn)
+            Operation.NOT_OK -> resources.getColor(R.color.powerIndicatorOff)
+            Operation.LOADING -> resources.getColor(R.color.powerIndicatorInProgress)
+            null -> resources.getColor(R.color.powerIndicatorError)
+            else -> Color.BLACK
+        }
+    }
+
     // Shows the system bars by removing all the flags
 // except for the ones that make the content appear under the system bars.
     private fun showSystemUI() {
@@ -183,17 +224,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     companion object{
         fun getIntent(context: Context) : Intent {
             return Intent(context, MainActivity::class.java)
-        }
-
-        fun parseColorForOperation(state : Operation?) : Int{
-            val color : Int = when(state){
-                Operation.OK -> Color.GREEN
-                Operation.NOT_OK -> Color.RED
-                Operation.LOADING -> Color.YELLOW
-                null -> Color.CYAN
-                else -> Color.BLACK
-            }
-            return color
         }
     }
 }
