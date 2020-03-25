@@ -80,7 +80,7 @@ class RemoStatusView @JvmOverloads constructor(
     fun <T : Component> registerStatusEvents(statusClassName : Class<T>){
         broadcastManager.unregisterReceiver(receiver)
         val filter = IntentFilter(StatusBroadcasterComponent.ACTION_SERVICE_STATUS)
-        StatusBroadcasterComponent.generateComponentStatusAction(statusClassName).also {
+        StatusBroadcasterComponent.generateComponentStatusAction(statusClassName.name).also {
             filter.addAction(it)
             log.d { "switching log to $it" }
             log = RemoApplication.getLogger(this, it)
