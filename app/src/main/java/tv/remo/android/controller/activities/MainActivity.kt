@@ -18,6 +18,9 @@ import org.btelman.controlsdk.services.observeAutoCreate
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import tv.remo.android.controller.sdk.components.MqttComponent
+import tv.remo.android.controller.sdk.models.api.Message
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
@@ -176,6 +179,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun createComponentHolders() {
         RemoSettingsUtil.with(this){ settings ->
+            arrayList.add(ComponentHolder(MqttComponent::class.java, null))
             arrayList.add(ComponentBuilderUtil.createSocketComponent(settings))
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
