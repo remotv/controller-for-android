@@ -89,7 +89,7 @@ class DemoBotAndroidTest {
             createComponentHolders()
         }, 1000)
         serviceStatusLatch.await(1, TimeUnit.MINUTES) //probably too long, but after this it is long dead
-        Thread.sleep(60000)
+        Thread.sleep(5*60000) //5 minutes
         val serviceStatusCloseLatch = CountDownLatch(1)
         handler.post {
             controlSDKServiceApi.getServiceStateObserver()
