@@ -21,3 +21,5 @@ jobs:
         arch: x86_64
         profile: Nexus 6
         script: ./gradlew connectedCheck
+      env:
+        TEST_KEY: ${{ secrets.TEST_KEY }}

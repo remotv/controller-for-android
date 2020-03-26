@@ -19,7 +19,7 @@ import tv.remo.android.controller.sdk.utils.ChatUtil
 /**
  * Created by Brendon on 10/27/2019.
  */
-class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
+open class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     private var commandHandler : StreamCommandHandler? = null
 
     override fun enableInternal() {
