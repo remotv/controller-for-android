@@ -41,6 +41,11 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    useLibrary 'android.test.runner'
+
+    useLibrary 'android.test.base'
+
     buildTypes {
         debug{
             def testKey = System.getenv("TEST_KEY")
@@ -77,8 +82,10 @@ dependencies {
 
     //Test sdks
     testImplementation 'junit:junit:4.12'
+
     // Core library
     androidTestImplementation 'androidx.test:core:1.3.0-alpha05'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 
     // AndroidJUnitRunner and JUnit Rules
     androidTestImplementation 'androidx.test:runner:1.3.0-alpha05'

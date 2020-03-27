@@ -5,20 +5,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.test.InstrumentationRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ServiceTestRule
-import androidx.test.runner.AndroidJUnit4
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.interfaces.ControlSdkServiceWrapper
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.services.observeAutoCreate
-import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.junit.Rule
 import org.junit.Test
@@ -42,7 +40,6 @@ import java.util.concurrent.TimeUnit
 class DemoBotAndroidTest {
     @get:Rule
     val serviceRule = ServiceTestRule()
-
     private val listenerControllerList = ArrayList<ComponentHolder<*>>()
     private val arrayList = ArrayList<ComponentHolder<*>>()
 
@@ -55,12 +52,12 @@ class DemoBotAndroidTest {
         `when`(owner.lifecycle).thenReturn(lifecycle)
         return@let owner
     }
-    val appContext = InstrumentationRegistry.getTargetContext()
+    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
-    fun TestAndroidStream() {
+    fun testAndroidStream() {
         serviceRule.startService(
-            Intent(InstrumentationRegistry.getTargetContext(), ControlSDKService::class.java)
+            Intent(appContext, ControlSDKService::class.java)
         )
         val handler = Handler(Looper.getMainLooper())
         RemoSettingsUtil.with(appContext){
