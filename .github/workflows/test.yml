@@ -1,13 +1,16 @@
 name: Android Instrumented Tests
 
-on: [push]
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   test:
     runs-on: macOS-latest
     strategy:
       matrix:
-        api-level: [21, 23, 29]
+        api-level: [21, 23, 26, 29]
         target: [default]
         arch: [x86]
     steps:
