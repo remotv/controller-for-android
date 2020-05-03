@@ -52,7 +52,7 @@ class DemoBotAndroidTest {
             it.ffmpegInputOptions.savePref("-f image2pipe -codec:v mjpeg -i -")
         }
 
-        serviceInterface = ServiceInterface(appContext,
+        serviceInterface = ServiceInterfaceOverride(appContext,
             { serviceBound -> serviceBoundListener?.invoke(serviceBound)},
             { serviceConnection -> serviceConnectionListener?.invoke(serviceConnection)}
         )
