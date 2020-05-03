@@ -1,11 +1,9 @@
 package tv.remo.android.controller
 
 import android.content.Context
-import androidx.annotation.VisibleForTesting
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
-import org.btelman.controlsdk.services.observeAutoCreate
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil

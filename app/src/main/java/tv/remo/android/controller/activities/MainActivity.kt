@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
-import org.btelman.controlsdk.models.ComponentHolder
-import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
 import tv.remo.android.controller.ServiceInterface
@@ -21,7 +19,6 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
-import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var handler : Handler
