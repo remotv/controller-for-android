@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupControlSDK() {
         serviceInterface = ServiceInterface(this, onServiceBind, onServiceStatus)
+        serviceInterface?.setup()
     }
 
     private fun setupUI() {

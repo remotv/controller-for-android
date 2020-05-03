@@ -7,6 +7,7 @@ import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
+import java.lang.IllegalStateException
 
 /**
  * Interface for Activity to communicate with service
@@ -50,7 +51,10 @@ open class ServiceInterface(
     }
 
     fun changeStreamState(desiredState : Operation) {
-        if(controlSDKServiceApi.getServiceStateObserver().value == desiredState) return //already active
+        if(controlSDKServiceApi.getServiceBoundObserver().value != Operation.OK)
+            throw IllegalStateException() //not connected to socket
+        if(controlSDKServiceApi.getServiceStateObserver().value == desiredState)
+            return //already active
         when(desiredState){
             Operation.OK -> {
                 arrayList.forEach {
