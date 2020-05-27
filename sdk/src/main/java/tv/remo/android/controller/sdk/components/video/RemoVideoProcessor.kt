@@ -1,5 +1,6 @@
 package tv.remo.android.controller.sdk.components.video
 
+import org.btelman.android.shellutil.Executor
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.streaming.video.processors.FFmpegVideoProcessor
 import tv.remo.android.controller.sdk.RemoSettingsUtil
@@ -43,6 +44,11 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
         }
     }
 
+    fun getHeaders() : String{
+        val apiKey = RemoSettingsUtil.with(context!!).apiKey.getPref()
+        return "-headers \'Authorization:Bearer${Executor.CHARACTER_SPACE}${apiKey}\'"
+    }
+
     /**
      * process command to replace with camera props
      */
@@ -59,6 +65,7 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
                 .replace("\${bitrate}", "$bitrate")
                 .replace("\${inputStream}", "-")
                 .replace("\${endpoint}", endpoint)
+                .replace("\${headers}", getHeaders())
                 .replace("\${bitrateflags}",
                     "-b:v ${bitrate}k -minrate ${bitrate}k -maxrate ${bitrate}k -bufsize ${bitrate/1.5}k")
         }

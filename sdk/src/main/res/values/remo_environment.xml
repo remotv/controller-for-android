@@ -9,7 +9,7 @@
     </string>
 
     <string name="ffmpegDefaultOutputOptions">
-        -f mpegts -framerate ${framerate} -codec:v mpeg1video ${bitrateflags} -bf 0
+        -f mpegts -framerate ${framerate} -codec:v mpeg1video ${bitrateflags} -bf 0 ${headers}
     </string>
 
     <string name="endpointHost">
