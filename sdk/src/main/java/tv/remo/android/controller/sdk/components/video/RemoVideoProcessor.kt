@@ -46,7 +46,7 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
 
     fun getHeaders() : String{
         val apiKey = RemoSettingsUtil.with(context!!).apiKey.getPref()
-        return "-headers \'Authorization:Bearer${Executor.CHARACTER_SPACE}${apiKey}\'"
+        return "-headers Authorization:Bearer${Executor.CHARACTER_SPACE}${apiKey}"
     }
 
     /**
