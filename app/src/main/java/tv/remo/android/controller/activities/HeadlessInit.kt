@@ -14,6 +14,22 @@ import tv.remo.android.controller.R
 import tv.remo.android.controller.WebServerSettingsPage
 import tv.remo.android.controller.sdk.components.RemoWebServer
 
+/**
+ * Activate headless mode. When device boots, the app will open automatically, as the home launcher,
+ * and start a web server for control, and/or start the robot automatically
+ *
+ * To enable this feature, please run this command using adb
+ * ```
+ * adb shell am start -n tv.remo.android.controller/.activities.HeadlessInit -d "activate-headless"
+ * ```
+ *
+ * Then hit the home button, and set Remo.TV to the default home screen
+ *
+ * To turn this mode off, please run this command. Home screen will be reset to use the device default
+ * ```
+ * adb shell am start -n tv.remo.android.controller/.activities.HeadlessInit -d "deactivate-headless"
+ * ```
+ */
 class HeadlessInit : BaseActivity() {
     private val onSettingsUpdated : ()->Unit = {
         window?.decorView?.post {
