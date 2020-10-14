@@ -14,6 +14,7 @@ import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
+import tv.remo.android.controller.sdk.components.SoundPlayerComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
@@ -44,7 +45,9 @@ object ComponentBuilderUtil {
         val ttsList = ArrayList<ComponentHolder<*>>()
         if(settings.textToSpeechEnabled.getPref()){
             val tts = ComponentHolder(SystemDefaultTTSComponent::class.java, null)
+            val soundPlayer = ComponentHolder(SoundPlayerComponent::class.java, null)
             ttsList.add(tts)
+            ttsList.add(soundPlayer)
         }
         return ttsList
     }
