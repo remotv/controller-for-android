@@ -98,4 +98,12 @@
         <item>3X</item>
         <item>4X</item>
     </string-array>
+
+    <string-array name="log_level_pref_list">
+        <item>VERBOSE</item>
+        <item>DEBUG</item>
+        <item>WARNING</item>
+        <item>ERROR</item>
+        <item>NONE</item>
+    </string-array>
 </resources>

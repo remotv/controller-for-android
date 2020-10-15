@@ -41,17 +41,28 @@
         app:summary="@string/displaySettingsSummary">
     </Preference>
 
-    <Preference
-        app:key="@string/openSourceSettingsKey"
-        app:title="@string/openSourceSettingsTitle">
-    </Preference>
+    <PreferenceCategory
+        android:key="misc"
+        android:title="@string/misc">
+        <androidx.preference.ListPreference
+            app:key="@string/logLevelPrefsKey"
+            app:title="@string/logLevelTitle"
+            app:defaultValue="ERROR"
+            app:useSimpleSummaryProvider="true"
+            app:entries="@array/log_level_pref_list"
+            app:entryValues="@array/log_level_pref_list"/>
 
-    <Preference
-        app:key="@string/feedbackSettingsKey"
-        app:title="@string/feedbackSettingsTitle"
-        app:summary="@string/feedbackSettingsSummary">
-        <intent android:action="android.intent.action.VIEW"
-            android:data="https://github.com/remotv/controller-for-android/issues" />
-    </Preference>
+        <Preference
+            app:key="@string/openSourceSettingsKey"
+            app:title="@string/openSourceSettingsTitle">
+        </Preference>
 
+        <Preference
+            app:key="@string/feedbackSettingsKey"
+            app:title="@string/feedbackSettingsTitle"
+            app:summary="@string/feedbackSettingsSummary">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://github.com/remotv/controller-for-android/issues" />
+        </Preference>
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

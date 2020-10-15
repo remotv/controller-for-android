@@ -3,4 +3,5 @@
     <string name="controlSocketLabel">Remo.TV Control Socket Broadcast</string>
     <string name="controlSocketLabelPermissionDescription">Once this app has access, it can listen for
         controls from the app that will go to motors</string>
+    <string name="logLevelPrefsKey">logLevelGlobal</string>
 </resources>

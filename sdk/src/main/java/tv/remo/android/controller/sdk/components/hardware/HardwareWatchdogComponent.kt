@@ -51,8 +51,8 @@ class HardwareWatchdogComponent : Component(), RemoCommandSender{
                     (message.data as? String)?.let {
                         if(it != "stop" && !it.startsWith(".")){
                             maybeResetSleepTimer()
+                            resetTimeout()
                         }
-                        resetTimeout()
                     }
                 }
             }
