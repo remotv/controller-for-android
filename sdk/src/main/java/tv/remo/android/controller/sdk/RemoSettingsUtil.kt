@@ -74,7 +74,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val streamSleepMode = BooleanPref(context, sharedPreferences, R.string.streamAutoSleepEnabledKey, false)
     val streamSleepTimeOut = IntPref(context, sharedPreferences, R.string.streamAutoSleepTimeoutKey, 5*60) //5 minutes
 
-    val logLevel = StringPref(context, sharedPreferences, R.string.logLevel, LogLevel.ERROR.toString())
+    val logLevel = StringPref(context, sharedPreferences, R.string.logLevelPrefsKey, LogLevel.ERROR.toString())
 
     companion object{
         private var INSTANCE : RemoSettingsUtil? = null
