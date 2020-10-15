@@ -2,7 +2,6 @@ package tv.remo.android.controller.sdk.components
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -69,7 +68,9 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     private fun subToSocketEvents(listener: SocketListener) {
         listener.on(SocketListener.ON_CLOSE) {
                 status = ComponentStatus.ERROR
-                Log.d("TAG", "onClosing $it")
+                log.d{
+                    "onClosing $it"
+                }
             }.on(SocketListener.ON_OPEN, this::sendHandshakeAuth)
             .on(SocketListener.ON_ERROR, this::handleConnectionError)
             .on("ROBOT_VALIDATED", this::sendChannelsRequest)
@@ -78,7 +79,9 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             .on("BUTTON_COMMAND", this::sendCommandUpwards)
             .on("LOCAL_MODERATION", this::processChatModeration)
             .on(SocketListener.ON_MESSAGE) {
-                Log.d("SOCKET", it)
+                log.v{
+                    "Socket Message: $it"
+                }
             }
         //.on("SEND_CHAT") //TODO? of type Messages
     }
@@ -89,7 +92,9 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             //attempt a reconnect every second
             attemptReconnect()
         }, 1000)
-        Log.d("TAG", "onFailure $value")
+        log.e{
+            "Failed to connect : $value"
+        }
     }
 
     private fun attemptReconnect() {
