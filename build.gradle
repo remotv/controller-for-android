@@ -15,6 +15,10 @@ buildscript {
     }
 }
 
+ext{
+    controlsdk_version = "0.12.2"
+}
+
 allprojects {
     repositories {
         google()
