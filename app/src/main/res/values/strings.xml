@@ -113,5 +113,7 @@
         \nThe device has to be connected to the same Wi-Fi network for this to work</string>
     <string name="misc">Miscellaneous</string>
     <string name="logLevelTitle">Log Level</string>
+    <string name="showStartMessageTitle">Show Start Message</string>
+    <string name="showStartMessageDescription">Show the start message in chat when the robot starts or reconnects</string>
     <!--EndRegion-->
 </resources>

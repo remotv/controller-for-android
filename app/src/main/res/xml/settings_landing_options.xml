@@ -44,6 +44,11 @@
     <PreferenceCategory
         android:key="misc"
         android:title="@string/misc">
+        <androidx.preference.SwitchPreferenceCompat
+            app:key="@string/showStartMessageKey"
+            app:title="@string/showStartMessageTitle"
+            android:defaultValue="false"
+            android:summary="@string/showStartMessageDescription"/>
         <androidx.preference.ListPreference
             app:key="@string/logLevelPrefsKey"
             app:title="@string/logLevelTitle"

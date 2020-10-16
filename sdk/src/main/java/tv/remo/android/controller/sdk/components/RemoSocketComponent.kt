@@ -192,6 +192,7 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             for (channel in serverInfo.channels) {
                 if(channel.id != activeChannelId && channel.name != activeChannelId) continue
                 activeChannel = channel
+                if(RemoSettingsUtil.with(context!!).showStartMessage.getPref())
                 sendChatMessage("Robot connected. Commands cleared")
             }
             activeChannel?.apply {
