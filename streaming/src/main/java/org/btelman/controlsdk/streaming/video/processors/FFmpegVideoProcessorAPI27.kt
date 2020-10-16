@@ -63,7 +63,11 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
         successCounter = 0
         status = ComponentStatus.CONNECTING
         ffmpegRunning.set(true)
-        FFmpeg.executeAsync(getCommand(),
+        val command = getCommand()
+        log.d{
+            command
+        }
+        FFmpeg.executeAsync(command,
             ExecuteCallback { p0, p1 ->
                 ffmpegRunning.set(false)
             }, AsyncTask.THREAD_POOL_EXECUTOR)
@@ -96,10 +100,11 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
     private fun getVideoInputOptions(props : StreamInfo): ArrayList<String> {
         return arrayListOf(
             "-f android_camera",
+            "-input_queue_size 10",
             "-i 0:0",
+            "-camera_index ${props.deviceInfo.getCameraId()}",
             "-s ${props.width}x${props.height}",
-            "-r 30",
-            "-pixel_format bgr0"
+            "-r 25"
         )
     }
 
