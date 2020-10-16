@@ -1,16 +1,17 @@
 package tv.remo.android.controller.sdk.components.video
 
+import androidx.annotation.RequiresApi
 import org.btelman.android.shellutil.Executor
 import org.btelman.controlsdk.streaming.models.StreamInfo
-import org.btelman.controlsdk.streaming.video.processors.FFmpegVideoProcessor
+import org.btelman.controlsdk.streaming.video.processors.FFmpegVideoProcessorAPI27
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.models.StringPref
 
 /**
  * More customized video processor that ties into the remo app better
  */
-class RemoVideoProcessor : FFmpegVideoProcessor() {
-
+@RequiresApi(27)
+class RemoVideoProcessor : FFmpegVideoProcessorAPI27() {
     override fun getFilterOptions(props: StreamInfo): String {
         var filter = ""
         context?.let {
@@ -22,11 +23,11 @@ class RemoVideoProcessor : FFmpegVideoProcessor() {
         return filter
     }
 
-    override fun getVideoInputOptions(props: StreamInfo): ArrayList<String> {
-        return RemoSettingsUtil.with(context!!){
-            return@with getAndProcessPreference(it.ffmpegInputOptions, props)
-        }
-    }
+//    override fun getVideoInputOptions(props: StreamInfo): ArrayList<String> {
+//        return RemoSettingsUtil.with(context!!){
+//            return@with getAndProcessPreference(it.ffmpegInputOptions, props)
+//        }
+//    }
 
     override fun getVideoOutputOptions(props: StreamInfo): ArrayList<String> {
         return RemoSettingsUtil.with(context!!){

@@ -5,7 +5,7 @@ import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.streaming.video.processors.BaseVideoProcessor
-import org.btelman.controlsdk.streaming.video.processors.FFmpegVideoProcessor
+import org.btelman.controlsdk.streaming.video.processors.LegacyFFmpegVideoProcessor
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 class VideoProcessorFactoryAndroidTest {
     @Test
     fun findProcessorTest() {
-        Assert.assertTrue(VideoProcessorFactory.findProcessor(Bundle()) is FFmpegVideoProcessor)
+        Assert.assertTrue(VideoProcessorFactory.findProcessor(Bundle()) is LegacyFFmpegVideoProcessor)
 
         val streamInfo = StreamInfo("http://example.com:3000") //testing default parameters. Should use either Camera1SurfaceTextureComponent or Camera2SurfaceTextureComponent
         //test custom class

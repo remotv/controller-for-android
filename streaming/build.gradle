@@ -28,11 +28,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        releaseDemo {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
-
 }
 
 dependencies {
+    api project(path: ':mobile-ffmpeg-full-4.4')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api "org.btelman.ffmpeg:core:1.0.2"
     api 'org.btelman.android:shellutil:1.4'

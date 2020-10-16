@@ -1,5 +1,6 @@
 package tv.remo.android.controller.sdk.utils
 
+import android.content.Context
 import android.os.Bundle
 import org.btelman.controlsdk.hardware.components.HardwareComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
@@ -10,6 +11,8 @@ import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import org.btelman.controlsdk.streaming.utils.CameraUtil
+import org.btelman.controlsdk.streaming.video.retrievers.DummyRetriever
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
@@ -20,6 +23,7 @@ import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogCompon
 import tv.remo.android.controller.sdk.components.video.CameraCompatOverride
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
+import tv.remo.android.controller.sdk.components.video.RemoVideoProcessorLegacy
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -49,9 +53,9 @@ object ComponentBuilderUtil {
         return ttsList
     }
 
-    fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
+    fun createStreamingComponents(context: Context, settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
-        buildStreamingBundle(settings).apply {
+        buildStreamingBundle(context, settings).apply {
             if(settings.cameraEnabled.getPref()){
                 val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this)
                 streamList.add(videoComponent)
@@ -72,7 +76,7 @@ object ComponentBuilderUtil {
             RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
     }
 
-    private fun buildStreamingBundle(settings: RemoSettingsUtil): Bundle {
+    private fun buildStreamingBundle(context: Context, settings: RemoSettingsUtil): Bundle {
         return Bundle().apply {
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
@@ -85,8 +89,14 @@ object ComponentBuilderUtil {
                 height = resolution[1].toInt()
             )
             //use our customized remo classes
-            VideoRetrieverFactory.putClassInBundle(CameraCompatOverride::class.java, this)
-            VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
+            if(CameraUtil.supportsNDKCamera(context, settings.cameraDeviceId.getPref())){
+                VideoRetrieverFactory.putClassInBundle(DummyRetriever::class.java, this)
+                VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
+            }
+            else{
+                VideoRetrieverFactory.putClassInBundle(CameraCompatOverride::class.java, this)
+                VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
+            }
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }

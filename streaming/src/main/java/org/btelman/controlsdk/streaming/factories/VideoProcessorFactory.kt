@@ -2,7 +2,7 @@ package org.btelman.controlsdk.streaming.factories
 
 import android.os.Bundle
 import org.btelman.controlsdk.streaming.video.processors.BaseVideoProcessor
-import org.btelman.controlsdk.streaming.video.processors.FFmpegVideoProcessor
+import org.btelman.controlsdk.streaming.video.processors.LegacyFFmpegVideoProcessor
 import org.btelman.controlsdk.utils.BundleUtil
 
 /**
@@ -24,6 +24,6 @@ object VideoProcessorFactory {
         return BundleUtil.getClassFromBundle(bundle, BUNDLE_ID)
     }
 
-    val DEFAULT = FFmpegVideoProcessor::class.java
+    val DEFAULT = LegacyFFmpegVideoProcessor::class.java
     const val BUNDLE_ID = "videoProcessorClass"
 }

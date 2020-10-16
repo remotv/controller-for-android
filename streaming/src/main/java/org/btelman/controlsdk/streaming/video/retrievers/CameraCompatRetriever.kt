@@ -1,15 +1,13 @@
 package org.btelman.controlsdk.streaming.video.retrievers
 
-import android.annotation.TargetApi
 import android.content.Context
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.runBlocking
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
+import org.btelman.controlsdk.streaming.utils.CameraUtil
 import org.btelman.controlsdk.streaming.video.retrievers.api16.Camera1SurfaceTextureComponent
 import org.btelman.controlsdk.streaming.video.retrievers.api21.Camera2Component
 
@@ -49,7 +47,7 @@ open class CameraCompatRetriever : BaseVideoRetriever(){
         val cameraInfo = streamInfo!!.deviceInfo
         val cameraId = cameraInfo.getCameraId()
         retriever = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            && validateCamera2Support(context!!, cameraId)){
+            && CameraUtil.validateCamera2Support(context!!, cameraId)){
             log.d("Using Camera2 API")
             createCamera2()
         } else{
@@ -83,20 +81,5 @@ open class CameraCompatRetriever : BaseVideoRetriever(){
             retriever?.setEventListener(null)
         }
         retriever = null
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun validateCamera2Support(context: Context, cameraId: Int): Boolean {
-        try {
-            val cm = (context.getSystemService(Context.CAMERA_SERVICE) as CameraManager)
-            val hardwareLevel = cm.getCameraCharacteristics(
-                cm.cameraIdList[cameraId]
-            )[CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL]
-            return hardwareLevel != CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY
-                    && hardwareLevel != CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED
-        } catch (_: Exception) {
-
-        }
-        return false
     }
 }
