@@ -20,7 +20,7 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
-import tv.remo.android.controller.sdk.components.video.CameraCompatOverride
+import tv.remo.android.controller.sdk.components.video.Camera1Override
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessorLegacy
@@ -89,12 +89,12 @@ object ComponentBuilderUtil {
                 height = resolution[1].toInt()
             )
             //use our customized remo classes
-            if(CameraUtil.supportsNDKCamera(context, settings.cameraDeviceId.getPref())){
+            if(CameraUtil.isFullyCamera2Compatible(context, settings.cameraDeviceId.getPref())){
                 VideoRetrieverFactory.putClassInBundle(DummyRetriever::class.java, this)
                 VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             }
             else{
-                VideoRetrieverFactory.putClassInBundle(CameraCompatOverride::class.java, this)
+                VideoRetrieverFactory.putClassInBundle(Camera1Override::class.java, this)
                 VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
             }
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)

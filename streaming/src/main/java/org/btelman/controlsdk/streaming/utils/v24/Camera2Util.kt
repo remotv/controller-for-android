@@ -1,4 +1,4 @@
-package tv.remo.android.controller.utils.v21
+package org.btelman.controlsdk.streaming.utils.v24
 
 import android.content.Context
 import android.graphics.ImageFormat
@@ -9,7 +9,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+@RequiresApi(Build.VERSION_CODES.N)
 object Camera2Util {
     @Throws(ArrayIndexOutOfBoundsException::class)
     fun getCameraSizes(context : Context, cameraIndex : Int = 0) : ArrayList<Pair<Int, Int>> {

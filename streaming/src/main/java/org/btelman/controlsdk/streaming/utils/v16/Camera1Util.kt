@@ -1,4 +1,4 @@
-package tv.remo.android.controller.utils.v16
+package org.btelman.controlsdk.streaming.utils.v16
 
 import android.content.Context
 import android.hardware.Camera

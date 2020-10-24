@@ -3,7 +3,7 @@ package org.btelman.controlsdk.streaming.factories
 import android.os.Bundle
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.streaming.video.retrievers.BaseVideoRetriever
-import org.btelman.controlsdk.streaming.video.retrievers.CameraCompatRetriever
+import org.btelman.controlsdk.streaming.video.retrievers.api16.Camera1SurfaceTextureComponent
 import org.btelman.controlsdk.utils.BundleUtil
 
 object VideoRetrieverFactory {
@@ -16,7 +16,7 @@ object VideoRetrieverFactory {
                 streamInfo.deviceInfo.camera.contains("/dev/video") ->
                     TODO("USB Camera retriever class")
                 streamInfo.deviceInfo.camera.contains("/dev/camera") ->
-                    return CameraCompatRetriever()
+                    return Camera1SurfaceTextureComponent()
                 streamInfo.deviceInfo.camera.contains("http") ->
                     TODO("Camera stream from other device")
             }
@@ -32,6 +32,6 @@ object VideoRetrieverFactory {
         return BundleUtil.getClassFromBundle(bundle, BUNDLE_ID)
     }
 
-    val DEFAULT = CameraCompatRetriever::class.java
+    val DEFAULT = Camera1SurfaceTextureComponent::class.java
     const val BUNDLE_ID = "videoRetrieverClass"
 }
