@@ -101,6 +101,7 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
         return arrayListOf(
             "-f android_camera",
             "-input_queue_size 10",
+            "-video_size ${props.width}x${props.height}",
             "-i 0:0",
             "-camera_index ${props.deviceInfo.getCameraId()}",
             "-s ${props.width}x${props.height}",
