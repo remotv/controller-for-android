@@ -53,7 +53,7 @@
     <string name="cameraFocusTitle">Auto Focus</string>
     <string name="cameraOrientationTitle">Orientation</string>
     <string name="camera2DisabledTitle">Camera2 Disabled</string>
-    <string name="camera2DisabledSummary">Device is using legacy camera API. Some features may be locked</string>
+    <string name="camera2DisabledSummary">Device is using legacy camera API or is below OS 7.0. Some features may be locked</string>
     <!--Microphone-->
     <string name="microphoneSettingsTitle">Microphone</string>
     <string name="microphoneSettingsSummary">Volume, Bitrate</string>
