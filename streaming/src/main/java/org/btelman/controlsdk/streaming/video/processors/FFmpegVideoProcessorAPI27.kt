@@ -121,7 +121,9 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
     }
 
     protected open fun getFilterOptions(props : StreamInfo): String {
-        val rotationOption = props.orientation.ordinal //leave blank
+        var rotationOption = props.orientation.ordinal-1 //leave blank
+        if(rotationOption < 0)
+            rotationOption = 3
         val filterList = ArrayList<String>()
         for (i in 0..rotationOption){
             filterList.add("transpose=1")
