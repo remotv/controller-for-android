@@ -3,11 +3,13 @@ package tv.remo.android.controller.sdk.components
 import android.content.Context
 import android.os.Bundle
 import kotlinx.coroutines.runBlocking
+import org.btelman.controlsdk.interfaces.ComponentEventListener
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.Channel
+import tv.remo.android.controller.sdk.utils.ChatUtil
 import tv.remo.android.controller.sdk.utils.EndpointBuilder
 
 /**
@@ -20,7 +22,7 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
     var sleepMode = false
 
     private val subscriptionList = streamHandler.onRegisterCustomCommands()
-
+    var eventDispatcher : ComponentEventListener? = null
     fun handleExternalMessage(message: ComponentEventObject){
         if(message.source is RemoCommandSender){
             handleSocketCommand(message)
@@ -59,8 +61,13 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
     private fun handleWakeup() {
         if(sleepMode) {
             sleepMode = false
+            ChatUtil.sendToSiteChat(eventDispatcher,"Waking Up...")
             runBlocking {
                 streamHandler.acquireRetriever().also {
+                    it.updateStreamInfo(streamHandler.pullStreamInfo())
+                    it.enable().await()
+                }
+                streamHandler.acquireProcessor().also {
                     it.updateStreamInfo(streamHandler.pullStreamInfo())
                     it.enable().await()
                 }
@@ -70,9 +77,11 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
 
     private fun handleSleep() {
         if(!sleepMode){
+            ChatUtil.sendToSiteChat(eventDispatcher,"Going to sleep...")
             sleepMode = true
             runBlocking {
                 streamHandler.acquireRetriever().disable().await()
+                streamHandler.acquireProcessor().disable().await()
             }
         }
     }
@@ -109,6 +118,10 @@ class StreamCommandHandler(val context: Context?, val streamHandler : CommandStr
     private fun reload() {
         sleepMode = false
         streamHandler.resetComponents()
+    }
+
+    fun setEventListener(listener: ComponentEventListener?) {
+        eventDispatcher = listener
     }
 
     companion object{
