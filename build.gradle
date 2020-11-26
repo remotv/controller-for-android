@@ -16,7 +16,7 @@ buildscript {
 }
 
 ext{
-    controlsdk_version = "0.12.2"
+    controlsdk_version = "0.13.0-beta1"
 }
 
 allprojects {

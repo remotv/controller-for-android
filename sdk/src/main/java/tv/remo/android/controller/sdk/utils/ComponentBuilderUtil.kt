@@ -2,6 +2,7 @@ package tv.remo.android.controller.sdk.utils
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Process
 import org.btelman.controlsdk.hardware.components.HardwareComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
@@ -36,9 +37,9 @@ object ComponentBuilderUtil {
                 putSerializable(HardwareDriver.BUNDLE_ID, settings.robotCommunicationDriver.getPref())
                 putSerializable(HardwareComponent.HARDWARE_TRANSLATOR_BUNDLE_ID, settings.robotProtocolTranslator.getPref())
             }
-            val hardwareComponent = ComponentHolder(HardwareComponent::class.java, hardwareBundle)
+            val hardwareComponent = ComponentHolder(HardwareComponent::class.java, hardwareBundle, threadPriority = Process.THREAD_PRIORITY_LOWEST)
             hardwareList.add(hardwareComponent)
-            hardwareList.add(ComponentHolder(HardwareWatchdogComponent::class.java, null))
+            hardwareList.add(ComponentHolder(HardwareWatchdogComponent::class.java, null, threadPriority = Process.THREAD_PRIORITY_LOWEST))
         }
         hardwareList.add(ComponentHolder(RemoCommandHandler::class.java, null))
         return hardwareList
@@ -47,7 +48,7 @@ object ComponentBuilderUtil {
     fun createTTSComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val ttsList = ArrayList<ComponentHolder<*>>()
         if(settings.textToSpeechEnabled.getPref()){
-            val tts = ComponentHolder(SystemDefaultTTSComponent::class.java, null)
+            val tts = ComponentHolder(SystemDefaultTTSComponent::class.java, null, threadPriority = Process.THREAD_PRIORITY_LOWEST)
             ttsList.add(tts)
         }
         return ttsList
@@ -57,12 +58,12 @@ object ComponentBuilderUtil {
         val streamList = ArrayList<ComponentHolder<*>>()
         buildStreamingBundle(context, settings).apply {
             if(settings.cameraEnabled.getPref()){
-                val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this)
+                val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this, threadPriority = Process.THREAD_PRIORITY_MORE_FAVORABLE)
                 streamList.add(videoComponent)
             }
 
             if(settings.microphoneEnabled.getPref()){
-                val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this)
+                val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this, threadPriority = Process.THREAD_PRIORITY_MORE_FAVORABLE)
                 streamList.add(audioComponent)
             }
         }
@@ -73,7 +74,8 @@ object ComponentBuilderUtil {
     fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
         return ComponentHolder(
             RemoSocketComponent::class.java,
-            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
+            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()),
+            threadPriority = Process.THREAD_PRIORITY_LOWEST)
     }
 
     private fun buildStreamingBundle(context: Context, settings: RemoSettingsUtil): Bundle {

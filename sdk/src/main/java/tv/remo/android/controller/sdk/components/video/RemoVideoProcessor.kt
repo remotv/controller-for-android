@@ -29,6 +29,8 @@ class RemoVideoProcessor : FFmpegVideoProcessorAPI27() {
 //    }
 
     override fun getVideoOutputOptions(props: StreamInfo): ArrayList<String> {
+        return super.getVideoOutputOptions(props)
+
         return RemoSettingsUtil.with(context!!){
             return@with getAndProcessPreference(it.ffmpegOutputOptions, props)
         }
@@ -67,7 +69,7 @@ class RemoVideoProcessor : FFmpegVideoProcessorAPI27() {
                 .replace("\${endpoint}", endpoint)
                 .replace("\${headers}", getHeaders())
                 .replace("\${bitrateflags}",
-                    "-b:v ${bitrate}k -minrate ${bitrate}k -maxrate ${bitrate}k -bufsize ${bitrate/1.5}k")
+                    "-b:v ${bitrate}k")
         }
 
         return ArrayList<String>().also { list ->
