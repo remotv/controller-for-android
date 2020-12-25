@@ -45,7 +45,7 @@ open class ServiceInterface(
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(context, settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
-            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
+            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null, async = false))
         }
     }
 
