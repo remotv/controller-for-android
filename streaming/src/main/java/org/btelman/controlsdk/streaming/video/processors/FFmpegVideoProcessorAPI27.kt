@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.ExecuteCallback
 import com.arthenica.mobileffmpeg.FFmpeg
-import com.arthenica.mobileffmpeg.StatisticsCallback
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
@@ -73,7 +72,7 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
         successCounter = 0
         status = ComponentStatus.CONNECTING
         ffmpegRunning.set(true)
-        Config.enableStatisticsCallback(StatisticsCallback { newStatistics ->
+        Config.enableStatisticsCallback { newStatistics ->
             status = when {
                 newStatistics.videoFps < 10 -> ComponentStatus.INTERMITTENT
                 newStatistics.time > lastRenderedTime -> ComponentStatus.STABLE
@@ -82,7 +81,7 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
                 }
             }
             lastRenderedTime = newStatistics.time
-        })
+        }
         val command = getCommand()
         log.d{
             command
@@ -101,7 +100,6 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
     protected open fun getCommand() : String{
         val props = streamInfo ?: throw IllegalStateException("no StreamInfo supplied!")
         val list = ArrayList<String>()
-        //list.add("-hwaccel mediacodec")
         list.apply {
             addAll(getVideoInputOptions(props))
             addAll(getVideoOutputOptions(props))
@@ -166,9 +164,5 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
     private fun <C : MutableCollection<in String>, String : Any> Iterable<String?>.filterNotEmpty(destination: C): C {
         for (element in this) if (element != "" && element != null) destination.add(element)
         return destination
-    }
-
-    companion object{
-        val UUID = java.util.UUID.randomUUID().toString()
     }
 }
