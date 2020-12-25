@@ -3,11 +3,13 @@ package tv.remo.android.controller.sdk.components.video
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.interfaces.ComponentEventListener
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.StreamSubComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import org.btelman.controlsdk.streaming.video.retrievers.DummyRetriever
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.components.StreamCommandHandler.Companion.rebuildStream
 import tv.remo.android.controller.sdk.interfaces.CommandStreamHandler
@@ -21,8 +23,24 @@ import tv.remo.android.controller.sdk.utils.ChatUtil
 open class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     private var commandHandler : StreamCommandHandler? = null
 
+    override fun setLoopMode() {
+        if(retriever is DummyRetriever){
+            loopInterval = 100 //100 milliseconds... We are not updating camera here, so OK. Could be slower though
+            shouldAutoUpdateLoop = true
+        }
+        else{
+            super.setLoopMode() //go with the default
+        }
+    }
+
     override fun enableInternal() {
         //Do nothing. We want to delay it until we get a response from the control socket
+        status = ComponentStatus.DISABLED
+    }
+
+    override fun disableInternal() {
+        super.disableInternal()
+        status = ComponentStatus.DISABLED
     }
 
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
@@ -38,6 +56,7 @@ open class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     override fun doWorkLoop() {
         if(commandHandler?.shouldDoWork() != false) //allows this to succeed if commandHandler is null
             super.doWorkLoop()
+        status = processor.status //base status off of the processor
     }
 
     override fun handleExternalMessage(message: ComponentEventObject): Boolean {
@@ -62,6 +81,7 @@ open class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
         } catch (e: Exception) {
             Log.e("Video","Attempt to disable video components", e)
         }
+        status = ComponentStatus.CONNECTING
         super.enableInternal()
     }
 

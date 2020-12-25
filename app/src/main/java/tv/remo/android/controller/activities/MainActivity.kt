@@ -18,7 +18,7 @@ import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
-import tv.remo.android.controller.sdk.components.video.RemoVideoProcessorLegacy
+import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var handler : Handler
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         websiteConnectionStatusView.registerStatusEvents(RemoSocketComponent::class.java)
         hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
         audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
-        videoConnectionStatusView.registerStatusEvents(RemoVideoProcessorLegacy::class.java)
+        videoConnectionStatusView.registerStatusEvents(RemoVideoComponent::class.java)
         ttsConnectionStatusView.registerStatusEvents(SystemDefaultTTSComponent::class.java)
         StatusBroadcasterComponent.sendUpdateBroadcast(applicationContext)
     }

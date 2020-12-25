@@ -18,6 +18,7 @@ abstract class StreamComponent<R : StreamSubComponent,P : StreamSubComponent> : 
     protected lateinit var processor : P
     protected lateinit var retriever : R
     protected var shouldAutoUpdateLoop = true
+    protected var loopInterval : Long = 1000L/30L //30fps
 
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
@@ -81,7 +82,7 @@ abstract class StreamComponent<R : StreamSubComponent,P : StreamSubComponent> : 
             val message = obj?.let {
                 handler.obtainMessage(what, it)
             } ?: handler.obtainMessage(what)
-            message.sendToTarget()
+            handler.sendMessageDelayed(message, loopInterval)
         }
     }
 

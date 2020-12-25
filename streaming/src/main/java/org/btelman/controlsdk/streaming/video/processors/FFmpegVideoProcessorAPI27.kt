@@ -2,12 +2,15 @@ package org.btelman.controlsdk.streaming.video.processors
 
 import android.os.AsyncTask
 import androidx.annotation.RequiresApi
+import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.ExecuteCallback
 import com.arthenica.mobileffmpeg.FFmpeg
+import com.arthenica.mobileffmpeg.StatisticsCallback
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import java.util.concurrent.atomic.AtomicBoolean
+
 
 /**
  * Process frames via FFmpeg
@@ -22,6 +25,7 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
     override fun enableInternal() {
         super.enableInternal()
         streaming.set(true)
+        status = ComponentStatus.CONNECTING
         bootFFmpeg()
     }
 
@@ -29,7 +33,11 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
         super.disableInternal()
         streamInfo = null
         streaming.set(false)
+        status = ComponentStatus.DISABLED
         FFmpeg.cancel()
+        while(ffmpegRunning.get()){
+            //wait for destroy...
+        }
     }
 
     override fun processData(packet: ImageDataPacket) {
@@ -45,7 +53,6 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
      */
     protected open fun tryBootFFmpeg(){
         if(!streaming.get()){
-            ffmpegRunning.set(false)
             status = ComponentStatus.DISABLED
             process?.outputStream?.close()
             return
@@ -59,17 +66,32 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
         }
     }
 
+    var lastRenderedTime = 0
+
     protected open fun bootFFmpeg() {
+        lastRenderedTime = 0
         successCounter = 0
         status = ComponentStatus.CONNECTING
         ffmpegRunning.set(true)
+        Config.enableStatisticsCallback(StatisticsCallback { newStatistics ->
+            status = when {
+                newStatistics.videoFps < 10 -> ComponentStatus.INTERMITTENT
+                newStatistics.time > lastRenderedTime -> ComponentStatus.STABLE
+                else -> {
+                    ComponentStatus.INTERMITTENT
+                }
+            }
+            lastRenderedTime = newStatistics.time
+        })
         val command = getCommand()
         log.d{
             command
         }
         FFmpeg.executeAsync(command,
             ExecuteCallback { p0, p1 ->
+                Config.enableStatisticsCallback(null)
                 ffmpegRunning.set(false)
+                status = ComponentStatus.DISABLED
             }, AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
