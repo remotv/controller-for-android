@@ -8,6 +8,7 @@ import com.arthenica.mobileffmpeg.FFmpeg
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import org.btelman.controlsdk.streaming.utils.FFmpegUtil
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -72,6 +73,23 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
         successCounter = 0
         status = ComponentStatus.CONNECTING
         ffmpegRunning.set(true)
+        enableListener()
+        val command = getCommand()
+        log.d{
+            command
+        }
+
+        FFmpeg.executeAsync(command,
+            ExecuteCallback { p0, p1 ->
+                disableListener()
+                ffmpegRunning.set(false)
+                status = ComponentStatus.DISABLED
+            },
+            AsyncTask.THREAD_POOL_EXECUTOR
+        )
+    }
+
+    private fun enableListener() {
         Config.enableStatisticsCallback { newStatistics ->
             status = when {
                 newStatistics.videoFps < 10 -> ComponentStatus.INTERMITTENT
@@ -82,19 +100,10 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
             }
             lastRenderedTime = newStatistics.time
         }
-        val command = getCommand()
-        log.d{
-            command
-        }
+    }
 
-        FFmpeg.executeAsync(command,
-            ExecuteCallback { p0, p1 ->
-                Config.enableStatisticsCallback(null)
-                ffmpegRunning.set(false)
-                status = ComponentStatus.DISABLED
-            },
-            AsyncTask.THREAD_POOL_EXECUTOR
-        )
+    private fun disableListener(){
+        Config.enableStatisticsCallback(null)
     }
 
     protected open fun getCommand() : String{
@@ -145,24 +154,6 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
     }
 
     protected open fun getFilterOptions(props : StreamInfo): String {
-        var rotationOption = props.orientation.ordinal-1 //leave blank
-        if(rotationOption < 0)
-            rotationOption = 3
-        val filterList = ArrayList<String>()
-        for (i in 0..rotationOption){
-            filterList.add("transpose=1")
-        }
-        if(filterList.isNotEmpty()){
-            return filterList.joinToString(",")
-        }
-        return ""
-    }
-
-    /**
-     * Appends all elements that are not `null` to the given [destination].
-     */
-    private fun <C : MutableCollection<in String>, String : Any> Iterable<String?>.filterNotEmpty(destination: C): C {
-        for (element in this) if (element != "" && element != null) destination.add(element)
-        return destination
+        return FFmpegUtil.getFilterOptions(props)
     }
 }

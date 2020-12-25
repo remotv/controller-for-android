@@ -162,23 +162,7 @@ open class LegacyFFmpegVideoProcessor : BaseVideoProcessor(){
     }
 
     protected open fun getFilterOptions(props : StreamInfo): String {
-        val rotationOption = props.orientation.ordinal //leave blank
-        val filterList = ArrayList<String>()
-        for (i in 0..rotationOption){
-            filterList.add("transpose=1")
-        }
-        if(filterList.isNotEmpty()){
-            return filterList.joinToString(",")
-        }
-        return ""
-    }
-
-    /**
-     * Appends all elements that are not `null` to the given [destination].
-     */
-    private fun <C : MutableCollection<in String>, String : Any> Iterable<String?>.filterNotEmpty(destination: C): C {
-        for (element in this) if (element != "" && element != null) destination.add(element)
-        return destination
+        return FFmpegUtil.getFilterOptions(props)
     }
 
     companion object{
