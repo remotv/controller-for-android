@@ -1,6 +1,8 @@
 package tv.remo.android.controller.sdk.utils
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Process
 import org.btelman.controlsdk.hardware.components.HardwareComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
@@ -10,6 +12,8 @@ import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import org.btelman.controlsdk.streaming.utils.CameraUtil
+import org.btelman.controlsdk.streaming.video.retrievers.DummyRetriever
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
@@ -17,9 +21,10 @@ import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
-import tv.remo.android.controller.sdk.components.video.CameraCompatOverride
+import tv.remo.android.controller.sdk.components.video.Camera1Override
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
+import tv.remo.android.controller.sdk.components.video.RemoVideoProcessorLegacy
 
 /**
  * Helper class for assembling our list of components that we will use when using the robot
@@ -36,29 +41,29 @@ object ComponentBuilderUtil {
             hardwareList.add(hardwareComponent)
             hardwareList.add(ComponentHolder(HardwareWatchdogComponent::class.java, null))
         }
-        hardwareList.add(ComponentHolder(RemoCommandHandler::class.java, null))
+        hardwareList.add(ComponentHolder(RemoCommandHandler::class.java, null, async = false))
         return hardwareList
     }
 
     fun createTTSComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val ttsList = ArrayList<ComponentHolder<*>>()
         if(settings.textToSpeechEnabled.getPref()){
-            val tts = ComponentHolder(SystemDefaultTTSComponent::class.java, null)
+            val tts = ComponentHolder(SystemDefaultTTSComponent::class.java, null, async = false)
             ttsList.add(tts)
         }
         return ttsList
     }
 
-    fun createStreamingComponents(settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
+    fun createStreamingComponents(context: Context, settings: RemoSettingsUtil): Collection<ComponentHolder<*>> {
         val streamList = ArrayList<ComponentHolder<*>>()
-        buildStreamingBundle(settings).apply {
+        buildStreamingBundle(context, settings).apply {
             if(settings.cameraEnabled.getPref()){
-                val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this)
+                val videoComponent = ComponentHolder(RemoVideoComponent::class.java, this, threadPriority = Process.THREAD_PRIORITY_MORE_FAVORABLE)
                 streamList.add(videoComponent)
             }
 
             if(settings.microphoneEnabled.getPref()){
-                val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this)
+                val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this, threadPriority = Process.THREAD_PRIORITY_MORE_FAVORABLE)
                 streamList.add(audioComponent)
             }
         }
@@ -69,10 +74,12 @@ object ComponentBuilderUtil {
     fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
         return ComponentHolder(
             RemoSocketComponent::class.java,
-            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()))
+            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()),
+            async = true
+        )
     }
 
-    private fun buildStreamingBundle(settings: RemoSettingsUtil): Bundle {
+    private fun buildStreamingBundle(context: Context, settings: RemoSettingsUtil): Bundle {
         return Bundle().apply {
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
@@ -85,8 +92,14 @@ object ComponentBuilderUtil {
                 height = resolution[1].toInt()
             )
             //use our customized remo classes
-            VideoRetrieverFactory.putClassInBundle(CameraCompatOverride::class.java, this)
-            VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
+            if(CameraUtil.isFullyCamera2Compatible(context, settings.cameraDeviceId.getPref())){
+                VideoRetrieverFactory.putClassInBundle(DummyRetriever::class.java, this)
+                VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
+            }
+            else{
+                VideoRetrieverFactory.putClassInBundle(Camera1Override::class.java, this)
+                VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
+            }
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }

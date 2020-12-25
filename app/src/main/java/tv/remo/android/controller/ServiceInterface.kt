@@ -7,7 +7,6 @@ import org.btelman.controlsdk.services.ControlSDKServiceConnection
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
-import java.lang.IllegalStateException
 
 /**
  * Interface for Activity to communicate with service
@@ -44,9 +43,9 @@ open class ServiceInterface(
         RemoSettingsUtil.with(context){ settings ->
             arrayList.add(ComponentBuilderUtil.createSocketComponent(settings))
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
-            arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(settings))
+            arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(context, settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
-            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null))
+            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null, async = false))
         }
     }
 

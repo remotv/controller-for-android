@@ -2,6 +2,7 @@ package org.btelman.controlsdk.streaming.components
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Process
 import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
@@ -29,11 +30,19 @@ open class VideoComponent : StreamComponent<BaseVideoRetriever, BaseVideoProcess
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
         bundle!!
-        processor = VideoProcessorFactory.findProcessor(bundle) ?: throw IllegalArgumentException("unable to resolve video processor")
+
+        val processorHolder = VideoProcessorFactory.findProcessor(bundle) ?: throw IllegalArgumentException("unable to resolve video processor")
+        processorHolder.async = true
+        processorHolder.threadPriority = Process.THREAD_PRIORITY_LESS_FAVORABLE //TODO this may need tuned
+        processor = instantiate(applicationContext, processorHolder) as BaseVideoProcessor
         processor.onInitializeComponent(applicationContext, bundle)
 
-        retriever = VideoRetrieverFactory.findRetriever(bundle) ?: throw IllegalArgumentException("unable to resolve video retriever")
+        val retrieverHolder = VideoRetrieverFactory.findRetriever(bundle) ?: throw IllegalArgumentException("unable to resolve video retriever")
+        retrieverHolder.async = true
+        retrieverHolder.threadPriority = Process.THREAD_PRIORITY_LESS_FAVORABLE
+        retriever = instantiate(applicationContext, retrieverHolder) as BaseVideoRetriever
         retriever.onInitializeComponent(applicationContext, bundle)
+
         setLoopMode()
         targetFPS = bundle.getInt(VIDEO_FRAMERATE_LOOP, 30)
         sendStaleFramesWhenStarved = bundle.getBoolean(VIDEO_SEND_STALE_FRAMES_WHEN_STARVED, false)

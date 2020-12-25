@@ -6,4 +6,4 @@ import android.graphics.Rect
 data class ImageDataPacket(val b : Any?,
                            val format : Int = ImageFormat.JPEG,
                            val r : Rect? = null,
-                           val timecode : Long = System.currentTimeMillis())
+                           var timecode : Long = System.currentTimeMillis())

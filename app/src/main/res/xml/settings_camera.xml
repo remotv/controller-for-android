@@ -21,14 +21,15 @@
             app:useSimpleSummaryProvider="true"
             app:entries="@array/resolution_pref_list"
             app:entryValues="@array/resolution_pref_list"/>
-        <androidx.preference.ListPreference
-            app:key="@string/cameraFocusKey"
-            app:dependency="@string/useCamera2"
-            app:title="@string/cameraFocusTitle"
-            app:defaultValue="auto"
-            app:useSimpleSummaryProvider="true"
-            app:entries="@array/focus_pref_list"
-            app:entryValues="@array/focus_pref_list_values"/>
+<!--TODO        Not sure if we can use this anymore with the ffmpeg ndk version...-->
+<!--        <androidx.preference.ListPreference-->
+<!--            app:key="@string/cameraFocusKey"-->
+<!--            app:dependency="@string/useCamera2"-->
+<!--            app:title="@string/cameraFocusTitle"-->
+<!--            app:defaultValue="auto"-->
+<!--            app:useSimpleSummaryProvider="true"-->
+<!--            app:entries="@array/focus_pref_list"-->
+<!--            app:entryValues="@array/focus_pref_list_values"/>-->
         <androidx.preference.ListPreference
             app:key="@string/cameraOrientationKey"
             app:title="@string/cameraOrientationTitle"
@@ -64,12 +65,13 @@
             app:defaultValue="@string/ffmpegDefaultFilterOptions"
             app:useSimpleSummaryProvider="true"
             app:isPreferenceVisible="true"/>
-        <EditTextPreference
-            app:key="@string/ffmpegInputOptionsPrefsKey"
-            app:title="@string/ffmpegInputOptionsTitle"
-            app:defaultValue="@string/ffmpegDefaultInputOptions"
-            app:useSimpleSummaryProvider="true"
-            app:isPreferenceVisible="true"/>
+<!--TODO re-enable at some point? Can't really use as is since commands differ now between legacy and ndk ffmpeg-->
+<!--        <EditTextPreference-->
+<!--            app:key="@string/ffmpegInputOptionsPrefsKey"-->
+<!--            app:title="@string/ffmpegInputOptionsTitle"-->
+<!--            app:defaultValue="@string/ffmpegDefaultInputOptions"-->
+<!--            app:useSimpleSummaryProvider="true"-->
+<!--            app:isPreferenceVisible="true"/>-->
         <EditTextPreference
                 app:key="@string/ffmpegOutputOptionsPrefsKey"
                 app:defaultValue="@string/ffmpegDefaultOutputOptions"

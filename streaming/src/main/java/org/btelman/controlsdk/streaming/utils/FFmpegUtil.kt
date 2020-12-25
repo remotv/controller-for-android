@@ -3,6 +3,7 @@ package org.btelman.controlsdk.streaming.utils
 import android.content.Context
 import org.btelman.android.ffmpeg.FFmpegRunner
 import org.btelman.android.shellutil.BinaryUpdateChecker
+import org.btelman.controlsdk.streaming.models.StreamInfo
 import java.io.File
 import java.io.PrintStream
 import java.util.*
@@ -71,6 +72,20 @@ object FFmpegUtil {
             it.command = command
         }
         FFmpegRunner.startProcess(builder, UUID.fromString(uuid))
+    }
+
+    fun getFilterOptions(props : StreamInfo) : String{
+        var rotationOption = props.orientation.ordinal-1 //leave blank
+        if(rotationOption < 0)
+            rotationOption = 3
+        val filterList = ArrayList<String>()
+        for (i in 0..rotationOption){
+            filterList.add("transpose=1")
+        }
+        if(filterList.isNotEmpty()){
+            return filterList.joinToString(",")
+        }
+        return ""
     }
 
     abstract class FFmpegExecuteResponseHandler{
