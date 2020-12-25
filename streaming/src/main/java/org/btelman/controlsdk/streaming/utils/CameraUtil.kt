@@ -2,7 +2,6 @@ package org.btelman.controlsdk.streaming.utils
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import org.btelman.controlsdk.streaming.utils.v16.Camera1Util
 import org.btelman.controlsdk.streaming.utils.v24.Camera2Util
 import java.util.*
@@ -39,13 +38,6 @@ object CameraUtil{
             if (isAllowedRatio && !outsideOfAllowedSizes) {
                 finalList.add(Pair(width, height))
             }
-
-            //logging only
-            val gcm = ValueUtil.gcm(width, height)
-            Log.d(
-                "RemoApplication",
-                "PictureSize: ${width}x${height} : ${width / gcm}:${height / gcm}"
-            )
         }
         return finalList
     }
