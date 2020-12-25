@@ -14,8 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Process frames via FFmpeg
  */
-@RequiresApi(27)
-open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
+@RequiresApi(24)
+open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
     private val streaming = AtomicBoolean(false)
     private val ffmpegRunning = AtomicBoolean(false)
     private var successCounter = 0
