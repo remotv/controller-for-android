@@ -29,8 +29,6 @@ class RemoVideoProcessor : FFmpegVideoProcessorAPI27() {
 //    }
 
     override fun getVideoOutputOptions(props: StreamInfo): ArrayList<String> {
-        return super.getVideoOutputOptions(props)
-
         return RemoSettingsUtil.with(context!!){
             return@with getAndProcessPreference(it.ffmpegOutputOptions, props)
         }

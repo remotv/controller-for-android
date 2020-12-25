@@ -1,5 +1,6 @@
 package org.btelman.controlsdk.streaming.video.processors
 
+import android.os.AsyncTask
 import androidx.annotation.RequiresApi
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.ExecuteCallback
@@ -8,11 +9,7 @@ import com.arthenica.mobileffmpeg.StatisticsCallback
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
-import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.max
-import kotlin.math.min
 
 
 /**
@@ -24,41 +21,6 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
     private val ffmpegRunning = AtomicBoolean(false)
     private var successCounter = 0
     var process : Process? = null
-
-    private val CPU_COUNT = Runtime.getRuntime().availableProcessors()
-
-    // We want at least 2 threads and at most 4 threads in the core pool,
-    // preferring to have 1 less than the CPU count to avoid saturating
-    // the CPU with background work
-    private val CORE_POOL_SIZE = max(2, min(CPU_COUNT - 1, 4))
-    private val MAXIMUM_POOL_SIZE = (CPU_COUNT * 2 + 1)
-    private val KEEP_ALIVE_SECONDS : Long = 30
-
-    val sThreadFactory: ThreadFactory =
-        object : ThreadFactory {
-            private val mCount =
-                AtomicInteger(1)
-
-            override fun newThread(r: Runnable): Thread {
-                return Thread(r, "AsyncTask #" + mCount.getAndIncrement()).apply {
-                    android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_MORE_FAVORABLE)
-                }
-            }
-        }
-
-    val sPoolWorkQueue: BlockingQueue<Runnable> =
-        LinkedBlockingQueue(128)
-
-    val THREAD_POOL_EXECUTOR: Executor? = ThreadPoolExecutor(
-        CORE_POOL_SIZE,
-        MAXIMUM_POOL_SIZE,
-        KEEP_ALIVE_SECONDS,
-        TimeUnit.SECONDS,
-        sPoolWorkQueue,
-        sThreadFactory
-    ).apply {
-        allowCoreThreadTimeOut(true)
-    }
 
     override fun enableInternal() {
         super.enableInternal()
@@ -132,14 +94,14 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
                 ffmpegRunning.set(false)
                 status = ComponentStatus.DISABLED
             },
-            THREAD_POOL_EXECUTOR
+            AsyncTask.THREAD_POOL_EXECUTOR
         )
     }
 
     protected open fun getCommand() : String{
         val props = streamInfo ?: throw IllegalStateException("no StreamInfo supplied!")
         val list = ArrayList<String>()
-        list.add("-hwaccel mediacodec")
+        //list.add("-hwaccel mediacodec")
         list.apply {
             addAll(getVideoInputOptions(props))
             addAll(getVideoOutputOptions(props))
@@ -148,6 +110,7 @@ open class FFmpegVideoProcessorAPI27 : BaseVideoProcessor(){
                 if(it.isNotBlank())
                     add(it)
             }
+            add(props.endpoint)
         }
 
         return list.joinToString (" ")
