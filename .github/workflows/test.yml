@@ -3,8 +3,7 @@ name: Android Instrumented Tests
 on:
   push:
     tags:
-      - 'v*.*.*'
-      - 'vtest*.*.*'
+      - 'test*.*.*'
 
 jobs:
   test:
