@@ -11,7 +11,6 @@ import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
-import org.json.JSONObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.*
@@ -174,10 +173,7 @@ class RemoSocketComponent : Component() , RemoCommandSender {
 
     private fun sendChatMessage(message: String) {
         activeChannel?.apply {
-            val json = JSONObject()
-            json.put("e", "ROBOT_MESSAGE_SENT")
-            json.put("d", OutgoingMessage(message, chat, hostId))
-            socket?.send(json.toString())
+            sendMessage(socket, "ROBOT_MESSAGE_SENT", OutgoingMessage(message, chat, hostId).serialize(), false)
         }
     }
 
@@ -190,9 +186,6 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     }
 
     private fun getChannelAndConnect(json: String) {
-        log.v{
-            json
-        }
         status = ComponentStatus.CONNECTING
         remoAPI.authRobot(apiKey!!) { channel: Channel?, exception: java.lang.Exception? ->
             channel?.let {
@@ -222,8 +215,7 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     }
 
     private fun sendHandshakeAuth(value : String) {
-        val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
-        socket?.send(json)
+        sendMessage(socket, "AUTHENTICATE_ROBOT", "{\"token\": \"$apiKey\"}", false)
     }
 
     data class RemoSocketChatPacket(val data : String)
@@ -241,8 +233,9 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             }
         }
 
-        private fun sendMessage(webSocket: WebSocket, event: String, data: String) {
-            webSocket.send("{\"e\":\"$event\",\"d\":\"$data\"}")
+        private fun sendMessage(webSocket: WebSocket?, event: String, data: String, wrapData : Boolean = true) {
+            val json = "{\"e\":\"$event\",\"d\":${if(wrapData) "\"$data\"" else data}}"
+            webSocket?.send(json)
         }
     }
 }

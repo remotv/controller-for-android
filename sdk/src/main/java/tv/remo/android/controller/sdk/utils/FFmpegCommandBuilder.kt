@@ -41,7 +41,7 @@ object FFmpegCommandBuilder {
                 .replace("\${framerate}", "$framerate")
                 .replace("\${bitrate}", "$bitrate")
                 .replace("\${inputStream}", "-")
-                .replace("\${endpoint}", endpoint)
+                .replace("\${endpoint}", endpoint!!)
                 .replace("\${headers}", getHeaders(settingsUtil, legacy))
             processedCommand = replaceBitrate(processedCommand, props, legacy)
             processedCommand = processedCommand.replace("\${bitrateflags}",

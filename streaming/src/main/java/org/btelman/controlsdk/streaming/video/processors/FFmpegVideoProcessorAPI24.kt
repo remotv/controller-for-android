@@ -108,6 +108,7 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
 
     protected open fun getCommand() : String{
         val props = streamInfo ?: throw IllegalStateException("no StreamInfo supplied!")
+        props.endpoint?:throw IllegalStateException("no endpoint supplied!")
         val list = ArrayList<String>()
         list.apply {
             addAll(getVideoInputOptions(props))

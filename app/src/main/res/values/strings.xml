@@ -33,7 +33,7 @@
     <!--Connection-->
 
     <string name="connectionSettingsTitle">Connection</string>
-    <string name="connectionSettingsSummary">APIKey, Channel</string>
+    <string name="connectionSettingsSummary">APIKey, Owner</string>
     <string name="connectionApiToken">API Key</string>
     <string name="connectionChannelId">Channel ID</string>
     <string name="connectionChannelIdScan">List channels</string>
