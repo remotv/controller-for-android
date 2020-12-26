@@ -2,7 +2,6 @@ package tv.remo.android.controller
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -45,7 +44,6 @@ class DemoBotAndroidTest {
         val handler = Handler(Looper.getMainLooper())
         RemoSettingsUtil.with(appContext){
             it.apiKey.savePref(BuildConfig.robot_test_key)
-            it.channelId.savePref("API${Build.VERSION.SDK_INT}")
             it.cameraEnabled.savePref(true)
             it.microphoneEnabled.savePref(false)
             it.cameraResolution.savePref("640x480")

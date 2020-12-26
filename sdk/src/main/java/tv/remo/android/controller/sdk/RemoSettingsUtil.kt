@@ -23,11 +23,15 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
 
     //Connection settings
     val apiKey = StringPref(context, sharedPreferences, R.string.connectionApiTokenKey, "")
+
+    @Deprecated("This value is no longer used, and will be removed in the future. channelId is based on apiKey")
     val channelId = StringPref(context, sharedPreferences, R.string.connectionChannelIdKey, "")
     val serverOwner = StringPref(context, sharedPreferences, R.string.serverOwnerKey, "")
 
     //url settings (Read Only)
+    @Deprecated("No longer used, and will be removed in the future")
     val videoUrl = EndpointBuilder.getVideoUrl(context, channelId.getPref())
+    @Deprecated("No longer used, and will be removed in the future")
     val audioUrl = EndpointBuilder.getAudioUrl(context, channelId.getPref())
 
     //hardware related settings
@@ -42,6 +46,8 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     //Camera related settings
     val cameraEnabled = BooleanPref(context, sharedPreferences, R.string.cameraSettingsEnableKey, false)
     val cameraResolution = StringPref(context, sharedPreferences, R.string.cameraResolutionKey, "640x480")
+
+    @Deprecated("Not currently used, but may be revisited in the future")
     val cameraFocus = StringPref(context, sharedPreferences, R.string.cameraFocusKey, "auto")
     val cameraOrientation = StringPref(context, sharedPreferences, R.string.cameraOrientationKey, "DIR_90")
     val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0)

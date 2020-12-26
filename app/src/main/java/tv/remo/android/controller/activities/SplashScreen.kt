@@ -36,13 +36,10 @@ class SplashScreen : FragmentActivity() {
                 needsSetup = settings.apiKey.let {
                     it.defaultValue == it.getPref()
                 }
-                needsSetup = needsSetup && settings.channelId.let {
-                    it.defaultValue == it.getPref()
-                }
             }
             if(needsSetup){
                 Toast.makeText(this,
-                    "APIKey and Channel ID required to run", Toast.LENGTH_SHORT).show()
+                    "APIKey required to run", Toast.LENGTH_SHORT).show()
                 startSetup()
             }
             else

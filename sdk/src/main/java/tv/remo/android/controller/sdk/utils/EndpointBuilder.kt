@@ -22,4 +22,9 @@ object EndpointBuilder {
     fun buildWebsocketUrl(context: Context) : String{
         return "wss://${getEndpointUrl(context)}/"
     }
+
+    fun buildUrl(context: Context, path: String): String {
+        val baseUrl = getEndpointUrl(context)
+        return "https://$baseUrl/$path"
+    }
 }

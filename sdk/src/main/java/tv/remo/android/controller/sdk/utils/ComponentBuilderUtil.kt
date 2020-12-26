@@ -74,7 +74,7 @@ object ComponentBuilderUtil {
     fun createSocketComponent(settings: RemoSettingsUtil): ComponentHolder<*> {
         return ComponentHolder(
             RemoSocketComponent::class.java,
-            RemoSocketComponent.createBundle(settings.apiKey.getPref(), settings.channelId.getPref()),
+            RemoSocketComponent.createBundle(settings.apiKey.getPref()),
             async = true
         )
     }
@@ -83,8 +83,8 @@ object ComponentBuilderUtil {
         return Bundle().apply {
             val resolution = settings.cameraResolution.getPref().split("x")
             val streamInfo = StreamInfo(
-                settings.videoUrl,
-                settings.audioUrl,
+                null,
+                null,
                 deviceInfo = CameraDeviceInfo.fromCamera(settings.cameraDeviceId.getPref()),
                 orientation = Orientation.valueOf(settings.cameraOrientation.getPref()),
                 bitrate = settings.cameraBitrate.getPref().toIntOrNull() ?: 512,
