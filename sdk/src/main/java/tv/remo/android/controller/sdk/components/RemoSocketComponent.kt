@@ -3,19 +3,19 @@ package tv.remo.android.controller.sdk.components
 import android.content.Context
 import android.os.Bundle
 import com.google.gson.Gson
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
 import org.btelman.controlsdk.enums.ComponentStatus
 import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
-import org.json.JSONException
 import org.json.JSONObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.*
 import tv.remo.android.controller.sdk.utils.*
-import java.io.IOException
 
 /**
  * Remo Socket component
@@ -30,16 +30,14 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     private var url: String? = null
     var request : Request? = null
     private val socketClient = OkHttpClient()
-    private val apiClient = OkHttpClient.Builder().apply {
-        connectionPool(ConnectionPool())
-    }.build()
+    private lateinit var remoAPI: RemoAPI
 
     var allowChat = false
-    private var serverInfo: RobotServerInfo? = null
     private var activeChannel : Channel? = null
 
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
+        remoAPI = RemoAPI(applicationContext)
         apiKey = bundle?.getString(API_TOKEN_BUNDLE_KEY)
         url = EndpointBuilder.buildWebsocketUrl(applicationContext)
         activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
@@ -111,8 +109,10 @@ class RemoSocketComponent : Component() , RemoCommandSender {
 
     private fun sendCommandUpwards(it: String) {
         Gson().fromJson(it, RobotCommand::class.java).also {
-            eventDispatcher?.handleMessage(ComponentType.CUSTOM, EVENT_MAIN,
-                RemoCommandHandler.Packet(it.button.command, it.user), this)
+            eventDispatcher?.handleMessage(
+                ComponentType.CUSTOM, EVENT_MAIN,
+                RemoCommandHandler.Packet(it.button.command, it.user), this
+            )
         }
     }
 
@@ -172,14 +172,13 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         return false
     }
 
-    private fun sendChatMessage(message : String){
-        val json = "{\"e\": \"ROBOT_MESSAGE_SENT\"," +
-                "         \"d\": {\"username\": \"bot\",\"message\": \"$message\"," +
-                "               \"chatId\": \"${activeChannel?.chat}\"," +
-                "               \"server_id\": \"${activeChannel?.hostId}\"" +
-                "        }" +
-                "    }"
-        socket?.send(json)
+    private fun sendChatMessage(message: String) {
+        activeChannel?.apply {
+            val json = JSONObject()
+            json.put("e", "ROBOT_MESSAGE_SENT")
+            json.put("d", OutgoingMessage(message, chat, hostId))
+            socket?.send(json.toString())
+        }
     }
 
     private fun processChatModeration(json: String) {
@@ -195,43 +194,10 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             json
         }
         status = ComponentStatus.CONNECTING
-        val path = EndpointBuilder.buildUrl(context!!, "/api/dev/robot/auth")
-        val jsonAuth = "{\"token\":\"${apiKey}\"}"
-        val body = RequestBody.create(MediaType.parse("application/json"), jsonAuth)
-        val request = Request.Builder().url(path).post(body).build()
-        log.d{
-            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-        }
-        apiClient.newCall(request).enqueue(object : okhttp3.Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                handleConnectionError(e.message.toString())
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                handleChannelReceived(response.json())
-            }
-        })
-    }
-
-    private fun handleChannelReceived(json: JSONObject?) {
-        json?:let{
-            handleConnectionError("Failed to get valid JSON for channel request")
-            return
-        }
-        log.v{
-            "handleChannelReceived : $json"
-        }
-        val status = json.getString("status")
-        try {
-            if(status == "success!"){
-                val channel = Gson().fromJson(json.getString("robot"), Channel::class.java)
+        remoAPI.authRobot(apiKey!!) { channel: Channel?, exception: java.lang.Exception? ->
+            channel?.let {
                 verifyAndSubToChannel(channel)
-            }
-            else{
-                handleConnectionError("Status for get channel was $status")
-            }
-        } catch (e: Exception) {
-            handleConnectionError(e.message.toString())
+            } ?: handleConnectionError(exception?.toString() ?: "Unable to get channel")
         }
     }
 
@@ -279,17 +245,4 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             webSocket.send("{\"e\":\"$event\",\"d\":\"$data\"}")
         }
     }
-}
-
-private fun Response.json() : JSONObject?{
-    try{
-        this.body()?.string()?.let {
-            return JSONObject(it).also {
-                this.body()?.close()
-            }
-        }
-    }catch (e : JSONException){
-        e.printStackTrace()
-    }
-    return null
 }
