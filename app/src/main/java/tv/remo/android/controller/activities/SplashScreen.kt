@@ -106,6 +106,7 @@ class SplashScreen : FragmentActivity() {
 
         //All checks are done. Lets startup the activity!
         ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, ControlSDKService::class.java))
+        hasInitialized = true
         startActivity(MainActivity.getIntent(this))
         finish()
     }
@@ -213,5 +214,9 @@ class SplashScreen : FragmentActivity() {
             }
         }
         return list
+    }
+
+    companion object{
+        var hasInitialized = false
     }
 }

@@ -1,6 +1,7 @@
 package tv.remo.android.controller
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.multidex.MultiDexApplication
 import org.btelman.android.shellutil.Executor
@@ -9,6 +10,7 @@ import org.btelman.logutil.kotlin.LogLevel
 import org.btelman.logutil.kotlin.LogUtil
 import org.btelman.logutil.kotlin.LogUtilInstance
 import tv.remo.android.controller.sdk.RemoSettingsUtil
+import kotlin.system.exitProcess
 
 /**
  * Created by Brendon on 7/28/2019.
@@ -63,6 +65,16 @@ class RemoApplication : MultiDexApplication() {
                 Log.d("RemoApplication", "Setup ShellUtil logger...")
                 LogUtil.addCustomLogUtilInstance(Executor::class.java.simpleName, it)
                 Executor.logInstance = it
+            }
+        }
+
+        fun restart(context: Context) {
+            context.apply {
+                val intent = packageManager.getLaunchIntentForPackage(packageName)
+                intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                exitProcess(0)
             }
         }
     }
