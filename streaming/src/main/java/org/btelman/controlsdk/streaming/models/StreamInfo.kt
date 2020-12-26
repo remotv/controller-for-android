@@ -36,7 +36,7 @@ data class StreamInfo(val endpoint : String?,
     companion object{
         @Throws(NullPointerException::class)
         fun fromBundle(bundle : Bundle) : StreamInfo?{
-            val endpoint = bundle.getString("endpoint") ?: return null
+            val endpoint = bundle.getString("endpoint") ?: null
             val audioEndpoint = bundle.getString("audioEndpoint") ?: null //Not needed
             val width = bundle.getInt("width")
             val height = bundle.getInt("height")
