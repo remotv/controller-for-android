@@ -10,10 +10,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import kotlinx.android.synthetic.main.activity_settings.*
 import tv.remo.android.controller.R
+import tv.remo.android.controller.RemoApplication
 import tv.remo.android.settingsutil.interfaces.SwitchBarCapableActivity
 import tv.remo.android.settingsutil.views.SwitchBar
-import kotlin.system.exitProcess
-
 
 class SettingsActivity : AppCompatActivity(), NavController.OnDestinationChangedListener, SwitchBarCapableActivity {
     private var first = true
@@ -29,11 +28,7 @@ class SettingsActivity : AppCompatActivity(), NavController.OnDestinationChanged
         if(destination.id == R.id.settingsEntryFragment){
             if(!first){
                 //completely restart the app, killing anything that would have survived
-                val intent = packageManager.getLaunchIntentForPackage(packageName)
-                intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                exitProcess(0)
+                RemoApplication.restart(this)
             }
             first = false
         }

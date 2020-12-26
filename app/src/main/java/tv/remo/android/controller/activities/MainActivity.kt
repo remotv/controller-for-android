@@ -13,6 +13,7 @@ import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
+import tv.remo.android.controller.RemoApplication
 import tv.remo.android.controller.ServiceInterface
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(!SplashScreen.hasInitialized) RemoApplication.restart(this)
         handler = Handler(Looper.getMainLooper())
         setContentView(R.layout.activity_main)
         setupControlSDK()
