@@ -19,18 +19,18 @@ class RemoAPI (private val context: Context){
         postJSON(jsonAuth, path){ json: JSONObject?, exception: Exception? ->
             var finalException = exception
             var channel : Channel? = null
-            json?.let{
-                val status = json.getString("status")
-                try {
-                    if(status == "success!"){
+            try {
+                json?.let {
+                    val status = json.getString("status")
+
+                    if (status == "success!") {
                         channel = Gson().fromJson(json.getString("robot"), Channel::class.java)
-                    }
-                    else{
+                    } else {
                         finalException = Exception("Status for get channel was $status")
                     }
-                } catch (e: Exception) {
-                    finalException = e
                 }
+            } catch (e: Exception) {
+                finalException = e
             }
             callback(channel, finalException)
             return@postJSON
