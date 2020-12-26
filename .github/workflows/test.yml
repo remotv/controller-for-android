@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+      - 'vtest*.*.*'
 
 jobs:
   test:
@@ -27,4 +28,4 @@ jobs:
         profile: Nexus 6
         script: ./gradlew connectedCheck
       env:
-        TEST_KEY: ${{ secrets.TEST_KEY }}
+        TEST_KEY: ${{ secrets[format('APIKEY_{0}', matrix.api-level)] }}
