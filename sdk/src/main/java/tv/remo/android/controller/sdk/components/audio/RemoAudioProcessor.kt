@@ -12,14 +12,14 @@ class RemoAudioProcessor : FFmpegAudioProcessor() {
 
     override fun getVideoOutputOptions(props: StreamInfo): Collection<String> {
         var bitrate = 32
-        var volumeBoost = 1
+        var volumeBoost = 1.0
         context?.let { ctx ->
             RemoSettingsUtil.with(ctx){
                 try{
                     bitrate = it.microphoneBitrate.getPref().toInt()
                 }catch(_ : Exception){}
                 try{
-                    volumeBoost = it.micVolume.getPref().toInt()
+                    volumeBoost = it.micVolume.getPref().toDouble()
                 }catch(_ : Exception){}
             }
         }
