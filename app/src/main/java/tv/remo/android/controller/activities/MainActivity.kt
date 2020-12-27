@@ -21,11 +21,13 @@ import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 
+// TODO(Noah): Make SURE that apps can't start this activity directly
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var handler : Handler
     private lateinit var binding: ActivityMainBinding
     private var recording = false
     private var serviceInterface : ServiceInterface? = null
+    private var startedFromExternalApp = false
 
     private val onServiceStatus : (Operation) -> Unit = { serviceStatus ->
         binding.powerButton.let {
@@ -45,6 +47,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private val onServiceBind : (Operation) -> Unit = { serviceBoundState ->
         binding.powerButton.isEnabled = serviceBoundState == Operation.OK
+        if (serviceBoundState == Operation.OK && startedFromExternalApp) {
+            serviceInterface?.changeStreamState(Operation.OK)
+            // TODO(Noah): Call setResult() with the following information:
+            //    - Whether or not the stream was successfully started
+            //    - A way to stop the stream and send messages to chat (useful for things like battery remaining)
+            //    - A way to be notified when the stream stops
+            //  This does not have to be in place for the initial version. For now remo.tv streaming
+            //  on the Control Hub is likely to be a matter of "the stream stays up until you remove
+            //  power from the hub" anyway, because once the Control Hub connects to the user's WiFi
+            //  network, they likely won't have an easy way to control it anyway. Being able to send
+            //  chat messages would be nice though.
+            finish()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +72,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setupUI()
         window.decorView.post {
             buildStatusList()
+        }
+        if (intent?.getBooleanExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, false) == true) {
+            startedFromExternalApp = true
         }
     }
 
@@ -94,7 +112,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             return@setOnTouchListener false
         }
         binding.settingsButton.setOnClickListener(this)
-        binding.powerButton?.setOnClickListener(this)
+        binding.powerButton.setOnClickListener(this)
     }
 
     private fun buildStatusList() {

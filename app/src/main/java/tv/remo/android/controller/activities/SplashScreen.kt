@@ -17,17 +17,26 @@ import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
+import tv.remo.android.controller.RemoApplication
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
-
+    private val log = RemoApplication.getLogger(this)
     private var timeAtStart = System.currentTimeMillis()
+    private var startedFromExternalApp = false
     var classScanComplete = false
     val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+
+        // This activity can be started by any app, so we must be SURE to only auto-start the stream
+        // if we are coming from ExternalControlActivity.
+        if (callingPackage == packageName && callingActivity.className == ExternalControlActivity::class.java.name) {
+            startedFromExternalApp = true
+        }
+        log.v("startedFromExternalApp: $startedFromExternalApp")
 
         detectIntentUpdateSettings(intent)
         runOnUiThread{
@@ -107,8 +116,14 @@ class SplashScreen : FragmentActivity() {
         //All checks are done. Lets startup the activity!
         ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, ControlSDKService::class.java))
         hasInitialized = true
-        startActivity(MainActivity.getIntent(this))
+        val mainActivityIntent = MainActivity.getIntent(this)
+        mainActivityIntent.putExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, startedFromExternalApp)
+        startActivity(mainActivityIntent)
         finish()
+        // TODO(Noah): If started externally, call finish in onActivityResult(), then call
+        //             setResult() to pass on the result code and intent from MainActivity
+
+        // TODO(Noah): Handle a stream already being started
     }
 
     /**
