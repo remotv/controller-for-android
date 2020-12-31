@@ -35,9 +35,8 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
         streaming.set(false)
         status = ComponentStatus.DISABLED
         FFmpeg.cancel()
-        while(ffmpegRunning.get()){
-            //wait for destroy...
-        }
+        //let's just hope this is always long enough for FFmpeg to die since we can't always monitor it's death...
+        Thread.sleep(1000)
     }
 
     override fun processData(packet: ImageDataPacket) {
