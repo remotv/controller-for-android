@@ -50,7 +50,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     @Deprecated("Not currently used, but may be revisited in the future")
     val cameraFocus = StringPref(context, sharedPreferences, R.string.cameraFocusKey, "auto")
     val cameraOrientation = StringPref(context, sharedPreferences, R.string.cameraOrientationKey, "DIR_90")
-    val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0)
+    val cameraDeviceId = IntPref(context, sharedPreferences, R.string.cameraDeviceIdKey, 0, asString = true)
     val cameraBitrate = StringPref(context, sharedPreferences, R.string.cameraBitrateKey, "1024")
     val useCamera2 = BooleanPref(context, sharedPreferences, R.string.useCamera2, Build.VERSION.SDK_INT >= 21)
 
