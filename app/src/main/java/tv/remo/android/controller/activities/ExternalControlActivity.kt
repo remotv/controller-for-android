@@ -134,7 +134,6 @@ class ExternalControlActivity: AppCompatActivity() {
     }
 
     private fun applyExternalAppParameters(externalAppParameters: ExternalAppParameters) {
-        // TODO(Noah): Somehow one of these causes the camera settings activity to crash, but I don't see any discrepancies
         RemoSettingsUtil.with(applicationContext) {
             it.apiKey.savePref(externalAppParameters.apiKey)
             it.robotSettingsEnable.savePref(externalAppParameters.enableRobot)
