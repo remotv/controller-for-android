@@ -63,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="@string/allowButtonString"
+        android:enabled="false"
         app:layout_constraintEnd_toStartOf="@+id/denyButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

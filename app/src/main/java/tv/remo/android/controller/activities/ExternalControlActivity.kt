@@ -1,5 +1,6 @@
 package tv.remo.android.controller.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -36,7 +37,6 @@ class ExternalControlActivity: AppCompatActivity() {
     private val log = RemoApplication.getLogger(this)
     private lateinit var binding: ActivityExternalControlBinding
 
-    private var apiKeyIsInvalid = false;
     private var externalAppParameters: ExternalAppParameters? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +47,8 @@ class ExternalControlActivity: AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        binding.denyButton.setOnClickListener() {
-            exitWithErrorResult(RESULT_USER_DENIED, "The request was denied by the user")
-        }
+        binding.startStreamButton.setOnClickListener(this::onStartStreamButtonClicked)
+        binding.denyButton.setOnClickListener(this::onDenyButtonClicked)
         externalAppParameters = processExternalAppParameters()
 
         binding.channelNameText.text = getString(R.string.channelNameString, "loading...")
@@ -72,31 +71,7 @@ class ExternalControlActivity: AppCompatActivity() {
         binding.cameraUsageText.text = Html.fromHtml(getString(R.string.cameraUsageString, if (externalAppParameters?.enableCamera == true) "will" else "will not"))
         binding.micUsageText.text = Html.fromHtml(getString(R.string.micUsageString, if (externalAppParameters?.enableMicrophone == true) "will" else "will not"))
 
-        RemoAPI(applicationContext).authRobot(externalAppParameters?.apiKey?: "") { channel: Channel?, _: Exception? ->
-            val channelName: String
-            var invalidKey = false
-
-            if (channel?.name == null) {
-                log.w("The provided API key does not appear to be valid")
-                invalidKey = true;
-                channelName = "none (invalid API key)"
-            } else {
-                channelName = channel.name
-            }
-
-            runOnUiThread() {
-                apiKeyIsInvalid = invalidKey
-                binding.channelNameText.text = getString(R.string.channelNameString, channelName)
-            }
-        }
-        binding.startStreamButton.setOnClickListener(this::onStartStreamButtonClicked)
-
-        // There are several reasons that we don't need the security of making the user approve
-        // starting the stream on the REV Robotics Control Hub, and since that device is headless,
-        // we can just immediately pretend that the start stream button was clicked.
-        if (Build.MANUFACTURER == "REV Robotics" && Build.MODEL.contains("Control Hub")) {
-            onStartStreamButtonClicked(binding.startStreamButton)
-        }
+        RemoAPI(applicationContext).authRobot(externalAppParameters?.apiKey?: "", authRobotCallback)
     }
 
     private fun processExternalAppParameters(): ExternalAppParameters {
@@ -151,23 +126,47 @@ class ExternalControlActivity: AppCompatActivity() {
     }
 
     private fun onStartStreamButtonClicked(view: View) {
-        if (apiKeyIsInvalid) {
-            exitWithErrorResult(RESULT_INVALID_API_KEY,"The provided API key is invalid")
-        } else {
-            externalAppParameters?.let { applyExternalAppParameters(it) }
-            val splashIntent = Intent(applicationContext, SplashScreen::class.java)
-            splashIntent.putExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, true)
-            startActivityForResult(splashIntent, 0)
-            // TODO(Noah): Instead of calling finish() here, call it in onActivityResult(), so that
-            //  we can call setResult() with the result from SplashScreen/MainActivity
-            finish()
-        }
+        externalAppParameters?.let { applyExternalAppParameters(it) }
+        val splashIntent = Intent(applicationContext, SplashScreen::class.java)
+        splashIntent.putExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, true)
+        // We must call startActivityForResult instead of startActivity, so that callingPackage and
+        // callingActivity will not be null in the SplashScreen activity
+        startActivityForResult(splashIntent, 0)
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
-    private fun exitWithErrorResult(code: Int, message: String?) {
-        log.e("$message. Exiting.")
-        setResult(code, Intent().putExtra("errorMessage", message))
-        finish();
+    private fun onDenyButtonClicked(view: View)  {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
+    }
+
+    private val authRobotCallback = { channel: Channel?, _: Exception? ->
+        val channelName: String
+        val validKey = if (channel?.name != null) {
+            channelName = channel.name
+            true
+        } else {
+            log.w("The provided API key does not appear to be valid")
+            channelName = "none (invalid API key)"
+            false
+        }
+
+        runOnUiThread() {
+            binding.channelNameText.text = getString(R.string.channelNameString, channelName)
+            binding.startStreamButton.isEnabled = validKey
+
+            // There are several reasons that we don't need the security of making the user approve
+            // starting the stream on the REV Robotics Control Hub, and since that device is headless,
+            // we pretend that the appropriate button was clicked.
+            if (Build.MANUFACTURER == "REV Robotics" && Build.MODEL.contains("Control Hub")) {
+                if (validKey) {
+                    onStartStreamButtonClicked(binding.startStreamButton)
+                } else {
+                    onDenyButtonClicked(binding.denyButton)
+                }
+            }
+        }
     }
 
     // Un-implemented options:
@@ -190,6 +189,3 @@ class ExternalControlActivity: AppCompatActivity() {
 }
 
 const val EXTRA_STARTED_FROM_EXTERNAL_APP = "startedFromExternalApp"
-
-private const val RESULT_USER_DENIED = -1
-private const val RESULT_INVALID_API_KEY = -2

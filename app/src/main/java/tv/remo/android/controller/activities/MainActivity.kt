@@ -49,17 +49,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         binding.powerButton.isEnabled = serviceBoundState == Operation.OK
         if (serviceBoundState == Operation.OK && startedFromExternalApp) {
             serviceInterface?.changeStreamState(Operation.OK)
-            // TODO(Noah): Call setResult() with the following information:
-            //    - Whether or not the stream was successfully started
-            //    - A way to stop the stream and send messages to chat (useful for things like battery remaining)
-            //      I'm thinking a Messenger or maybe a ResultReceiver would work for this.
-            //      See https://stackoverflow.com/a/12183036/4651874 for an important ResultReceiver tip
-            //    - A way to be notified when the stream stops (RemoBroadcaster might already have this actually)
-            //  This does not have to be in place for the initial version. For now remo.tv streaming
-            //  on the Control Hub is likely to be a matter of "the stream stays up until you remove
-            //  power from the hub" anyway, because once the Control Hub connects to the user's WiFi
-            //  network, they likely won't have an easy way to control it anyway. Being able to send
-            //  chat messages would be nice though.
             finish()
         }
     }

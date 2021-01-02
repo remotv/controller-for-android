@@ -33,7 +33,7 @@ class SplashScreen : FragmentActivity() {
 
         // This activity can be started by any app, so we must be SURE to only auto-start the stream
         // if we are coming from ExternalControlActivity.
-        if (callingPackage == packageName && callingActivity.className == ExternalControlActivity::class.java.name) {
+        if (callingPackage == packageName && callingActivity?.className == ExternalControlActivity::class.java.name) {
             startedFromExternalApp = true
         }
         log.v("startedFromExternalApp: $startedFromExternalApp")
@@ -120,8 +120,6 @@ class SplashScreen : FragmentActivity() {
         mainActivityIntent.putExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, startedFromExternalApp)
         startActivity(mainActivityIntent)
         finish()
-        // TODO(Noah): If started externally, call finish in onActivityResult(), then call
-        //             setResult() to pass on the result code and intent from MainActivity
 
         // TODO(Noah): Handle a stream already being started
     }
