@@ -4,7 +4,6 @@ Streaming module for controlSDK by btelman96 for mpeg2 streaming
 */
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
