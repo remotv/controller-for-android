@@ -21,7 +21,6 @@ import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 
-// TODO(Noah): Make SURE that apps can't start this activity directly
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var handler : Handler
     private lateinit var binding: ActivityMainBinding
