@@ -120,8 +120,6 @@ class SplashScreen : FragmentActivity() {
         mainActivityIntent.putExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, startedFromExternalApp)
         startActivity(mainActivityIntent)
         finish()
-
-        // TODO(Noah): Handle a stream already being started
     }
 
     /**
