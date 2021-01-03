@@ -10,7 +10,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppThemeWithActionBar" tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.MainActivity" android:theme="@style/AppThemeNoActionBar">
+        <activity android:name=".activities.MainActivity" android:theme="@style/AppThemeNoActionBar" android:exported="false" />
+        <activity android:name=".activities.ExternalControlActivity">
+            <intent-filter>
+                <action android:name="tv.remo.android.controller.action.REQUEST_REMO_STREAM_START" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity android:name=".activities.SettingsActivity"/>
         <activity android:name=".activities.SplashScreen" android:label="@string/app_display_name"

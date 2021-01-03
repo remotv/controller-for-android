@@ -122,4 +122,13 @@
     <string name="manage_permissions">Manage Permissions</string>
     <string name="remo_settings">Remo Settings</string>
     <!--EndRegion-->
+
+    <!--External Control-->
+    <string name="externalControlPrompt">Allow %s to start a remo.tv stream?</string>
+    <string name="cameraUsageString">The camera &lt;b&gt;%s&lt;/b&gt; be used in the stream</string>
+    <string name="micUsageString">The microphone &lt;b&gt;%s&lt;/b&gt; be used in the stream</string>
+    <string name="channelNameString">Channel name: %s</string>
+    <string name="allowButtonString">Start streaming</string>
+    <string name="denyButtonString">Deny</string>
+    <string name="startedWithUnexpectedAction">This screen was started with unexpected action %s. The start streaming button will do nothing.</string>
 </resources>

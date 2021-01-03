@@ -25,10 +25,10 @@ import tv.remo.android.controller.databinding.ActivitySplashScreenBinding
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
-
     private lateinit var binding: ActivitySplashScreenBinding
     private var permissionsAlreadyRequested = false
     private var timeAtStart = System.currentTimeMillis()
+    private var startedFromExternalApp = false
     var classScanComplete = false
     val handler = Handler()
 
@@ -38,6 +38,12 @@ class SplashScreen : FragmentActivity() {
         setContentView(binding.root)
         binding.remoSettingsSplashButton.setOnClickListener(this::startSetup)
         binding.managePermissionsSplashButton.setOnClickListener(this::launchPermissions)
+
+        // This activity can be started by any app, so we must be SURE to only auto-start the stream
+        // if we are coming from ExternalControlActivity.
+        if (callingPackage == packageName && callingActivity?.className == ExternalControlActivity::class.java.name) {
+            startedFromExternalApp = true
+        }
 
         detectIntentUpdateSettings(intent)
         runOnUiThread{
@@ -125,7 +131,9 @@ class SplashScreen : FragmentActivity() {
         //All checks are done. Lets startup the activity!
         ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, ControlSDKService::class.java))
         hasInitialized = true
-        startActivity(MainActivity.getIntent(this))
+        val mainActivityIntent = MainActivity.getIntent(this)
+        mainActivityIntent.putExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, startedFromExternalApp)
+        startActivity(mainActivityIntent)
         finish()
     }
 
