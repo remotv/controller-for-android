@@ -21,13 +21,10 @@ import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
-import tv.remo.android.controller.RemoApplication
 import tv.remo.android.controller.databinding.ActivitySplashScreenBinding
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
-    private val log = RemoApplication.getLogger(this)
-
     private lateinit var binding: ActivitySplashScreenBinding
     private var permissionsAlreadyRequested = false
     private var timeAtStart = System.currentTimeMillis()
@@ -47,7 +44,6 @@ class SplashScreen : FragmentActivity() {
         if (callingPackage == packageName && callingActivity?.className == ExternalControlActivity::class.java.name) {
             startedFromExternalApp = true
         }
-        log.v("startedFromExternalApp: $startedFromExternalApp")
 
         detectIntentUpdateSettings(intent)
         runOnUiThread{

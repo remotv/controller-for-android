@@ -56,8 +56,7 @@ class ExternalControlActivity: AppCompatActivity() {
         val action = intent?.action
         if (action != "tv.remo.android.controller.action.REQUEST_REMO_STREAM_START") {
             binding.promptText.text = getString(R.string.startedWithUnexpectedAction, action)
-            binding.cameraUsageText.text = Html.fromHtml(getString(R.string.cameraUsageString, "will"))
-            binding.micUsageText.text = Html.fromHtml(getString(R.string.micUsageString, "will not"))
+            setCameraAndMicUsageText(cameraUsed = false, micUsed = true)
             return
         }
 
@@ -68,10 +67,14 @@ class ExternalControlActivity: AppCompatActivity() {
         }
         binding.promptText.text = getString(R.string.externalControlPrompt, appName)
 
-        binding.cameraUsageText.text = Html.fromHtml(getString(R.string.cameraUsageString, if (externalAppParameters?.enableCamera == true) "will" else "will not"))
-        binding.micUsageText.text = Html.fromHtml(getString(R.string.micUsageString, if (externalAppParameters?.enableMicrophone == true) "will" else "will not"))
+        setCameraAndMicUsageText(externalAppParameters?.enableCamera, externalAppParameters?.enableMicrophone)
 
         RemoAPI(applicationContext).authRobot(externalAppParameters?.apiKey?: "", authRobotCallback)
+    }
+
+    private fun setCameraAndMicUsageText(cameraUsed: Boolean?, micUsed: Boolean?) {
+        binding.cameraUsageText.text = Html.fromHtml(getString(R.string.cameraUsageString, if (cameraUsed == true) "will" else "will not"))
+        binding.micUsageText.text = Html.fromHtml(getString(R.string.micUsageString, if (micUsed == true) "will" else "will not"))
     }
 
     private fun processExternalAppParameters(): ExternalAppParameters {
