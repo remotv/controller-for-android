@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:background="@color/ic_launcher_background"
     android:layout_height="match_parent"
@@ -9,12 +10,87 @@
     tools:context="tv.remo.android.controller.activities.SplashScreen">
 
     <ImageView
+        app:layout_constraintBottom_toTopOf="@+id/centerLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"
         tools:ignore="ContentDescription" />
+    <View
+        android:id="@+id/centerLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <ProgressBar
+        app:layout_constraintTop_toBottomOf="@id/centerLine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/progressSplash"
         android:layout_width="wrap_content"
         android:indeterminate="true"
         android:layout_height="wrap_content" />
-</LinearLayout>
+    <LinearLayout
+        android:visibility="visible"
+        android:id="@+id/permissionsRequest"
+        app:layout_constraintTop_toBottomOf="@id/centerLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="One or more permissions have not been granted. Please turn off features or turn on permissions from the settings"/>
+        <TextView
+            android:id="@+id/locationSplashTitle"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_developer_board_white_24dp"
+            android:drawableLeft="@drawable/ic_developer_board_white_24dp"
+            android:drawablePadding="8dp"
+            android:text="Location"/>
+        <TextView
+            android:id="@+id/cameraSplashTitle"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_camera_alt_white_24dp"
+            android:drawableLeft="@drawable/ic_camera_alt_white_24dp"
+            android:drawablePadding="8dp"
+            android:text="Camera"/>
+        <TextView
+            android:id="@+id/micSplashTitle"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_mic_white_24dp"
+            android:drawableLeft="@drawable/ic_mic_white_24dp"
+            android:drawablePadding="8dp"
+            android:text="Microphone"/>
+
+        <Button
+            android:id="@+id/managePermissionsSplashButton"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Manage Permissions"/>
+        <Button
+            android:id="@+id/remoSettingsSplashButton"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remo Settings"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

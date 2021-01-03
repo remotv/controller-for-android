@@ -4,13 +4,18 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.provider.Settings
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import kotlinx.android.synthetic.main.activity_splash_screen.*
 import org.btelman.controlsdk.hardware.drivers.BluetoothClassicDriver
 import org.btelman.controlsdk.hardware.interfaces.DriverComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
@@ -21,6 +26,7 @@ import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
 
+    private var permissionsAlreadyRequested = false
     private var timeAtStart = System.currentTimeMillis()
     var classScanComplete = false
     val handler = Handler()
@@ -28,6 +34,8 @@ class SplashScreen : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
+        remoSettingsSplashButton.setOnClickListener(this::startSetup)
+        managePermissionsSplashButton.setOnClickListener(this::launchPermissions)
 
         detectIntentUpdateSettings(intent)
         runOnUiThread{
@@ -62,12 +70,19 @@ class SplashScreen : FragmentActivity() {
         }
     }
 
-    private fun startSetup() {
+    private fun startSetup(view : View? = null) {
         startActivity(SettingsActivity.getIntent(this))
         finish()
     }
 
+    private fun launchPermissions(view : View? = null){
+        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+        })
+    }
+
     private fun next() {
+        progressSplash.visibility = View.VISIBLE
         if(!classScanComplete){
             Thread{
                 ClassScanner.getClasses(this)
@@ -81,7 +96,7 @@ class SplashScreen : FragmentActivity() {
         }
 
         //Check permissions. break out if that returns false
-        if(!checkPermissions()){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkPermissions()){
             return
         }
         //Setup device. break out if not setup, or if error occurred
@@ -151,7 +166,8 @@ class SplashScreen : FragmentActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(checkPermissions()){
+        permissionsAlreadyRequested = true
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkPermissions()){
             next()
         }
     }
@@ -175,6 +191,7 @@ class SplashScreen : FragmentActivity() {
 
     private val requestCode = 1002
 
+    @RequiresApi(23)
     private fun checkPermissions() : Boolean{
         val permissionsToAccept = ArrayList<String>()
         for (perm in getCurrentRequiredPermissions()){
@@ -183,17 +200,42 @@ class SplashScreen : FragmentActivity() {
             }
         }
 
+        if(permissionsToAccept.size > 0 && permissionsAlreadyRequested){
+            handlePermissionDenied(permissionsToAccept)
+            return false
+        }
+
         return if(permissionsToAccept.isNotEmpty()){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(
-                    permissionsToAccept.toArray(Array(0) {""}),
-                    requestCode)
-                false
-            }
-            else true
+            requestPermissions(
+                permissionsToAccept.toArray(Array(0) {""}),
+                requestCode
+            )
+            false
         }
         else{
             true
+        }
+    }
+
+    @RequiresApi(23)
+    private fun handlePermissionDenied(permissionsToAccept: ArrayList<String>) {
+        progressSplash.visibility = View.GONE
+        permissionsRequest.visibility = View.VISIBLE
+        permissionsToAccept.forEach { permission ->
+            when(permission){
+                Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                    locationSplashTitle.visibility = View.VISIBLE
+                }
+                Manifest.permission.ACCESS_FINE_LOCATION -> {
+                    locationSplashTitle.visibility = View.VISIBLE
+                }
+                Manifest.permission.CAMERA -> {
+                    cameraSplashTitle.visibility = View.VISIBLE
+                }
+                Manifest.permission.RECORD_AUDIO -> {
+                    micSplashTitle.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
