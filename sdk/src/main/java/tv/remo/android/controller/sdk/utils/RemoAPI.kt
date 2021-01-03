@@ -20,8 +20,8 @@ class RemoAPI (private val context: Context){
             var finalException = exception
             var channel : Channel? = null
             json?.let{
-                val status = json.getString("status")
                 try {
+                    val status = json.getString("status")
                     if(status == "success!"){
                         channel = Gson().fromJson(json.getString("robot"), Channel::class.java)
                     }
