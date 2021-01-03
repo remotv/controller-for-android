@@ -15,5 +15,9 @@
             app:useSimpleSummaryProvider="true"
             app:isPreferenceVisible="true"/>
 
-    <!--TODO add option to test success-->
+    <tv.remo.android.controller.ui.RemoChannelInfoPreference
+        app:key="RemoSettingsConnectionTestKey"
+        app:title="Channel Name"
+        app:summary="Testing connection"
+        app:isPreferenceVisible="true"/>
 </androidx.preference.PreferenceScreen>

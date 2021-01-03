@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:id="@+id/remo_channel_pref_second_target"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ProgressBar
+        android:indeterminate="true"
+        android:id="@+id/requestProgress"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:gravity="center_vertical"
+        android:clickable="false" />
+    <View
+        android:visibility="gone"
+        android:id="@+id/requestSuccess"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/ic_baseline_check_24_green"/>
+    <View
+        android:visibility="gone"
+        android:id="@+id/requestError"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/ic_baseline_error_24"/>
+</FrameLayout>
+
+
