@@ -15,17 +15,18 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.activity_splash_screen.*
 import org.btelman.controlsdk.hardware.drivers.BluetoothClassicDriver
 import org.btelman.controlsdk.hardware.interfaces.DriverComponent
 import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
+import tv.remo.android.controller.databinding.ActivitySplashScreenBinding
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
 
+    private lateinit var binding: ActivitySplashScreenBinding
     private var permissionsAlreadyRequested = false
     private var timeAtStart = System.currentTimeMillis()
     var classScanComplete = false
@@ -33,9 +34,10 @@ class SplashScreen : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash_screen)
-        remoSettingsSplashButton.setOnClickListener(this::startSetup)
-        managePermissionsSplashButton.setOnClickListener(this::launchPermissions)
+        binding = ActivitySplashScreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.remoSettingsSplashButton.setOnClickListener(this::startSetup)
+        binding.managePermissionsSplashButton.setOnClickListener(this::launchPermissions)
 
         detectIntentUpdateSettings(intent)
         runOnUiThread{
@@ -82,7 +84,8 @@ class SplashScreen : FragmentActivity() {
     }
 
     private fun next() {
-        progressSplash.visibility = View.VISIBLE
+        binding.progressSplash.visibility = View.VISIBLE
+        binding.permissionsRequest.visibility = View.GONE
         if(!classScanComplete){
             Thread{
                 ClassScanner.getClasses(this)
@@ -143,6 +146,7 @@ class SplashScreen : FragmentActivity() {
     private fun setupDevice(): Boolean? {
         var setupDone = true
         RemoSettingsUtil.with(this){
+            if(!it.robotSettingsEnable.getPref()) return@with //don't attempt if not even enabled
             it.robotCommunicationDriver.getPref().also {driver ->
                 if(driver.getAnnotation(DriverComponent::class.java)?.requiresSetup == false)
                     return@with
@@ -219,21 +223,23 @@ class SplashScreen : FragmentActivity() {
 
     @RequiresApi(23)
     private fun handlePermissionDenied(permissionsToAccept: ArrayList<String>) {
-        progressSplash.visibility = View.GONE
-        permissionsRequest.visibility = View.VISIBLE
-        permissionsToAccept.forEach { permission ->
-            when(permission){
-                Manifest.permission.ACCESS_COARSE_LOCATION -> {
-                    locationSplashTitle.visibility = View.VISIBLE
-                }
-                Manifest.permission.ACCESS_FINE_LOCATION -> {
-                    locationSplashTitle.visibility = View.VISIBLE
-                }
-                Manifest.permission.CAMERA -> {
-                    cameraSplashTitle.visibility = View.VISIBLE
-                }
-                Manifest.permission.RECORD_AUDIO -> {
-                    micSplashTitle.visibility = View.VISIBLE
+        binding.apply {
+            progressSplash.visibility = View.GONE
+            permissionsRequest.visibility = View.VISIBLE
+            permissionsToAccept.forEach { permission ->
+                when(permission){
+                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                        locationSplashTitle.visibility = View.VISIBLE
+                    }
+                    Manifest.permission.ACCESS_FINE_LOCATION -> {
+                        locationSplashTitle.visibility = View.VISIBLE
+                    }
+                    Manifest.permission.CAMERA -> {
+                        cameraSplashTitle.visibility = View.VISIBLE
+                    }
+                    Manifest.permission.RECORD_AUDIO -> {
+                        micSplashTitle.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -250,7 +256,7 @@ class SplashScreen : FragmentActivity() {
             }
 
             //location permission required to scan for bluetooth device
-            if(it.robotCommunicationDriver.getPref() == BluetoothClassicDriver::class.java){
+            if(it.robotSettingsEnable.getPref() && it.robotCommunicationDriver.getPref() == BluetoothClassicDriver::class.java){
                 list.add(Manifest.permission.ACCESS_COARSE_LOCATION)
                 list.add(Manifest.permission.ACCESS_FINE_LOCATION)
             }
