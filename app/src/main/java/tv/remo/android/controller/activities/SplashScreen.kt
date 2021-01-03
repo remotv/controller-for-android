@@ -78,9 +78,9 @@ class SplashScreen : FragmentActivity() {
     }
 
     private fun launchPermissions(view : View? = null){
-        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        startActivityForResult(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.fromParts("package", packageName, null)
-        })
+        }, LAUNCH_SETTINGS_REQUEST)
     }
 
     private fun next() {
@@ -178,18 +178,25 @@ class SplashScreen : FragmentActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //Check if result was due to a pending interface setup
-        pendingDeviceSetup?.takeIf { pendingRequestCode == requestCode}?.let {
-            //relay info to interface
-            if(resultCode != Activity.RESULT_OK) {
-                startSetup() //not ok, exit to setup
+        when(requestCode){
+            //Check if result was due to a pending interface setup
+            pendingRequestCode -> {
+                pendingDeviceSetup?.let {
+                    //relay info to interface
+                    if(resultCode != Activity.RESULT_OK) {
+                        startSetup() //not ok, exit to setup
+                    }
+                    else{
+                        it.receivedComponentSetupDetails(this, data)
+                        next()
+                    }
+                    pendingDeviceSetup = null
+                    pendingRequestCode = -1
+                }
             }
-            else{
-                it.receivedComponentSetupDetails(this, data)
-                next()
+            LAUNCH_SETTINGS_REQUEST -> {
+                next() //Launched for permissions, run next()
             }
-            pendingDeviceSetup = null
-            pendingRequestCode = -1
         }
     }
 
@@ -225,6 +232,9 @@ class SplashScreen : FragmentActivity() {
     private fun handlePermissionDenied(permissionsToAccept: ArrayList<String>) {
         binding.apply {
             progressSplash.visibility = View.GONE
+            locationSplashTitle.visibility = View.GONE
+            cameraSplashTitle.visibility = View.GONE
+            micSplashTitle.visibility = View.GONE
             permissionsRequest.visibility = View.VISIBLE
             permissionsToAccept.forEach { permission ->
                 when(permission){
@@ -266,5 +276,6 @@ class SplashScreen : FragmentActivity() {
 
     companion object{
         var hasInitialized = false
+        const val LAUNCH_SETTINGS_REQUEST = 1
     }
 }
