@@ -4,11 +4,15 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.provider.Settings
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import org.btelman.controlsdk.hardware.drivers.BluetoothClassicDriver
@@ -18,10 +22,14 @@ import org.btelman.controlsdk.services.ControlSDKService
 import org.btelman.controlsdk.utils.ClassScanner
 import tv.remo.android.controller.R
 import tv.remo.android.controller.RemoApplication
+import tv.remo.android.controller.databinding.ActivitySplashScreenBinding
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 class SplashScreen : FragmentActivity() {
     private val log = RemoApplication.getLogger(this)
+
+    private lateinit var binding: ActivitySplashScreenBinding
+    private var permissionsAlreadyRequested = false
     private var timeAtStart = System.currentTimeMillis()
     private var startedFromExternalApp = false
     var classScanComplete = false
@@ -29,7 +37,10 @@ class SplashScreen : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash_screen)
+        binding = ActivitySplashScreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.remoSettingsSplashButton.setOnClickListener(this::startSetup)
+        binding.managePermissionsSplashButton.setOnClickListener(this::launchPermissions)
 
         // This activity can be started by any app, so we must be SURE to only auto-start the stream
         // if we are coming from ExternalControlActivity.
@@ -71,12 +82,20 @@ class SplashScreen : FragmentActivity() {
         }
     }
 
-    private fun startSetup() {
+    private fun startSetup(view : View? = null) {
         startActivity(SettingsActivity.getIntent(this))
         finish()
     }
 
+    private fun launchPermissions(view : View? = null){
+        startActivityForResult(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+        }, LAUNCH_SETTINGS_REQUEST)
+    }
+
     private fun next() {
+        binding.progressSplash.visibility = View.VISIBLE
+        binding.permissionsRequest.visibility = View.GONE
         if(!classScanComplete){
             Thread{
                 ClassScanner.getClasses(this)
@@ -90,7 +109,7 @@ class SplashScreen : FragmentActivity() {
         }
 
         //Check permissions. break out if that returns false
-        if(!checkPermissions()){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkPermissions()){
             return
         }
         //Setup device. break out if not setup, or if error occurred
@@ -139,6 +158,7 @@ class SplashScreen : FragmentActivity() {
     private fun setupDevice(): Boolean? {
         var setupDone = true
         RemoSettingsUtil.with(this){
+            if(!it.robotSettingsEnable.getPref()) return@with //don't attempt if not even enabled
             it.robotCommunicationDriver.getPref().also {driver ->
                 if(driver.getAnnotation(DriverComponent::class.java)?.requiresSetup == false)
                     return@with
@@ -162,30 +182,39 @@ class SplashScreen : FragmentActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(checkPermissions()){
+        permissionsAlreadyRequested = true
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkPermissions()){
             next()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //Check if result was due to a pending interface setup
-        pendingDeviceSetup?.takeIf { pendingRequestCode == requestCode}?.let {
-            //relay info to interface
-            if(resultCode != Activity.RESULT_OK) {
-                startSetup() //not ok, exit to setup
+        when(requestCode){
+            //Check if result was due to a pending interface setup
+            pendingRequestCode -> {
+                pendingDeviceSetup?.let {
+                    //relay info to interface
+                    if(resultCode != Activity.RESULT_OK) {
+                        startSetup() //not ok, exit to setup
+                    }
+                    else{
+                        it.receivedComponentSetupDetails(this, data)
+                        next()
+                    }
+                    pendingDeviceSetup = null
+                    pendingRequestCode = -1
+                }
             }
-            else{
-                it.receivedComponentSetupDetails(this, data)
-                next()
+            LAUNCH_SETTINGS_REQUEST -> {
+                next() //Launched for permissions, run next()
             }
-            pendingDeviceSetup = null
-            pendingRequestCode = -1
         }
     }
 
     private val requestCode = 1002
 
+    @RequiresApi(23)
     private fun checkPermissions() : Boolean{
         val permissionsToAccept = ArrayList<String>()
         for (perm in getCurrentRequiredPermissions()){
@@ -194,17 +223,47 @@ class SplashScreen : FragmentActivity() {
             }
         }
 
+        if(permissionsToAccept.size > 0 && permissionsAlreadyRequested){
+            handlePermissionDenied(permissionsToAccept)
+            return false
+        }
+
         return if(permissionsToAccept.isNotEmpty()){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(
-                    permissionsToAccept.toArray(Array(0) {""}),
-                    requestCode)
-                false
-            }
-            else true
+            requestPermissions(
+                permissionsToAccept.toArray(Array(0) {""}),
+                requestCode
+            )
+            false
         }
         else{
             true
+        }
+    }
+
+    @RequiresApi(23)
+    private fun handlePermissionDenied(permissionsToAccept: ArrayList<String>) {
+        binding.apply {
+            progressSplash.visibility = View.GONE
+            locationSplashTitle.visibility = View.GONE
+            cameraSplashTitle.visibility = View.GONE
+            micSplashTitle.visibility = View.GONE
+            permissionsRequest.visibility = View.VISIBLE
+            permissionsToAccept.forEach { permission ->
+                when(permission){
+                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                        locationSplashTitle.visibility = View.VISIBLE
+                    }
+                    Manifest.permission.ACCESS_FINE_LOCATION -> {
+                        locationSplashTitle.visibility = View.VISIBLE
+                    }
+                    Manifest.permission.CAMERA -> {
+                        cameraSplashTitle.visibility = View.VISIBLE
+                    }
+                    Manifest.permission.RECORD_AUDIO -> {
+                        micSplashTitle.visibility = View.VISIBLE
+                    }
+                }
+            }
         }
     }
 
@@ -219,7 +278,7 @@ class SplashScreen : FragmentActivity() {
             }
 
             //location permission required to scan for bluetooth device
-            if(it.robotCommunicationDriver.getPref() == BluetoothClassicDriver::class.java){
+            if(it.robotSettingsEnable.getPref() && it.robotCommunicationDriver.getPref() == BluetoothClassicDriver::class.java){
                 list.add(Manifest.permission.ACCESS_COARSE_LOCATION)
                 list.add(Manifest.permission.ACCESS_FINE_LOCATION)
             }
@@ -229,5 +288,6 @@ class SplashScreen : FragmentActivity() {
 
     companion object{
         var hasInitialized = false
+        const val LAUNCH_SETTINGS_REQUEST = 1
     }
 }

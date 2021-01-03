@@ -115,6 +115,12 @@
     <string name="logLevelTitle">Log Level</string>
     <string name="showStartMessageTitle">Show Start Message</string>
     <string name="showStartMessageDescription">Show the start message in chat when the robot starts or reconnects</string>
+    <string name="permissionsPrompt">One or more permissions have not been granted. Please turn off features or turn on permissions from the settings</string>
+    <string name="location">Location</string>
+    <string name="camera">Camera</string>
+    <string name="microphone">Microphone</string>
+    <string name="manage_permissions">Manage Permissions</string>
+    <string name="remo_settings">Remo Settings</string>
     <!--EndRegion-->
 
     <!--External Control-->
