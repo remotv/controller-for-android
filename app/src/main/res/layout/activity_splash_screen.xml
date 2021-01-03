@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="One or more permissions have not been granted. Please turn off features or turn on permissions from the settings"/>
+            android:text="@string/permissionsPrompt"/>
         <TextView
             android:id="@+id/locationSplashTitle"
             android:textSize="20sp"
@@ -55,7 +55,7 @@
             android:drawableStart="@drawable/ic_developer_board_white_24dp"
             android:drawableLeft="@drawable/ic_developer_board_white_24dp"
             android:drawablePadding="8dp"
-            android:text="Location"/>
+            android:text="@string/location"/>
         <TextView
             android:id="@+id/cameraSplashTitle"
             android:textSize="20sp"
@@ -66,7 +66,7 @@
             android:drawableStart="@drawable/ic_camera_alt_white_24dp"
             android:drawableLeft="@drawable/ic_camera_alt_white_24dp"
             android:drawablePadding="8dp"
-            android:text="Camera"/>
+            android:text="@string/camera"/>
         <TextView
             android:id="@+id/micSplashTitle"
             android:textSize="20sp"
@@ -77,7 +77,7 @@
             android:drawableStart="@drawable/ic_mic_white_24dp"
             android:drawableLeft="@drawable/ic_mic_white_24dp"
             android:drawablePadding="8dp"
-            android:text="Microphone"/>
+            android:text="@string/microphone"/>
 
         <Button
             android:id="@+id/managePermissionsSplashButton"
@@ -85,12 +85,12 @@
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Manage Permissions"/>
+            android:text="@string/manage_permissions"/>
         <Button
             android:id="@+id/remoSettingsSplashButton"
             android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Remo Settings"/>
+            android:text="@string/remo_settings"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
