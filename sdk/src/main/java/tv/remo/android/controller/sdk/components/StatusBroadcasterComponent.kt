@@ -25,7 +25,8 @@ class StatusBroadcasterComponent : IListener {
                     "status update request received by BroadcastReceiver"
                 }
                 //loop through cached statuses and send them
-                cachedStatus.forEach{
+                val statusValues = cachedStatus.entries //make sure to store it locally to prevent race conditions...
+                statusValues.forEach{
                     handleStatusBroadcast(it.key, it.value)
                 }
             }
