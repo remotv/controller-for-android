@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_web_server_settings_page.*
+import tv.remo.android.controller.databinding.FragmentWebServerSettingsPageBinding
 import tv.remo.android.controller.sdk.components.RemoWebServer
 
 
@@ -19,17 +19,23 @@ class WebServerSettingsPage : Fragment() {
 
     lateinit var server : RemoWebServer
 
+    private var _binding: FragmentWebServerSettingsPageBinding? = null
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_web_server_settings_page, container, false)
+        _binding = FragmentWebServerSettingsPageBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private val onSettingsUpdated : ()->Unit = {
         view?.post {
-            responseTextView.visibility = View.VISIBLE
+            binding.responseTextView.visibility = View.VISIBLE
         }
     }
 
@@ -43,7 +49,7 @@ class WebServerSettingsPage : Fragment() {
         } catch (e: Exception) {
             null
         }
-        ipAddrValue.text = if(ip != null && ip != "0.0.0.0"){
+        binding.ipAddrValue.text = if(ip != null && ip != "0.0.0.0"){
             "$ip:8080/config"
         }
         else{
@@ -51,6 +57,11 @@ class WebServerSettingsPage : Fragment() {
         }
         if(ip != null)
             server.open()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onDestroy() {

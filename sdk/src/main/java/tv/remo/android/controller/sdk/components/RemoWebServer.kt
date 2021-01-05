@@ -42,7 +42,6 @@ class RemoWebServer (val context: Context, val onSettingsUpdated : (()->Unit)? =
     private fun saveSettings(parms: Map<String, String>) {
         RemoSettingsUtil.with(context){ settings ->
             trySaveStringSetting(settings.apiKey, parms)
-            trySaveStringSetting(settings.channelId, parms)
             trySaveStringSetting(settings.serverOwner, parms)
         }
     }
@@ -57,7 +56,6 @@ class RemoWebServer (val context: Context, val onSettingsUpdated : (()->Unit)? =
         return RemoSettingsUtil.with(context){
             var msg = "<form action='?' method='get'>"
             msg += getSettingHtml(it.apiKey, "API key", hide = true)
-            msg += getSettingHtml(it.channelId,"Channel name")
             msg += getSettingHtml(it.serverOwner,"Owner name")
             msg += "<input type='submit' value='Submit'\"'>"
             msg += "</form>\n"

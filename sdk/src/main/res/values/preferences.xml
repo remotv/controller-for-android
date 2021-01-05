@@ -50,4 +50,7 @@
     <string name="ffmpegOutputOptionsPrefsKey">ffmpegOutputOptions</string>
     <string name="streamAutoSleepEnabledKey">streamAutoSleepEnabled</string>
     <string name="streamAutoSleepTimeoutKey">streamAutoSleepTimeout</string>
+
+    <string name="logLevelPrefsKey">logLevelGlobal</string>
+    <string name="showStartMessageKey">showStartMessage</string>
 </resources>

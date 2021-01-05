@@ -8,51 +8,87 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.hardware.components.CommunicationDriverComponent
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.R
+import tv.remo.android.controller.RemoApplication
 import tv.remo.android.controller.ServiceInterface
+import tv.remo.android.controller.databinding.ActivityMainBinding
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
-import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
+import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val log = RemoApplication.getLogger(this)
     private lateinit var handler : Handler
+    private lateinit var binding: ActivityMainBinding
     private var recording = false
     private var serviceInterface : ServiceInterface? = null
+    private var startedFromExternalApp = false
+    private var autoStartedStream = false
+    private var boundToService = false
+    // We apparently can't count on receiving the initial stream status if another instance of
+    // MainActivity is already running with the stream active, so we start out by assuming that the
+    // stream is already online.
+    private var streamStatus: Operation? = Operation.OK
+
+    private fun autoStartStreamIfAppropriate() {
+        log.v("autoStartStreamIfAppropriate() instance=${Integer.toHexString(hashCode())} startedFromExternalApp=$startedFromExternalApp autoStartedStream=$autoStartedStream boundToService=$boundToService streamStatus=$streamStatus")
+        if (startedFromExternalApp && boundToService && !autoStartedStream) {
+            if (streamStatus == Operation.NOT_OK) {
+                serviceInterface?.let {
+                    log.v("auto-starting stream")
+                    autoStartedStream = true
+                    it.changeStreamState(Operation.OK)
+                    finish()
+                }
+            } else if (streamStatus == Operation.OK) {
+                log.v("stopping stream in advance of auto-start")
+                serviceInterface?.changeStreamState(Operation.NOT_OK)
+            }
+        }
+    }
 
     private val onServiceStatus : (Operation) -> Unit = { serviceStatus ->
-        powerButton?.let {
-            powerButton.setTextColor(parseColorForOperation(serviceStatus))
+        binding.powerButton.let {
+            binding.powerButton.setTextColor(parseColorForOperation(serviceStatus))
             val isLoading = serviceStatus == Operation.LOADING
-            powerButton.isEnabled = !isLoading
+            binding.powerButton.isEnabled = !isLoading
             if(isLoading) return@let //processing command. Disable button
             recording = serviceStatus == Operation.OK
             if(recording) {
                 handleSleepLayoutTouch()
             }
             else{
-                remoChatView.keepScreenOn = false //go ahead and remove the flag
+                binding.remoChatView.keepScreenOn = false //go ahead and remove the flag
             }
         }
+        streamStatus = serviceStatus
+        autoStartStreamIfAppropriate()
     }
 
     private val onServiceBind : (Operation) -> Unit = { serviceBoundState ->
-        powerButton.isEnabled = serviceBoundState == Operation.OK
+        binding.powerButton.isEnabled = serviceBoundState == Operation.OK
+        boundToService = serviceBoundState == Operation.OK
+        autoStartStreamIfAppropriate()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(!SplashScreen.hasInitialized) RemoApplication.restart(this)
         handler = Handler(Looper.getMainLooper())
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupControlSDK()
         setupUI()
         window.decorView.post {
             buildStatusList()
+        }
+        if (intent?.getBooleanExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, false) == true) {
+            startedFromExternalApp = true
         }
     }
 
@@ -85,20 +121,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupUI() {
-        remoChatView.setOnTouchListener { _, _ ->
+        binding.remoChatView.setOnTouchListener { _, _ ->
             handleSleepLayoutTouch()
             return@setOnTouchListener false
         }
-        settingsButton.setOnClickListener(this)
-        powerButton?.setOnClickListener(this)
+        binding.settingsButton.setOnClickListener(this)
+        binding.powerButton.setOnClickListener(this)
     }
 
     private fun buildStatusList() {
-        websiteConnectionStatusView.registerStatusEvents(RemoSocketComponent::class.java)
-        hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
-        audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
-        videoConnectionStatusView.registerStatusEvents(RemoVideoProcessor::class.java)
-        ttsConnectionStatusView.registerStatusEvents(SystemDefaultTTSComponent::class.java)
+        binding.websiteConnectionStatusView.registerStatusEvents(RemoSocketComponent::class.java)
+        binding.hardwareConnectionStatusView.registerStatusEvents(CommunicationDriverComponent::class.java)
+        binding.audioConnectionStatusView.registerStatusEvents(RemoAudioProcessor::class.java)
+        binding.videoConnectionStatusView.registerStatusEvents(RemoVideoComponent::class.java)
+        binding.ttsConnectionStatusView.registerStatusEvents(SystemDefaultTTSComponent::class.java)
         StatusBroadcasterComponent.sendUpdateBroadcast(applicationContext)
     }
 
@@ -106,7 +142,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         showSystemUI()
         RemoSettingsUtil.with(this){
             if(it.keepScreenOn.getPref()){
-                remoChatView.keepScreenOn = true //Could be attached to any view, but this is fine
+                binding.remoChatView.keepScreenOn = true //Could be attached to any view, but this is fine
             }
             if(it.hideScreenControls.getPref()){
                 startSleepDelayed()
@@ -116,14 +152,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startSleepDelayed() {
-        buttonGroupMainActivity.visibility = View.VISIBLE
+        binding.buttonGroupMainActivity.visibility = View.VISIBLE
         handler.removeCallbacks(hideScreenRunnable)
         handler.postDelayed(hideScreenRunnable, 10000) //10 second delay
     }
 
     private val hideScreenRunnable = Runnable {
         if (recording){
-            buttonGroupMainActivity.visibility = View.GONE
+            binding.buttonGroupMainActivity.visibility = View.GONE
             hideSystemUI()
         }
     }

@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
 android {
@@ -21,6 +20,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        releaseDemo {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 
     compileOptions {
@@ -36,15 +39,14 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    def controlsdk_version = "0.12.2"
     api "org.btelman.controlsdk:core:$controlsdk_version"
-    api("org.btelman.controlsdk:streaming:$controlsdk_version")
     api "org.btelman.controlsdk:hardware:$controlsdk_version"
     api "org.btelman.controlsdk:texttospeech:$controlsdk_version"
     //noinspection GradleDependency. We cannot upgrade this without losing support for Android 4.4 and below
     api 'com.squareup.okhttp3:okhttp:3.12.6'
     api 'com.google.code.gson:gson:2.8.5'
     api project(path: ':licensehelper')
+    api project(path: ':streaming')
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     implementation 'org.nanohttpd:nanohttpd:2.2.0'
 }

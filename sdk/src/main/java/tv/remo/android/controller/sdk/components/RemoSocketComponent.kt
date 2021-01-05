@@ -2,7 +2,6 @@ package tv.remo.android.controller.sdk.components
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -12,7 +11,6 @@ import org.btelman.controlsdk.enums.ComponentType
 import org.btelman.controlsdk.models.Component
 import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.tts.TTSBaseComponent
-import org.json.JSONObject
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.interfaces.RemoCommandSender
 import tv.remo.android.controller.sdk.models.api.*
@@ -30,13 +28,15 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     private val listener = SocketListener()
     private var url: String? = null
     var request : Request? = null
-    val client = OkHttpClient()
+    private val socketClient = OkHttpClient()
+    private lateinit var remoAPI: RemoAPI
+
     var allowChat = false
-    private var serverInfo: RobotServerInfo? = null
     private var activeChannel : Channel? = null
 
     override fun onInitializeComponent(applicationContext: Context, bundle: Bundle?) {
         super.onInitializeComponent(applicationContext, bundle)
+        remoAPI = RemoAPI(applicationContext)
         apiKey = bundle?.getString(API_TOKEN_BUNDLE_KEY)
         url = EndpointBuilder.buildWebsocketUrl(applicationContext)
         activeChannelId = bundle?.getString(CHANNEL_ID_BUNDLE_KEY)
@@ -69,16 +69,19 @@ class RemoSocketComponent : Component() , RemoCommandSender {
     private fun subToSocketEvents(listener: SocketListener) {
         listener.on(SocketListener.ON_CLOSE) {
                 status = ComponentStatus.ERROR
-                Log.d("TAG", "onClosing $it")
+                log.d{
+                    "onClosing $it"
+                }
             }.on(SocketListener.ON_OPEN, this::sendHandshakeAuth)
             .on(SocketListener.ON_ERROR, this::handleConnectionError)
-            .on("ROBOT_VALIDATED", this::sendChannelsRequest)
-            .on("SEND_ROBOT_SERVER_INFO", this::verifyAndSubToChannel)
+            .on("ROBOT_VALIDATED", this::getChannelAndConnect)
             .on("MESSAGE_RECEIVED", this::sendChatUpwards)
             .on("BUTTON_COMMAND", this::sendCommandUpwards)
             .on("LOCAL_MODERATION", this::processChatModeration)
             .on(SocketListener.ON_MESSAGE) {
-                Log.d("SOCKET", it)
+                log.v{
+                    "Socket Message: $it"
+                }
             }
         //.on("SEND_CHAT") //TODO? of type Messages
     }
@@ -89,7 +92,9 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             //attempt a reconnect every second
             attemptReconnect()
         }, 1000)
-        Log.d("TAG", "onFailure $value")
+        log.e{
+            "Failed to connect : $value"
+        }
     }
 
     private fun attemptReconnect() {
@@ -97,14 +102,16 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         url ?: return
         socket?.close(1000, "service ended normally")
         request = Request.Builder().url(url!!).build()
-        client.connectionPool().evictAll()
-        socket = client.newWebSocket(request!!, listener)
+        socketClient.connectionPool().evictAll()
+        socket = socketClient.newWebSocket(request!!, listener)
     }
 
     private fun sendCommandUpwards(it: String) {
         Gson().fromJson(it, RobotCommand::class.java).also {
-            eventDispatcher?.handleMessage(ComponentType.CUSTOM, EVENT_MAIN,
-                RemoCommandHandler.Packet(it.button.command, it.user), this)
+            eventDispatcher?.handleMessage(
+                ComponentType.CUSTOM, EVENT_MAIN,
+                RemoCommandHandler.Packet(it.button.command, it.user), this
+            )
         }
     }
 
@@ -164,14 +171,10 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         return false
     }
 
-    private fun sendChatMessage(message : String){
-        val json = "{\"e\": \"ROBOT_MESSAGE_SENT\"," +
-                "         \"d\": {\"username\": \"bot\",\"message\": \"$message\"," +
-                "               \"chatId\": \"${activeChannel?.chat}\"," +
-                "               \"server_id\": \"${activeChannel?.hostId}\"" +
-                "        }" +
-                "    }"
-        socket?.send(json)
+    private fun sendChatMessage(message: String) {
+        activeChannel?.apply {
+            sendMessage(socket, "ROBOT_MESSAGE_SENT", OutgoingMessage(message, chat, hostId).serialize(), false)
+        }
     }
 
     private fun processChatModeration(json: String) {
@@ -182,20 +185,26 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         }
     }
 
-    private fun verifyAndSubToChannel(json: String) {
-        serverInfo = Gson().fromJson(json, RobotServerInfo::class.java).also { serverInfo ->
-            for (channel in serverInfo.channels) {
-                if(channel.id != activeChannelId && channel.name != activeChannelId) continue
-                activeChannel = channel
+    private fun getChannelAndConnect(json: String) {
+        status = ComponentStatus.CONNECTING
+        remoAPI.authRobot(apiKey!!) { channel: Channel?, exception: java.lang.Exception? ->
+            channel?.let {
+                verifyAndSubToChannel(channel)
+            } ?: handleConnectionError(exception?.toString() ?: "Unable to get channel")
+        }
+    }
+
+    private fun verifyAndSubToChannel(channel: Channel) {
+        status = ComponentStatus.STABLE
+        channel.apply {
+            activeChannel = this
+            if(RemoSettingsUtil.with(context!!).showStartMessage.getPref())
                 sendChatMessage("Robot connected. Commands cleared")
+            socket?.let { _socket ->
+                sendMessage(_socket, "JOIN_CHANNEL", id) //apparently this value is ignored...
+                sendMessage(_socket, "GET_CHAT", chat) //this value is not ignored though...
             }
-            activeChannel?.apply {
-                socket?.let { _socket ->
-                    sendMessage(_socket, "JOIN_CHANNEL", id)
-                    sendMessage(_socket, "GET_CHAT", chat)
-                }
-                sendChannelUpwards(this)
-            }
+            sendChannelUpwards(this)
         }
     }
 
@@ -205,17 +214,8 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         )
     }
 
-    private fun sendChannelsRequest(json : String) {
-        status = ComponentStatus.STABLE
-        val jsonObject = JSONObject(json)
-        val host = jsonObject.getString("host")
-        val str = "{\"e\":\"GET_CHANNELS\",\"d\":{\"server_id\":\"$host\"}}"
-        socket?.send(str)
-    }
-
     private fun sendHandshakeAuth(value : String) {
-        val json = "{\"e\": \"AUTHENTICATE_ROBOT\", \"d\": {\"token\": \"$apiKey\"}}"
-        socket?.send(json)
+        sendMessage(socket, "AUTHENTICATE_ROBOT", "{\"token\": \"$apiKey\"}", false)
     }
 
     data class RemoSocketChatPacket(val data : String)
@@ -233,8 +233,9 @@ class RemoSocketComponent : Component() , RemoCommandSender {
             }
         }
 
-        private fun sendMessage(webSocket: WebSocket, event: String, data: String) {
-            webSocket.send("{\"e\":\"$event\",\"d\":\"$data\"}")
+        private fun sendMessage(webSocket: WebSocket?, event: String, data: String, wrapData : Boolean = true) {
+            val json = "{\"e\":\"$event\",\"d\":${if(wrapData) "\"$data\"" else data}}"
+            webSocket?.send(json)
         }
     }
 }

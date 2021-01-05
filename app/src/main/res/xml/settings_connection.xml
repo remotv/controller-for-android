@@ -10,17 +10,14 @@
         app:isPreferenceVisible="true"/>
 
     <EditTextPreference
-        app:key="@string/connectionChannelIdKey"
-        app:title="@string/connectionChannelId"
-        app:useSimpleSummaryProvider="true"
-        app:isPreferenceVisible="true"/>
-
-    <EditTextPreference
             app:key="@string/serverOwnerKey"
             app:title="@string/serverOwnerTitle"
             app:useSimpleSummaryProvider="true"
             app:isPreferenceVisible="true"/>
 
-    <!--TODO add option to find channel-->
-    <!--TODO add option to test success-->
+    <tv.remo.android.controller.ui.RemoChannelInfoPreference
+        app:key="RemoSettingsConnectionTestKey"
+        app:title="Channel Name"
+        app:summary="Testing connection"
+        app:isPreferenceVisible="true"/>
 </androidx.preference.PreferenceScreen>

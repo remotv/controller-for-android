@@ -9,11 +9,11 @@ import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreferenceCompat
+import org.btelman.controlsdk.streaming.utils.CameraUtil
+import org.btelman.controlsdk.streaming.utils.v24.Camera2Util
 import tv.remo.android.controller.R
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.utils.ValueUtil
-import tv.remo.android.controller.utils.CameraUtil
-import tv.remo.android.controller.utils.v21.Camera2Util
 import tv.remo.android.settingsutil.fragments.BasePreferenceFragmentCompat
 import tv.remo.android.settingsutil.interfaces.SwitchBarCapableActivity
 import java.util.*
@@ -67,7 +67,11 @@ class SettingsCamera : BasePreferenceFragmentCompat(
             if(currCameraId >= cameras){
                 Toast.makeText(context!!, "Last selected camera is no longer available...",
                     Toast.LENGTH_LONG).show()
-                value = entries[0] as String
+                if (cameras > 0) {
+                    value = entries[0] as String
+                } else {
+                    value = "-1"
+                }
             }
         }
     }
@@ -235,7 +239,7 @@ class SettingsCamera : BasePreferenceFragmentCompat(
     }
 
     private fun validateCamera2Support(context: Context, cameraId: Int): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return Camera2Util.checkFullyCompatible(context, cameraId)
         }
         return false

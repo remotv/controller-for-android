@@ -55,6 +55,8 @@
         <item>1024</item>
         <item>1536</item>
         <item>2048</item>
+        <item>3072</item>
+        <item>4096</item>
     </string-array>
 
     <string-array name="bitrate_video_list">
@@ -63,6 +65,8 @@
         <item>1024 kb/s</item>
         <item>1536 kb/s</item>
         <item>2048 kb/s</item>
+        <item>3072 kb/s</item>
+        <item>4096 kb/s</item>
     </string-array>
 
     <string-array name="bitrate_audio_list_values">
@@ -97,5 +101,13 @@
         <item>2X</item>
         <item>3X</item>
         <item>4X</item>
+    </string-array>
+
+    <string-array name="log_level_pref_list">
+        <item>VERBOSE</item>
+        <item>DEBUG</item>
+        <item>WARNING</item>
+        <item>ERROR</item>
+        <item>NONE</item>
     </string-array>
 </resources>

@@ -1,0 +1,52 @@
+/**
+Ported from https://github.com/ControlSDK/ControlSDK/commit/117b19d533bc53b633def9a6f4c04ec481e9ce99
+Streaming module for controlSDK by btelman96 for mpeg2 streaming
+*/
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 28
+
+    compileOptions {
+        kotlinOptions.freeCompilerArgs += ['-module-name', "streaming"]
+    }
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName '0.12.2'
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        releaseDemo {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api project(path: ':mobile-ffmpeg-full-4.4')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api "org.btelman.ffmpeg:core:1.0.2"
+    api 'org.btelman.android:shellutil:1.4'
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.1.0' //annotations...
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.btelman.controlsdk:core:$controlsdk_version"
+}
+repositories {
+    mavenCentral()
+}
