@@ -164,6 +164,6 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
     }
 
     protected open fun getFilterOptions(props : StreamInfo): String {
-        return FFmpegUtil.getFilterOptions(props)
+        return FFmpegUtil.getFilterOptions(props, offset = -1)
     }
 }
