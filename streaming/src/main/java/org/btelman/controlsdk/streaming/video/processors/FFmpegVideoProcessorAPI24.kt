@@ -6,6 +6,7 @@ import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.ExecuteCallback
 import com.arthenica.mobileffmpeg.FFmpeg
 import org.btelman.controlsdk.enums.ComponentStatus
+import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.models.ImageDataPacket
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.streaming.utils.FFmpegUtil
@@ -131,13 +132,22 @@ open class FFmpegVideoProcessorAPI24 : BaseVideoProcessor(){
     }
 
     private fun getVideoInputOptions(props : StreamInfo): ArrayList<String> {
+        val videoSize = when(props.orientation){
+            //Portrait orientations, flip resolutions
+            Orientation.DIR_0 -> "${props.height}x${props.width}"
+            Orientation.DIR_180 -> "${props.height}x${props.width}"
+
+            //Landscape orientations, standard resolutions
+            Orientation.DIR_90 -> "${props.width}x${props.height}"
+            Orientation.DIR_270 -> "${props.width}x${props.height}"
+        }
         return arrayListOf(
             "-f android_camera",
             "-input_queue_size 10",
-            "-video_size ${props.width}x${props.height}",
+            "-video_size $videoSize",
             "-i 0:0",
             "-camera_index ${props.deviceInfo.getCameraId()}",
-            "-s ${props.width}x${props.height}",
+            "-s $videoSize",
             "-r 25"
         )
     }
