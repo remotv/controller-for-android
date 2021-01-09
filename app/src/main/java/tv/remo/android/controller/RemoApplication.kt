@@ -48,7 +48,7 @@ class RemoApplication : MultiDexApplication() {
         var logLevel : LogLevel = LogLevel.ERROR
             private set
 
-        fun setupLogging(context: Context) {
+        private fun setupLogging(context: Context) {
             RemoSettingsUtil.with(context){
                 val logLevelStr = it.logLevel.getPref()
                 logLevel = LogLevel.valueOf(logLevelStr)

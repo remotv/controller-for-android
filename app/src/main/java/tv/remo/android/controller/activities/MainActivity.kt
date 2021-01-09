@@ -22,10 +22,35 @@ import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val log = RemoApplication.getLogger(this)
     private lateinit var handler : Handler
     private lateinit var binding: ActivityMainBinding
     private var recording = false
     private var serviceInterface : ServiceInterface? = null
+    private var startedFromExternalApp = false
+    private var autoStartedStream = false
+    private var boundToService = false
+    // We apparently can't count on receiving the initial stream status if another instance of
+    // MainActivity is already running with the stream active, so we start out by assuming that the
+    // stream is already online.
+    private var streamStatus: Operation? = Operation.OK
+
+    private fun autoStartStreamIfAppropriate() {
+        log.v("autoStartStreamIfAppropriate() instance=${Integer.toHexString(hashCode())} startedFromExternalApp=$startedFromExternalApp autoStartedStream=$autoStartedStream boundToService=$boundToService streamStatus=$streamStatus")
+        if (startedFromExternalApp && boundToService && !autoStartedStream) {
+            if (streamStatus == Operation.NOT_OK) {
+                serviceInterface?.let {
+                    log.v("auto-starting stream")
+                    autoStartedStream = true
+                    it.changeStreamState(Operation.OK)
+                    finish()
+                }
+            } else if (streamStatus == Operation.OK) {
+                log.v("stopping stream in advance of auto-start")
+                serviceInterface?.changeStreamState(Operation.NOT_OK)
+            }
+        }
+    }
 
     private val onServiceStatus : (Operation) -> Unit = { serviceStatus ->
         binding.powerButton.let {
@@ -41,10 +66,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 binding.remoChatView.keepScreenOn = false //go ahead and remove the flag
             }
         }
+        streamStatus = serviceStatus
+        autoStartStreamIfAppropriate()
     }
 
     private val onServiceBind : (Operation) -> Unit = { serviceBoundState ->
         binding.powerButton.isEnabled = serviceBoundState == Operation.OK
+        boundToService = serviceBoundState == Operation.OK
+        autoStartStreamIfAppropriate()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +86,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setupUI()
         window.decorView.post {
             buildStatusList()
+        }
+        if (intent?.getBooleanExtra(EXTRA_STARTED_FROM_EXTERNAL_APP, false) == true) {
+            startedFromExternalApp = true
         }
     }
 
@@ -94,7 +126,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             return@setOnTouchListener false
         }
         binding.settingsButton.setOnClickListener(this)
-        binding.powerButton?.setOnClickListener(this)
+        binding.powerButton.setOnClickListener(this)
     }
 
     private fun buildStatusList() {

@@ -67,7 +67,11 @@ class SettingsCamera : BasePreferenceFragmentCompat(
             if(currCameraId >= cameras){
                 Toast.makeText(context!!, "Last selected camera is no longer available...",
                     Toast.LENGTH_LONG).show()
-                value = entries[0] as String
+                if (cameras > 0) {
+                    value = entries[0] as String
+                } else {
+                    value = "-1"
+                }
             }
         }
     }

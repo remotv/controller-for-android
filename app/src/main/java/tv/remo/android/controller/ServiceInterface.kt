@@ -16,7 +16,22 @@ open class ServiceInterface(
     val onServiceBind : (Operation)->Unit,
     val onServiceStateChange : (Operation)->Unit
 ){
+    /**
+     * Listeners or controllers that are able to persist beyond the activity lifecycle
+     * IListener or IController
+     */
+    protected val persistentListenerControllerList = ArrayList<ComponentHolder<*>>()
+
+    /**
+     * Listeners or controllers that should be removed when the activity unbinds
+     * IListener or IController
+     */
     protected val listenerControllerList = ArrayList<ComponentHolder<*>>()
+
+    /**
+     * Generic ControlSDK ComponentHolders
+     * IComponent
+     */
     protected val arrayList = ArrayList<ComponentHolder<*>>()
     protected var controlSDKServiceApi =
         ControlSDKServiceConnection.getNewInstance(context)
@@ -45,7 +60,7 @@ open class ServiceInterface(
             arrayList.addAll(ComponentBuilderUtil.createTTSComponents(settings))
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(context, settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
-            listenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null, async = false))
+            persistentListenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null, async = false))
         }
     }
 
@@ -78,11 +93,15 @@ open class ServiceInterface(
             listenerControllerList.forEach {
                 controlSDKServiceApi.addListenerOrController(it)
             }
+            persistentListenerControllerList.forEach {
+                controlSDKServiceApi.addListenerOrController(it)
+            }
         }
         else if(connected == Operation.NOT_OK){
             listenerControllerList.forEach {
                 controlSDKServiceApi.removeListenerOrController(it)
             }
+            //persistent list gets to stay when service is not bound
         }
     }
 }
