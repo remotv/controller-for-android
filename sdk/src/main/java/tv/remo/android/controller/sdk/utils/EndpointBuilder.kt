@@ -1,14 +1,14 @@
 package tv.remo.android.controller.sdk.utils
 
 import android.content.Context
-import tv.remo.android.controller.sdk.R
+import tv.remo.android.controller.sdk.RemoSettingsUtil
 
 /**
  * Get the endpoint from resources
  */
 object EndpointBuilder {
     fun getEndpointUrl(context : Context) : String{
-        return context.getString(R.string.endpointHost)
+        return RemoSettingsUtil.with(context).endpoint.getPref()
     }
 
     fun getVideoUrl(context : Context, channel : String) : String{

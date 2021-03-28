@@ -20,4 +20,16 @@
         app:title="Channel Name"
         app:summary="Testing connection"
         app:isPreferenceVisible="true"/>
+
+    <PreferenceCategory
+        app:key="advanced2"
+        app:title="@string/advancedSettingsConnection"
+        app:initialExpandedChildrenCount="0">
+        <EditTextPreference
+            app:key="@string/ffmpegStreamingEndpointKey"
+            app:title="@string/ffmpegStreamingEndpointTitle"
+            app:defaultValue="@string/endpointHost"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="true"/>
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

@@ -28,6 +28,7 @@
     <!--Settings Landing Page-->
     <string name="generalSettings">General</string>
     <string name="advancedSettings">Experimental</string>
+    <string name="advancedSettingsConnection">Advanced</string>
     <string name="systemSettingsTitle">System Settings</string>
 
     <!--Connection-->
@@ -106,6 +107,7 @@
     <string name="internalCommandsToBlockTitle">Commands to block (comma delimited list)</string>
     <string name="serverOwnerTitle">Server owner username</string>
     <string name="ffmpegFilterTitle">FFmpeg additional filters (no spaces!)</string>
+    <string name="ffmpegStreamingEndpointTitle">Endpoint</string>
     <string name="ffmpegInputOptionsTitle">ffmpeg input options</string>
     <string name="ffmpegOutputOptionsTitle">ffmpeg output options</string>
     <string name="webServerHint">Use the web page that is now running to input the connection settings from a PC.

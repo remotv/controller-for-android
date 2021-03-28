@@ -46,6 +46,7 @@
     <string name="serverOwnerKey">serverOwnerKey</string>
     <string name="camera2features">camera2featuresKey</string>
     <string name="ffmpegFilterAddition">ffmpegVFPrefsKey</string>
+    <string name="ffmpegStreamingEndpointKey">ffmpegStreamingEndpoint</string>
     <string name="ffmpegInputOptionsPrefsKey">ffmpegInputOptions</string>
     <string name="ffmpegOutputOptionsPrefsKey">ffmpegOutputOptions</string>
     <string name="streamAutoSleepEnabledKey">streamAutoSleepEnabled</string>
