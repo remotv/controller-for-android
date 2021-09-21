@@ -39,9 +39,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api "org.btelman.controlsdk:core:$controlsdk_version"
-    api "org.btelman.controlsdk:hardware:$controlsdk_version"
-    api "org.btelman.controlsdk:texttospeech:$controlsdk_version"
+    api "com.github.ControlSDK.ControlSDK:core:$controlsdk_version"
+    api "com.github.ControlSDK.ControlSDK:hardware:$controlsdk_version"
+    api "com.github.ControlSDK.ControlSDK:texttospeech:$controlsdk_version"
     //noinspection GradleDependency. We cannot upgrade this without losing support for Android 4.4 and below
     api 'com.squareup.okhttp3:okhttp:3.12.6'
     api 'com.google.code.gson:gson:2.8.5'
