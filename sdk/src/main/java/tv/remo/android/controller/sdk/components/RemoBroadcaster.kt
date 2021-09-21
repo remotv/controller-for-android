@@ -72,7 +72,7 @@ class RemoBroadcaster : HardwareDriver{
         val intent = Intent("tv.remo.android.controller.sdk.socket.controls").apply {
             putExtra("command", data)
         }
-        context.sendBroadcast(intent, "tv.remo.android.controller.sdk.socket.controls")
+        context.sendBroadcast(intent)
     }
 
     override fun setupComponent(activity: Activity, force: Boolean): Int {

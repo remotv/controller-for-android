@@ -74,8 +74,8 @@ object FFmpegUtil {
         FFmpegRunner.startProcess(builder, UUID.fromString(uuid))
     }
 
-    fun getFilterOptions(props : StreamInfo) : String{
-        var rotationOption = props.orientation.ordinal-1 //leave blank
+    fun getFilterOptions(props : StreamInfo, offset : Int = 0) : String{
+        var rotationOption = props.orientation.ordinal+offset //leave blank
         if(rotationOption < 0)
             rotationOption = 3
         val filterList = ArrayList<String>()
