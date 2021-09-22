@@ -10,7 +10,7 @@ import org.btelman.controlsdk.streaming.utils.AudioUtil
  */
 open class BasicMicrophoneAudioRetriever : BaseAudioRetriever(), AudioRecordingThread.AudioDataReceivedListener {
 
-    private val recordingThread = AudioRecordingThread(this)
+    protected var recordingThread = AudioRecordingThread(this)
 
     private var dataArray : AudioPacket? = null
 

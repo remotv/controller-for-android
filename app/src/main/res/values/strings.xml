@@ -58,6 +58,7 @@
     <string name="microphoneSettingsTitle">Microphone</string>
     <string name="microphoneSettingsSummary">Volume, Bitrate</string>
     <string name="micVolumeBoostTitle">Volume Boost</string>
+    <string name="micMultiplyTitle">Mic Buffer Multiplier (Adjust if choppy)</string>
     <!--Audio/Speaker-->
     <string name="audioSettingsTitle">Audio and Commands</string>
     <string name="audioSettingsSummary">Text to Speech, Device Volume, Commands</string>

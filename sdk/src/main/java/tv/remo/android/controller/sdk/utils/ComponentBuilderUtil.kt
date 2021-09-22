@@ -8,6 +8,7 @@ import org.btelman.controlsdk.hardware.interfaces.HardwareDriver
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.streaming.enums.Orientation
 import org.btelman.controlsdk.streaming.factories.AudioProcessorFactory
+import org.btelman.controlsdk.streaming.factories.AudioRetrieverFactory
 import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
@@ -20,6 +21,7 @@ import tv.remo.android.controller.sdk.components.RemoCommandHandler
 import tv.remo.android.controller.sdk.components.RemoSocketComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
+import tv.remo.android.controller.sdk.components.audio.RemoAudioRetriever
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.video.Camera1Override
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
@@ -63,6 +65,7 @@ object ComponentBuilderUtil {
             }
 
             if(settings.microphoneEnabled.getPref()){
+                AudioRetrieverFactory.putClassInBundle(RemoAudioRetriever::class.java, this)
                 val audioComponent = ComponentHolder(RemoAudioComponent::class.java, this, threadPriority = Process.THREAD_PRIORITY_MORE_FAVORABLE)
                 streamList.add(audioComponent)
             }
