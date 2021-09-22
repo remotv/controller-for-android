@@ -20,6 +20,8 @@ import android.media.MediaRecorder;
 import android.util.Log;
 
 public class AudioRecordingThread {
+    private float bufferSizeMultiplier = 1;
+
     public interface AudioDataReceivedListener {
         void onAudioDataReceived(short[] data);
     }
@@ -43,12 +45,7 @@ public class AudioRecordingThread {
             return;
 
         mShouldContinue = true;
-        mThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                record();
-            }
-        });
+        mThread = new Thread(this::record);
         mThread.start();
     }
 
@@ -73,13 +70,16 @@ public class AudioRecordingThread {
             bufferSize = SAMPLE_RATE * 2;
         }
 
-        short[] audioBuffer = new short[bufferSize / 2];
+        short[] audioBuffer = new short[(int) (bufferSize * bufferSizeMultiplier)];
 
         AudioRecord record = new AudioRecord(MediaRecorder.AudioSource.DEFAULT,
                 SAMPLE_RATE,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT,
                 bufferSize);
+
+        Log.v(LOG_TAG, "Buffer Size : " + bufferSize);
+        Log.v(LOG_TAG, "Buffer Size Multiplier: " + bufferSizeMultiplier);
 
         if (record.getState() != AudioRecord.STATE_INITIALIZED) {
             Log.e(LOG_TAG, "Audio Record can't initialize!");
@@ -102,6 +102,18 @@ public class AudioRecordingThread {
         record.release();
 
         Log.v(LOG_TAG, String.format("Recording stopped. Samples read: %d", shortsRead));
+    }
+
+    public float getBufferSizeMultiplier() {
+        return bufferSizeMultiplier;
+    }
+
+    /**
+     * Set the buffer size multiplier. The audio recording must be stopped and restarted for this to take affect
+     * @param bufferSizeMultiplier
+     */
+    public void setBufferSizeMultiplier(float bufferSizeMultiplier) {
+        this.bufferSizeMultiplier = bufferSizeMultiplier;
     }
 }
 

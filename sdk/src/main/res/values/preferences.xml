@@ -20,6 +20,7 @@
     <string name="microphoneSettingsEnableKey">microphoneSettingsEnable</string>
     <string name="micVolumeBoostKey">micVolumeBoostKey</string>
     <string name="micAudioBitrateKey">micAudioBitrateKey</string>
+    <string name="micAudioBufferMultiplierKey">micAudioBufferMultiplierKey</string>
 
     <string name="audioSettingsEnableKey">audioSettingsEnable</string>
     <string name="audioSettingsTTSGroupKey">ttsCategoryKey</string>
