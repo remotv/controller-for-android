@@ -11,6 +11,14 @@
         app:entryValues="@array/volume_mic_list_values"/>
 
     <androidx.preference.ListPreference
+        app:key="@string/micAudioBufferMultiplierKey"
+        app:title="@string/micMultiplyTitle"
+        app:defaultValue="2"
+        app:useSimpleSummaryProvider="true"
+        app:entries="@array/volume_mic_list"
+        app:entryValues="@array/volume_mic_list_values"/>
+
+    <androidx.preference.ListPreference
         app:key="@string/micAudioBitrateKey"
         app:title="@string/bitrate"
         app:defaultValue="32"

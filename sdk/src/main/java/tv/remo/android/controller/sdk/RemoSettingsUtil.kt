@@ -65,6 +65,7 @@ class RemoSettingsUtil(context : Context, sharedPreferences: SharedPreferences) 
     val microphoneEnabled = BooleanPref(context, sharedPreferences, R.string.microphoneSettingsEnableKey, false)
     val micVolume = StringPref(context, sharedPreferences, R.string.micVolumeBoostKey, "1")
     val microphoneBitrate = StringPref(context, sharedPreferences, R.string.micAudioBitrateKey, "64")
+    val microphoneBufferMultiplier = StringPref(context, sharedPreferences, R.string.micAudioBufferMultiplierKey, "2")
 
     //tts related settings
     val textToSpeechEnabled = BooleanPref(context, sharedPreferences, R.string.audioSettingsEnableKey, false)
