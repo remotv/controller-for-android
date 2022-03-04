@@ -1,2 +1,2 @@
 include ':mobile-ffmpeg-full-4.4'
-include ':app', ':sdk', ':settingsutil', ':licensehelper', ':streaming'
+include ':app', ':sdk', ':settingsutil', ':licensehelper', ':streaming', ':OpenFTC:Interface', ':OpenFTC:ashmem', ':OpenFTC:Common'

@@ -9,6 +9,7 @@ import org.btelman.controlsdk.models.ComponentEventObject
 import org.btelman.controlsdk.streaming.components.StreamSubComponent
 import org.btelman.controlsdk.streaming.components.VideoComponent
 import org.btelman.controlsdk.streaming.models.StreamInfo
+import org.btelman.controlsdk.streaming.video.retrievers.AshmemRetriever
 import org.btelman.controlsdk.streaming.video.retrievers.DummyRetriever
 import tv.remo.android.controller.sdk.components.StreamCommandHandler
 import tv.remo.android.controller.sdk.components.StreamCommandHandler.Companion.rebuildStream
@@ -24,7 +25,7 @@ open class RemoVideoComponent : VideoComponent(), CommandStreamHandler {
     private var commandHandler : StreamCommandHandler? = null
 
     override fun setLoopMode() {
-        if(retriever is DummyRetriever){
+        if(retriever is DummyRetriever || retriever is AshmemRetriever){
             loopInterval = 100 //100 milliseconds... We are not updating camera here, so OK. Could be slower though
             shouldAutoUpdateLoop = true
         }

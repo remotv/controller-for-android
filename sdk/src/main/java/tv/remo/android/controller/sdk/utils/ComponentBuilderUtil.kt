@@ -14,6 +14,7 @@ import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
 import org.btelman.controlsdk.streaming.utils.CameraUtil
+import org.btelman.controlsdk.streaming.video.retrievers.AshmemRetriever
 import org.btelman.controlsdk.streaming.video.retrievers.DummyRetriever
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
@@ -23,7 +24,6 @@ import tv.remo.android.controller.sdk.components.audio.RemoAudioComponent
 import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.audio.RemoAudioRetriever
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
-import tv.remo.android.controller.sdk.components.video.Camera1Override
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessorLegacy
@@ -100,7 +100,7 @@ object ComponentBuilderUtil {
                 VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
             }
             else{
-                VideoRetrieverFactory.putClassInBundle(Camera1Override::class.java, this)
+                VideoRetrieverFactory.putClassInBundle(AshmemRetriever::class.java, this)
                 VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
             }
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)

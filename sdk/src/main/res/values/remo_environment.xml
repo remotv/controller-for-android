@@ -5,7 +5,7 @@
     </string>
 
     <string name="ffmpegDefaultInputOptions">
-        -f rawvideo -s ${resolution} -r 25 -pix_fmt nv21 -i ${inputStream}
+        -f image2pipe -codec:v mjpeg -i -
     </string>
 
     <string name="ffmpegDefaultOutputOptions">

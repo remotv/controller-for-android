@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tv.remo.android.videointerface">
+
+    <application>
+        <service
+            android:name="tv.remo.android.videointerface.RemoGraphicsHandler"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="RemoteService"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

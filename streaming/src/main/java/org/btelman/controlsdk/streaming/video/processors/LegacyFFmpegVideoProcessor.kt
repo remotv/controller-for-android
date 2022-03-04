@@ -147,7 +147,7 @@ open class LegacyFFmpegVideoProcessor : BaseVideoProcessor(){
             "-s ${props.width}x${props.height}",
             "-r 25",
             "-pix_fmt nv21",
-            "-i -"
+            "-i /dev/ashmem"
         )
     }
 

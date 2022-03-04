@@ -36,9 +36,11 @@ android {
 
 dependencies {
     api project(path: ':mobile-ffmpeg-full-4.4')
+    api project(path: ':OpenFTC:Interface')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api "com.github.btelman96.ffmpeg-android:core:v1.2.0"
     api 'com.github.btelman96:shellutil-android:v1.5.6'
+    implementation project(path: ':OpenFTC:Common')
     testImplementation 'junit:junit:4.12'
     implementation 'androidx.appcompat:appcompat:1.1.0' //annotations...
     androidTestImplementation 'androidx.test:runner:1.2.0'
