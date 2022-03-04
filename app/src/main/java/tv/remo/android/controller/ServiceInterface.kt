@@ -4,6 +4,7 @@ import android.content.Context
 import org.btelman.controlsdk.enums.Operation
 import org.btelman.controlsdk.models.ComponentHolder
 import org.btelman.controlsdk.services.ControlSDKServiceConnection
+import tv.remo.android.controller.activities.ExternalSocketControl
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.StatusBroadcasterComponent
 import tv.remo.android.controller.sdk.utils.ComponentBuilderUtil
@@ -41,11 +42,13 @@ open class ServiceInterface(
         handleListenerAddOrRemove(connected)
     }
 
-    open fun setup() {
+    open fun setup(createComponents : Boolean = true) {
         controlSDKServiceApi.getServiceStateObserver().observeForever(onServiceStateChange)
         controlSDKServiceApi.getServiceBoundObserver().observeForever(handleServiceBoundEvent)
         controlSDKServiceApi.connectToService()
-        createComponentHolders()
+        if(createComponents){
+            createComponentHolders()
+        }
     }
 
     open fun destroy(){
@@ -61,6 +64,7 @@ open class ServiceInterface(
             arrayList.addAll(ComponentBuilderUtil.createStreamingComponents(context, settings))
             arrayList.addAll(ComponentBuilderUtil.createHardwareComponents(settings))
             persistentListenerControllerList.add(ComponentHolder(StatusBroadcasterComponent::class.java, null, async = false))
+            persistentListenerControllerList.add(ComponentHolder(ExternalSocketControl::class.java,null, async = false))
         }
     }
 

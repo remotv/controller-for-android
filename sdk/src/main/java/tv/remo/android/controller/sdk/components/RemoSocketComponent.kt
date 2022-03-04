@@ -102,7 +102,7 @@ class RemoSocketComponent : Component() , RemoCommandSender {
         url ?: return
         socket?.close(1000, "service ended normally")
         request = Request.Builder().url(url!!).build()
-        socketClient.connectionPool().evictAll()
+//        socketClient.connectionPool().evictAll()
         socket = socketClient.newWebSocket(request!!, listener)
     }
 
