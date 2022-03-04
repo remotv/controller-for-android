@@ -13,9 +13,7 @@ import org.btelman.controlsdk.streaming.factories.VideoProcessorFactory
 import org.btelman.controlsdk.streaming.factories.VideoRetrieverFactory
 import org.btelman.controlsdk.streaming.models.CameraDeviceInfo
 import org.btelman.controlsdk.streaming.models.StreamInfo
-import org.btelman.controlsdk.streaming.utils.CameraUtil
 import org.btelman.controlsdk.streaming.video.retrievers.AshmemRetriever
-import org.btelman.controlsdk.streaming.video.retrievers.DummyRetriever
 import org.btelman.controlsdk.tts.SystemDefaultTTSComponent
 import tv.remo.android.controller.sdk.RemoSettingsUtil
 import tv.remo.android.controller.sdk.components.RemoCommandHandler
@@ -25,7 +23,6 @@ import tv.remo.android.controller.sdk.components.audio.RemoAudioProcessor
 import tv.remo.android.controller.sdk.components.audio.RemoAudioRetriever
 import tv.remo.android.controller.sdk.components.hardware.HardwareWatchdogComponent
 import tv.remo.android.controller.sdk.components.video.RemoVideoComponent
-import tv.remo.android.controller.sdk.components.video.RemoVideoProcessor
 import tv.remo.android.controller.sdk.components.video.RemoVideoProcessorLegacy
 
 /**
@@ -95,14 +92,17 @@ object ComponentBuilderUtil {
                 height = resolution[1].toInt()
             )
             //use our customized remo classes
-            if(CameraUtil.isFullyCamera2Compatible(context, settings.cameraDeviceId.getPref())){
-                VideoRetrieverFactory.putClassInBundle(DummyRetriever::class.java, this)
-                VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
-            }
-            else{
-                VideoRetrieverFactory.putClassInBundle(AshmemRetriever::class.java, this)
-                VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
-            }
+            //TODO UNDO //For now we hardcode to use Ashmem for testing
+            VideoRetrieverFactory.putClassInBundle(AshmemRetriever::class.java, this)
+            VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
+//            if(CameraUtil.isFullyCamera2Compatible(context, settings.cameraDeviceId.getPref())){
+//                VideoRetrieverFactory.putClassInBundle(DummyRetriever::class.java, this)
+//                VideoProcessorFactory.putClassInBundle(RemoVideoProcessor::class.java, this)
+//            }
+//            else{
+//                VideoRetrieverFactory.putClassInBundle(AshmemRetriever::class.java, this)
+//                VideoProcessorFactory.putClassInBundle(RemoVideoProcessorLegacy::class.java, this)
+//            }
             AudioProcessorFactory.putClassInBundle(RemoAudioProcessor::class.java, this)
             streamInfo.addToExistingBundle(this)
         }
