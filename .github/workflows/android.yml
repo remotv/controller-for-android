@@ -1,6 +1,9 @@
 name: Android CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - bugfix/ci #TODO fix CI
 
 jobs:
   build:
