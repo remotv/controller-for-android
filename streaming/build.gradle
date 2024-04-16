@@ -7,7 +7,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
+    compileSdk 28
 
     compileOptions {
         kotlinOptions.freeCompilerArgs += ['-module-name', "streaming"]
@@ -15,8 +15,6 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 1
-        versionName '0.12.2'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

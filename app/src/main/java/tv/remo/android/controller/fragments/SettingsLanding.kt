@@ -15,7 +15,7 @@ class SettingsLanding : BasePreferenceFragmentCompat(
     /**
      * Settings navigation links are placed here. This requires that the key is a StringId
      */
-    private val linkedPageSet = HashMap<@IdRes Int, @IdRes Int>().also {
+    private val linkedPageSet = HashMap<@receiver:IdRes Int, @receiver:IdRes Int>().also {
         it[R.string.connectionSettingsKey] = R.id.action_settingsLanding_to_settingsConnection
         it[R.string.robotSettingsEnableKey] = R.id.action_settingsLanding_to_settingsRobot
         it[R.string.cameraSettingsEnableKey] = R.id.action_settingsLanding_to_settingsCamera
@@ -28,7 +28,7 @@ class SettingsLanding : BasePreferenceFragmentCompat(
     /**
      * This converts the linkedPageSet keys to strings for easy access
      */
-    private val dict = HashMap<String, @IdRes Int>()
+    private val dict = HashMap<String, @receiver:IdRes Int>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

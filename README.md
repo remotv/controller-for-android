@@ -16,9 +16,9 @@ For setup guide and button templates, please check out the [WIKI](https://github
 
 ### Android Studio
 
-- Version 3.6 or higher. May not be buildable on lower versions
+- Version 2023.2 or higher. May not be buildable on lower versions
 - Android SDK (should be installed with Android Studio)
-- Java 7 or 8 JDK (might be installed with Android Studio)
+- Java (Android Studio should either use a bundled version or ask for you to install the JDK)
 
 ## Branches
 
@@ -33,8 +33,6 @@ The latest code, mostly stable, but might have issues. Sometimes this code may n
 ## Device Limitations
 
 - Setup to be capable of running on Android 4.1 (API 16) or higher. Some devices may run into issues, so feel free to report them
-
-- Android Things not tested
 
 - Raspberry PI running regular Android not tested
 
